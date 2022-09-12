@@ -3,7 +3,7 @@ Referral Applicatie Recruitment
 *Fill this readme with useful information when necessary.*
 *Read the Rules before starting.*
 ### Technical Project Requirements 
-* <strong>Front-end:</strong> AngularJS<br>
+* <strong>Front-end:</strong> Angular<br>
 * <strong>Back-end:</strong> C#<br>
 * <strong>Query Language:</strong> T-SQL
 ### Rules
