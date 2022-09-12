@@ -11,3 +11,11 @@ Referral Applicatie Recruitment
 * Never commit to the **main** branche. Create a pull request.
 * Pull requests must be reviewed by another program.
 * Stick to the coding standards we set in the beginning.
+<br><br>
+
+Setup
+======
+### Prerequisites 
+* <strong>NodeJS 16+</strong>
+* <strong>NPM</strong>
+* <strong>.NET 6+</strong>
