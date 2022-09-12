@@ -19,3 +19,8 @@ Setup
 * <strong>NodeJS 16+</strong>
 * <strong>NPM</strong>
 * <strong>.NET 6+</strong>
+
+### Installation
+1. Clone this repository to your computer. <br>
+(https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+2. Run `npm install` in your terminal.
