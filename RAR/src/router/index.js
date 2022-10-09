@@ -23,7 +23,14 @@ const router = createRouter({
       component: function () {
         return import(/* webpackChunkName: "about" */ '../views/Login.vue')
       }
-    }
+    },
+    {
+      path: '/secure',
+      name: 'Secure',
+      component: function () {
+        return import(/* webpackChunkName: "about" */ '../views/Secure.vue')
+      }
+    },
 
   ]
 })

@@ -8,9 +8,9 @@ import { RouterLink, RouterView } from 'vue-router'
 
 
     <div class="h-100 d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-        <span class="fs-4">Sidebar</span>
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="margin-left: 10px;">
+        <img src="https://www.alten.com/wp-content/uploads/2019/01/cropped-favicon-alten-1-180x180.png" alt="" width="34" height="32" class="rounded-circle me-2">
+        <span class="fs-4">Alten</span>
       </a>
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">

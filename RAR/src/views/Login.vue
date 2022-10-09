@@ -1,16 +1,23 @@
 <template>
+
+
     <div id="login">
-        <h1>Login</h1>
+        <h1>Inloggen</h1>
+        <p class="text-danger">{{ warning }}</p>
         <div class="form-inputs">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" v-model="input.username" placeholder="Username" />
-        </div>
+            <label for="username">Gebruikersnaam</label><br>
+            <input type="text"  class="form-control" id="username" name="username" v-model="input.username" placeholder="Username" />
+        </div><br>
         <div class="form-inputs">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" v-model="input.password" placeholder="Password" />
-        </div>
-        <button type="button" v-on:click="login()">Login</button>
+            <label for="password">Wachtwoord</label><br>
+            <input type="password"  class="form-control" id="password" name="password" v-model="input.password" placeholder="Password" />
+        </div><br>
+        <button type="button" class="btn btn-primary" v-on:click="login()">Login</button>
     </div>
+        
+
+
+
 </template>
 
 <script>
@@ -21,35 +28,38 @@
                 input: {
                     username: "",
                     password: ""
-                }
+                },
+                warning: ""
             }
         },
         methods: {
             login() {
                 if(this.input.username != "" && this.input.password != "") {
-                    // This should actually be an api call not a check against this.$parent.mockAccount
-                    if(this.input.username == this.$parent.mockAccount.username && this.input.password == this.$parent.mockAccount.password) {
+                    // Hier moet het inloggen gebeuren met de API
+                    if(this.input.username == "admin" && this.input.password == "admin") {
                         this.$emit("authenticated", true);
                         this.$router.replace({ name: "Secure" });
                     } else {
-                        console.log("The username and / or password is incorrect");
+                        this.warning = "Gebruikersnaam of wachtwoord is onjuist";
                     }
                 } else {
-                    console.log("A username and password must be present");
+                    this.warning = "Vul alle velden in";
                 }
             }
         }
-    }
+    } 
 </script>
 
 <style>
-
-#login .form-inputs {
-    padding-bottom: 10px;
+h1 {
+    font-size: 30px;
 }
-
-#login .form-inputs label {
-    padding-right: 10px;
+#login {
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 80px);
+    transform: translate(-50%, -50%);
 }
 
 </style>
