@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function readJson {  
+  UNAMESTR=`uname`
+  if [[ "$UNAMESTR" == 'Linux' ]]; then
+    SED_EXTENDED='-r'
+  elif [[ "$UNAMESTR" == 'Darwin' ]]; then
+    SED_EXTENDED='-E'
+  fi; 
+  VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
+  if [ ! "$VALUE" ]; then
+    echo "Error: Cannot find \"${2}\" in ${1}" >&2;
+    exit 1;
+  else
+    echo $VALUE ;
+  fi; 
+}
+
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+line='--------'
+NOW=$(date +"%d-%m-%Y %H:%M")
+VERSION=`readJson package.json version` || exit 1;  
+
+#chmod a+x rar.sh
+
+if [[ $1 = '' ]]; then
+    echo "${green}=== R.A.R. (Referral Applicatie Recruitment) ===${reset}"
+    echo "${green}==== Running Version ${VERSION} ====${reset}"
+    echo "Commands"
+    echo "serve : Update modules & run the web application"
+fi
+
+if [[ $1 = 'serve' ]]; then
+    npm install
+    npm run dev &
+    sleep 1 # Wait for the local server to start
+    open http://127.0.0.1:5173/ &
+
+fi
