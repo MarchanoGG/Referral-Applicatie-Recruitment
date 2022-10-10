@@ -32,13 +32,12 @@ import { RouterLink, RouterView } from 'vue-router'
             Users
           </RouterLink>
         </li>
-        <li>
-          <a href="#" class="nav-link text-white">
+        <li class="nav-item">
+          <RouterLink to="/help" class="nav-link text-white">          
             <i class="bi bi-question-square-fill"></i>
             Hulp
-          </a>
+          </RouterLink>
         </li>
-
       </ul>
       <hr>
       <div class="dropdown">
