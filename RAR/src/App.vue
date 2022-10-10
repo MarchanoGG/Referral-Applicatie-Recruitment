@@ -10,7 +10,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="h-100 d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="margin-left: 10px;">
         <img src="https://www.alten.com/wp-content/uploads/2019/01/cropped-favicon-alten-1-180x180.png" alt="" width="34" height="32" class="rounded-circle me-2">
-        <span class="fs-4">Alten</span>
+        <span class="fs-4">Alten R.A.R.</span>
       </a>
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
@@ -32,19 +32,36 @@ import { RouterLink, RouterView } from 'vue-router'
             Users
           </RouterLink>
         </li>
-        <li>
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-question-square-fill"></i>
-            Hulp
+        <li class="nav-item">
+          <RouterLink to="/leaderboard" class="nav-link text-white">              
+            <i class="bi bi-clipboard2-fill"></i>
+            Leaderboard
+          </RouterLink>
+        </li>
+        <li class="nav-item">
+          <a to="/users" class="nav-link text-white">          
+            <i class="bi bi-person-badge-fill"></i>
+            Roles
           </a>
         </li>
-
+        <li class="nav-item">
+          <a to="/users" class="nav-link text-white">          
+            <i class="bi bi-card-checklist"></i>
+            Campaigns
+          </a>
+        </li>
+        <li class="nav-item">
+          <RouterLink to="/help" class="nav-link text-white">          
+            <i class="bi bi-question-square-fill"></i>
+            Hulp
+          </RouterLink>
+        </li>
       </ul>
       <hr>
       <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
           <img src="https://pv-c.nl/wp-content/uploads/2011/08/person-placeholder.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
-          <strong>Mervin de OG</strong>
+          <strong>Gebruiker</strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
           <li><a class="dropdown-item" href="#">Settings</a></li>
