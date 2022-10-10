@@ -25,6 +25,13 @@ const router = createRouter({
       }
     },
     {
+      path: '/users',
+      name: 'Users',
+      component: function () {
+        return import(/* webpackChunkName: "about" */ '../views/Users.vue')
+      }
+    },
+    {
       path: '/secure',
       name: 'Secure',
       component: function () {

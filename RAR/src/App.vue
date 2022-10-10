@@ -26,6 +26,12 @@ import { RouterLink, RouterView } from 'vue-router'
             Login
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/users" class="nav-link text-white">          
+            <i class="bi bi-list"></i>
+            Users
+          </RouterLink>
+        </li>
         <li>
           <a href="#" class="nav-link text-white">
             <i class="bi bi-question-square-fill"></i>
