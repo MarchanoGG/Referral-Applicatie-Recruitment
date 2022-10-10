@@ -18,6 +18,7 @@ function readJson {
 
 red=`tput setaf 1`
 green=`tput setaf 2`
+yellow=`tput setaf 3`
 reset=`tput sgr0`
 line='--------'
 NOW=$(date +"%d-%m-%Y %H:%M")
@@ -28,8 +29,8 @@ VERSION=`readJson package.json version` || exit 1;
 if [[ $1 = '' ]]; then
     echo "${green}=== R.A.R. (Referral Applicatie Recruitment) ===${reset}"
     echo "${green}==== Running Version ${VERSION} ====${reset}"
-    echo "Commands"
-    echo "serve : Update modules & run the web application"
+    echo "Run ${yellow}./rar serve${reset} to update & start the server and web application."
+    echo "On the first run, this will also install all dependencies, set up the database and build the application."
 fi
 
 if [[ $1 = 'serve' ]]; then
@@ -37,5 +38,4 @@ if [[ $1 = 'serve' ]]; then
     npm run dev &
     sleep 1 # Wait for the local server to start
     open http://127.0.0.1:5173/ &
-
 fi
