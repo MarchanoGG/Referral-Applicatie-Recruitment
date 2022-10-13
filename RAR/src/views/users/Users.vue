@@ -1,9 +1,30 @@
+<script>
+import Modal from "../ButtonModal.vue";
+import Button from "../Button.vue";
+import ButtonModal from "../ButtonModal.vue";
+export default{
+    data() {
+        return {
+            users: [
+                {
+                    id: "1",
+                    firstname: "Mark",
+                    lastname: "Otto",
+                    email: "markotto@gmail.com",
+                }
+            ],
+        };
+    },
+    components: { Modal, Button, ButtonModal }
+}
+</script>
 <template>
     <div id="users">
         <div class="container-fluid">
             <h1>Users management</h1>
             <nav class="navbar navbar-expand-lg bg">
-                <a class="navbar-brand btn btn-primary" href="/addusers"><i class="bi bi-plus"></i></a>
+                <ButtonModal :dataTarget="test" />
+                <!-- <button class="navbar-brand btn btn-primary"><i class="bi bi-plus"></i></button> -->
             </nav>
             <table class="table table-striped">
                 <thead>
@@ -32,3 +53,7 @@
         </div>
     </div>
 </template>
+
+<style>
+
+</style>
