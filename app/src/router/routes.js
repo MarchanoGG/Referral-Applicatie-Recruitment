@@ -11,7 +11,10 @@ const routes = [
     component: MainLayoutVue,
     children: [
       { path: "", component: () => import("src/pages/users/List.vue") },
-      { path: "add", component: () => import("src/pages/users/Add.vue") },
+      {
+        path: "add",
+        component: () => import("src/pages/users/UserAddForm.vue"),
+      },
     ],
   },
   // Always leave this as last one,
