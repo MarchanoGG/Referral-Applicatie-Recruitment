@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/RAR/Server/RarApiGUI/bin/Debug
+/RAR/Server/RarApiGUI/obj/Debug

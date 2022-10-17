@@ -1,0 +1,35 @@
+{
+  "Result": {
+    "StatusCode": 200,
+    "Method": "GET",
+    "Host": "response",
+    "Port": "9001",
+    "Path": "/Users/Get",
+    "Query": "",
+    "Message": ""
+  },
+  "Entities": [
+    {
+      "ObjectKey": 1,
+      "ObjectID": 1,
+      "RecState": 1,
+      "CreationDate": "2020-10-26 00:00:00",
+      "CreatorKey": -1,
+      "SystemKey": 1,
+      "SystemSummary": "Users",
+      "System": {
+        "ObjectKey": 1,
+        "ObjectID": 1,
+        "RecState": 1,
+        "CreationDate": "2020-05-22 00:00:00",
+        "CreatorKey": -1,
+        "SystemType": 1,
+        "ServerProtocol": "http",
+        "ServerAddress": "localhost",
+        "ServerPort": 9001,
+        "SysState": 1,
+        "Description": "USERS"
+      }
+    }
+  ]
+}
