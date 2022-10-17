@@ -25,10 +25,31 @@ const router = createRouter({
       }
     },
     {
+      path: '/users',
+      name: 'Users',
+      component: function () {
+        return import(/* webpackChunkName: "about" */ '../views/Users.vue')
+      }
+    },
+    {
       path: '/secure',
       name: 'Secure',
       component: function () {
         return import(/* webpackChunkName: "about" */ '../views/Secure.vue')
+      }
+    },
+    {
+      path: '/help',
+      name: 'Help',
+      component: function () {
+        return import(/* webpackChunkName: "about" */ '../views/HelpView.vue')
+      }
+    },
+    {
+      path: '/leaderboard',
+      name: 'Leaderboard',
+      component: function () {
+        return import(/* webpackChunkName: "about" */ '../views/LeaderboardView.vue')
       }
     },
 

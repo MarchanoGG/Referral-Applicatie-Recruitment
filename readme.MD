@@ -20,9 +20,14 @@ Setup
 * <strong>NPM</strong>
 * <strong>.NET 6+</strong>
 
-### Development
+### Installation
 1. Clone this repository to your computer. <br>
 (https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 2. Navigate to the application folder `cd RAR`. (RAR stands for Referral Application Recruitment)
-3. Run the `npm install` command. There should be no errors.
-4. Run the `npm run dev` command to start a local dev server via Vite. A local URL will be shown with the application ready
+3. Run the `chmod a+x rar` command.
+4. Run the ` ./rar serve` command. The Server & Web application should start automatically.
+
+### Development (Vue + Vite Only)
+1. Navigate to the application folder `cd RAR`. (RAR stands for Referral Application Recruitment)
+2. Run the `npm install` command. There should be no errors.
+3. Run the `npm run dev` command to start a local dev server via Vite. A local URL will be shown with the application ready
