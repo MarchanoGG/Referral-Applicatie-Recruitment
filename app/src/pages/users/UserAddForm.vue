@@ -5,10 +5,16 @@
             <q-input filled v-model="name" label="Your name *" hint="Name and surname" lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled type="number" v-model="age" label="Your age *" lazy-rules :rules="[
-              val => val !== null && val !== '' || 'Please type your age',
-              val => val > 0 && val < 100 || 'Please type a real age'
-            ]" />
+            <q-input filled v-model="surname" label="Your surname *" hint="Surname" lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+
+            <q-input filled v-model="email" label="Your email *" hint="Email" lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+
+            <q-input filled v-model="phonenumber" label="Your Phone number *" hint="Phone number" lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+
+            <q-date filled v-model="age" title="Birthdate" subtitle lazy-rules />
 
             <q-toggle v-model="accept" label="I accept the license and terms" />
 
@@ -30,11 +36,17 @@ export default {
         const $q = useQuasar()
 
         const name = ref(null)
-        const age = ref(null)
+        const surname = ref(null)
+        const email = ref(null)
+        const phonenumber = ref(null)
+        const age = ref('1980/01/01')
         const accept = ref(false)
 
         return {
             name,
+            surname,
+            email,
+            phonenumber,
             age,
             accept,
 
@@ -61,6 +73,11 @@ export default {
                 name.value = null
                 age.value = null
                 accept.value = false
+            },
+
+            setCalendarTo() {
+                year = '1980'
+                month = '1'
             }
         }
     }
