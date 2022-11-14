@@ -45,12 +45,6 @@ const linksList = [
     icon: 'list',
     link: '/users'
   },
-  {
-    title: 'Add Users ',
-    // caption: '',
-    icon: 'list',
-    link: '/users/add'
-  },
 ]
 
 export default defineComponent({

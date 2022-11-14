@@ -1,5 +1,6 @@
 form feedback
 
 status mapping
-1 = ok
-2 = bad
+0 = ok
+1 = bad parameters 
+2 = fatal error 
