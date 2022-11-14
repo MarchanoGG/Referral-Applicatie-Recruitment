@@ -8,6 +8,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace ConsoleApp1
 {  
@@ -46,69 +48,115 @@ namespace ConsoleApp1
 
     }
 
-    internal class Program 
+    internal class Program
     {
+        public static int Port = 8080;
+        public static HttpListener listener = new HttpListener();
+        public static bool killed = false;
+        public static MyContext db;
         static void Main(string[] args)
         {
             Console.WriteLine("Fetching database..");
-            var db = new MyContext();
+            db = new MyContext();
             Console.Clear();
 
-            WriteMenu();
-            ConsoleKeyInfo KeyInput = new ConsoleKeyInfo();
 
-            while (KeyInput.Key != ConsoleKey.Escape)
-            {
-                KeyInput = Console.ReadKey();
-                switch (KeyInput.Key)
-                {
-                    case ConsoleKey.D1:
-                        ReadAll(db);
-                        break;
-                    case ConsoleKey.D2:
-                        ReadSpecific(db);
-                        break;
-                    case ConsoleKey.D3:
-                        Create(db);
-                        break;
-                    case ConsoleKey.D4:
-                        Update(db);
-                        break;
-                    case ConsoleKey.D5:
-                        Delete(db);
-                        break;
-                    default:
-                        break;
-                }
-                Console.Clear();
-                WriteMenu();
+            listener.Prefixes.Add("http://localhost:" + Port.ToString() + "/");
+
+            listener.Start();
+
+            Receive();
+
+            while (killed == false)
+            { 
             }
         }
 
-        static void WriteMenu()
+        public static void Stop()
         {
-            Console.WriteLine("Select an action: \n");
-            Console.WriteLine("1 - Show all users");
-            Console.WriteLine("2 - Show distinct user");
-            Console.WriteLine("3 - Create new user");
-            Console.WriteLine("4 - Update existing user");
-            Console.WriteLine("5 - Delete existing user");
-            Console.WriteLine("\n You can leave by pressing the escape button");
-            Console.WriteLine("Selected option:\n");
+            listener.Stop();
         }
 
-        static void ReadAll(MyContext myDB)
+        private static void Receive()
         {
-            Console.WriteLine("\n\nRetrieving all users..");
+            listener.BeginGetContext(new AsyncCallback(ListenerCallback), listener);
+        }
+
+        private static void ListenerCallback(IAsyncResult result)
+        {
+            if (listener.IsListening)
+            {
+                var context = listener.EndGetContext(result);
+                var request = context.Request;
+
+                // do something with the request
+                string className = request.RawUrl.Remove(0, 1);
+
+                switch (request.HttpMethod)
+                {
+                    case "GET":
+                        Get(className, context);
+                        break;
+                    default:
+                        NotSupported(context);
+                        break;
+                }
+
+                Receive();
+            }
+        }
+
+        static void Get(string aClassName, HttpListenerContext aContext)
+        {
+            if (aClassName.CompareTo("Users") == 0)
+            {
+                var response = aContext.Response;
+                response.StatusCode = (int)HttpStatusCode.OK;
+                response.ContentType = "application/json";
+                string arr = ReadAll(db);
+
+                byte[] bytes = Encoding.UTF8.GetBytes(arr);
+                response.OutputStream.Write(bytes, 0, bytes.Length);
+                response.OutputStream.Close();
+            }
+            else
+            {
+                NotSupported(aContext);
+            }
+        }
+
+        static void NotSupported(HttpListenerContext aContext)
+        {
+            var response = aContext.Response;
+            response.StatusCode = (int)HttpStatusCode.NotFound;
+            response.ContentType = "text/plain";
+            response.OutputStream.Close();
+        }
+
+        static string ReadAll(MyContext myDB)
+        {
+            String arr = "[";
+            bool second = false;
 
             foreach (var user in myDB.users.ToList())
             {
-                Console.WriteLine("User:" + user.username + " - Object key: " + user.object_key + "\n");
+                if (second == true)
+                {
+                    arr += ",";
+                }
+                string json = JsonConvert.SerializeObject(user);
+
+                if (json.Length > 0)
+                {
+                    arr += json;
+                }
+
+                second = true;
             }
 
-            Console.WriteLine("\nPress any key to continue..");
+            arr += "]";
 
-            Console.ReadKey();
+            return arr;
         }
 
         static void ReadSpecific(MyContext myDB)
