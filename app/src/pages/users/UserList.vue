@@ -42,14 +42,8 @@ const columns = [
 
 const rows = [
   {
-    "fullname": "Jon Snow"
-    , "email": "jonsnow@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  , {
-    "fullname": "Tobias Roessingh"
-    , "email": "troessingh@gmail.com"
+    "fullname": "Tobias"
+    , "email": "Tobias@gmail.com"
     , "phone": "1234567"
     , "birthday": "01-01-1996"
   }
@@ -71,6 +65,19 @@ const rows = [
     , "phone": "1234567"
     , "birthday": "01-01-1996"
   }
+  , {
+    "fullname": "Mervin"
+    , "email": "Mervin@gmail.com"
+    , "phone": "1234567"
+    , "birthday": "01-01-1996"
+  }
+  , {
+    "fullname": "Jon Snow"
+    , "email": "jonsnow@gmail.com"
+    , "phone": "1234567"
+    , "birthday": "01-01-1996"
+  }
+  , 
 ]
 
 
