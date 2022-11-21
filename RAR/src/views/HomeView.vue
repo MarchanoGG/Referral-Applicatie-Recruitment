@@ -12,7 +12,7 @@ import TheWelcome from '../components/TheWelcome.vue'
     components: {},
     data() {
       return {
-        msg: 'Welcome to Your Vue.js App',
+        msg: 'Hier komt een hoop info',
       }
     },
   };
