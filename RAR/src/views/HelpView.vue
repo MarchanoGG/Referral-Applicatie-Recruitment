@@ -7,8 +7,8 @@ import axios from 'axios';
 
   <ul v-if="posts && posts.length">
     <li v-for="post of posts">
-      <p><strong>{{post.title}}</strong></p>
-      <p>{{post.body}}</p>
+      <p>{{post.email}}</p>
+      <p>{{post.password}}</p>
     </li>
   </ul>
 
@@ -30,7 +30,7 @@ import axios from 'axios';
     },
     created () {
       axios
-        .get('https://jsonplaceholder.typicode.com/posts')
+        .get('http://127.0.0.1:5173/tests/api/users')
         .then(response => (this.posts = response.data))
         .catch(error => (this.errors = error))
     }
