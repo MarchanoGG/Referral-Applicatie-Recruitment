@@ -1,103 +1,92 @@
 ﻿using RAR;
 
-class RarApiConsole
+namespace RarApiConsole
 {
-    static void Main(string[] args)
+    class RarApiConsole
     {
-
-        // Initialize configs
-        TSettings.Instance();
-
-        if (args.Length > 0)
+        static void Main(string[] args)
         {
-            if (args.Length > 1)
+
+            // Initialize configs
+            TSettings.Instance();
+
+            if (args.Length > 0)
             {
-                SetLogging(args[1]);
+                if (args.Length > 1)
+                {
+                    SetLogging(args[1]);
+                }
+
+                Options(args);
             }
 
-            Options(args);
-        }
-
-        else
-        { 
-            // Start server because no arguments are provided
-            StartServer();
-        }
-
-
-        // Register all modules
-        new TConnection();
-
-    }
-
-    public static void Options(string[] aVal)
-    {
-        switch (aVal[0])
-        {
-            case "start":
+            else
+            {
+                // Start server because no arguments are provided
                 StartServer();
-                break;
-            case "stop":
-                StopServer();
-                break;
-            case "kill":
-                KillServer();
-                break;
-            case "restart":
-                RestartServer();
-                break;
+            }
 
+            // Register all modules
+            var conn = new TConnection();
         }
-    }
 
-    static void SetLogging(string aCase)
-    {
-        switch (aCase)
+        public static void Options(string[] aVal)
         {
-            case "1":
-                // Use logging in console
-                RAR.TServer.s_logging = 1;
-                break;
+            switch (aVal[0])
+            {
+                case "start":
+                    StartServer();
+                    break;
+                case "stop":
+                    StopServer();
+                    break;
+                case "kill":
+                    KillServer();
+                    break;
+                case "restart":
+                    RestartServer();
+                    break;
 
-            case "2":
-                // Create log files
-                RAR.TServer.s_logging = 2;
-                break;
-            case "0":
-            default:
-                // No logging
-                RAR.TServer.s_logging = 0;
-                break;
-
+            }
         }
-    }
 
-    static void StartServer()
-    {
-        var s = TSettings.Instance();
-        var conf = s.GetApplication();
-
-        if (conf != null)
+        static void SetLogging(string aCase)
         {
-            string URL = conf.Protocol + "://" + conf.Server + ":" + conf.Port + "/";
-            RAR.TServer.ThStartServer(URL);
+            TServer.s_logging = aCase switch
+            {
+                "1" => 1,// Use logging in console
+                "2" => 2,// Create log files
+                _ => 0,// No logging
+            };
         }
-    }
 
-    static void StopServer()
-    {
-        //   RAR.TServer.thStopServer();
-    }
+        static void StartServer()
+        {
+            var s = TSettings.Instance();
+            var conf = s.GetApplication();
 
-    static void KillServer()
-    {
-        // RAR.TServer.KillServer();
-        System.Environment.Exit(1);
-    }
+            if (conf != null)
+            {
+                string URL = conf.Protocol + "://" + conf.Server + ":" + conf.Port + "/";
+                TServer.ThStartServer(URL);
+            }
+        }
 
-    static void RestartServer()
-    {
-        //   RAR.TServer.thStopServer();
-        //   RAR.TServer.Execute();
+        static void StopServer()
+        {
+            //   RAR.TServer.thStopServer();
+        }
+
+        static void KillServer()
+        {
+            // RAR.TServer.KillServer();
+            Environment.Exit(1);
+        }
+
+        static void RestartServer()
+        {
+            //   RAR.TServer.thStopServer();
+            //   RAR.TServer.Execute();
+        }
     }
 }

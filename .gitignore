@@ -4,3 +4,10 @@
 
 /RAR/Server/RarApiGUI/bin/Debug
 /RAR/Server/RarApiGUI/obj/Debug
+/.vs
+/app/node_modules
+/app/.quasar
+/Database/DatabaseConnection/ConsoleApp1/obj
+/RAR/Server/RarApiConsole/.vs/RarApiConsole/FileContentIndex
+/RAR/Server/RarApiConsole/obj/Debug/net6.0/refint
+/RAR/Server/RarApiConsole/obj/Release/net6.0

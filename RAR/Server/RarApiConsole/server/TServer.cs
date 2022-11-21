@@ -14,15 +14,15 @@ namespace RAR
     {
         HttpClient d_client = new HttpClient();
         public static bool d_IsServerRunning = false;
-        public static HttpListener listener;
-        public static HttpListenerRequest aReq;
-        public static HttpListenerResponse aRes;
+        public static HttpListener ?listener;
+        public static HttpListenerRequest ?aReq;
+        public static HttpListenerResponse ?aRes;
 
-        private static TServer s_instance = null;
-        public String port { get; set; }
-        public String server { get; set; }
-        public String protocol { get; set; }
-        public static String url { get; set; }
+        private static TServer ?s_instance = null;
+        public String ?port { get; set; }
+        public String ?server { get; set; }
+        public String ?protocol { get; set; }
+        public static String ?url { get; set; }
         public static int s_logging { get; set; }
 
 
@@ -42,24 +42,27 @@ namespace RAR
             "</html>";
 
         private static volatile bool Terminated = false;
-        private static String s_url;
+        private static String ?s_url;
 
         public static void Execute()
         {
             TServer srv = TServer.Instance();
 
-            srv.StartServer(s_url);
+            if (s_url != null)
+            { 
+                srv.StartServer(s_url);
 
-            //this.d_callbackMethod("SetupServer", url);
-            while (Volatile.Equals(Terminated, false))
-            {
-                // handle some stufff
-                Thread.Sleep(1);
+                //this.d_callbackMethod("SetupServer", url);
+                while (Volatile.Equals(Terminated, false))
+                {
+                    // handle some stufff
+                    Thread.Sleep(1);
+                }
+
+                DestroyInstance();
+                //srv.StopServer();
+                // destroy the server
             }
-
-            DestroyInstance();
-            //srv.StopServer();
-            // destroy the server
 
         }
 
@@ -112,73 +115,81 @@ namespace RAR
             bool runServer = true;
 
             // While a user hasn't visited the `shutdown` url, keep on handling requests
-            while (!Terminated)
+            while (Terminated == false)
             {
-                // Will wait here until we hear from a connection
-                HttpListenerContext ctx = await listener.GetContextAsync();
-
-                // Peel out the requests and response objects
-                HttpListenerRequest req = ctx.Request;
-                HttpListenerResponse resp = ctx.Response;
-
-                if (s_logging == 1)
+                if (listener != null)
                 {
-                    // Print out some info about the request
-                    Console.WriteLine("Request #: {0}", ++requestCount);
-                    Console.WriteLine(req.Url.ToString());
-                    Console.WriteLine(req.HttpMethod);
-                    Console.WriteLine(req.UserHostName);
-                    Console.WriteLine(req.UserAgent);
-                    Console.WriteLine();
-                }
-                else if (s_logging == 2)
-                {
-                    string[] log =
-                     {
-                        "Request "+ ++requestCount, req.Url.ToString(), req.HttpMethod, req.UserHostName, req.UserAgent
-                    };
+                    // Will wait here until we hear from a connection
+                    HttpListenerContext ctx = await listener.GetContextAsync();
 
-                    if (!Directory.Exists("logs"))
+                    // Peel out the requests and response objects
+                    HttpListenerRequest req = ctx.Request;
+                    HttpListenerResponse resp = ctx.Response;
+
+                    if((req.Url != null) && (req.RawUrl != null))
                     {
-                        Directory.CreateDirectory("Logs");
+                        if (s_logging == 1)
+                        {
+                            // Print out some info about the request
+                            Console.WriteLine("Request #: {0}", ++requestCount);
+                            Console.WriteLine(req.Url.ToString());
+                            Console.WriteLine(req.HttpMethod);
+                            Console.WriteLine(req.UserHostName);
+                            Console.WriteLine(req.UserAgent);
+                            Console.WriteLine();
+                        }
+                        else if (s_logging == 2)
+                        {
+                            string[] log =
+                             {
+                            "Request "+ ++requestCount, req.Url.ToString(), req.HttpMethod, req.UserHostName, req.UserAgent
+                        };
+
+                            if (!Directory.Exists("logs"))
+                            {
+                                Directory.CreateDirectory("Logs");
+                            }
+                            await File.WriteAllLinesAsync("logs/Log-" + requestCount + "-" + req.HttpMethod + ".txt", log);
+                        }
+
+                        // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
+                        String url = req.RawUrl;
+
+                        bool success = true;
+                        if ((url != null) && (s_callbackMethod.ContainsKey(url)))
+                        {
+                            success = s_callbackMethod[url](req, resp);
+                        }
+
+                        // Make sure we don't increment the page views counter if `favicon.ico` is requested
+                        if (req.Url.AbsolutePath != "/favicon.ico")
+                        {
+                            pageViews += 1;
+                        }
+
+                        string disableSubmit = !runServer ? "disabled" : "";
+                        byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
+                        // Write the response info
+                        if (success)
+                        {
+                            resp.ContentType = "application/json";
+                            resp.ContentEncoding = Encoding.UTF8;
+                            resp.ContentLength64 = data.LongLength;
+                            await resp.OutputStream.WriteAsync(data, 0, data.Length);
+                        }
+                        else // not success
+                        {
+                            resp.ContentType = "application/json";
+                            resp.ContentEncoding = Encoding.UTF8;
+                            resp.ContentLength64 = data.LongLength;
+                            await resp.OutputStream.WriteAsync(data, 0, data.Length);
+                        }
+
+
+                        // Write out to the response stream (asynchronously), then close it
+                        resp.Close();
                     }
-                        await File.WriteAllLinesAsync("logs/Log-" + requestCount + "-" + req.HttpMethod + ".txt", log);                    
                 }
-
-                // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
-                String url = req.RawUrl;
-
-                bool success = true;
-                if (s_callbackMethod.ContainsKey(url))
-                {
-                    success = s_callbackMethod[url](req, resp);
-                }
-
-               // Make sure we don't increment the page views counter if `favicon.ico` is requested
-                if (req.Url.AbsolutePath != "/favicon.ico")
-                    pageViews += 1;
-
-                string disableSubmit = !runServer ? "disabled" : "";
-                byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
-                // Write the response info
-                if (success)
-                {
-                    resp.ContentType = "application/json";
-                    resp.ContentEncoding = Encoding.UTF8;
-                    resp.ContentLength64 = data.LongLength;
-                    await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                }
-                else // not success
-                {
-                    resp.ContentType = "application/json";
-                    resp.ContentEncoding = Encoding.UTF8;
-                    resp.ContentLength64 = data.LongLength;
-                    await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                }
-                
-
-                // Write out to the response stream (asynchronously), then close it
-                resp.Close();
             }
         }
         public void StartServer(String aUrl)

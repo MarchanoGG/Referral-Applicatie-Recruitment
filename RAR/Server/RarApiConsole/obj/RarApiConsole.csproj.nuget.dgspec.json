@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ReferralApplicationRequirement\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj": {}
+    "D:\\HR\\Jaar 2\\Project\\Referral-Applicatie-Recruitment\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj": {}
   },
   "projects": {
-    "D:\\ReferralApplicationRequirement\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj": {
+    "D:\\HR\\Jaar 2\\Project\\Referral-Applicatie-Recruitment\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ReferralApplicationRequirement\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj",
+        "projectUniqueName": "D:\\HR\\Jaar 2\\Project\\Referral-Applicatie-Recruitment\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj",
         "projectName": "RarApiConsole",
-        "projectPath": "D:\\ReferralApplicationRequirement\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj",
-        "packagesPath": "C:\\Users\\Michael\\.nuget\\packages\\",
-        "outputPath": "D:\\ReferralApplicationRequirement\\RAR\\Server\\RarApiConsole\\obj\\",
+        "projectPath": "D:\\HR\\Jaar 2\\Project\\Referral-Applicatie-Recruitment\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj",
+        "packagesPath": "C:\\Users\\jeremey\\.nuget\\packages\\",
+        "outputPath": "D:\\HR\\Jaar 2\\Project\\Referral-Applicatie-Recruitment\\RAR\\Server\\RarApiConsole\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Michael\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jeremey\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,8 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://packagesource": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
@@ -41,9 +40,25 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
@@ -61,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }
