@@ -1,9 +1,14 @@
 {
   "ExpandedNodes": [
     "",
+    "\\RAR",
     "\\RAR\\Server",
-    "\\RAR\\Server\\RarApiGUI"
+    "\\RAR\\Server\\RarApiConsole",
+    "\\RAR\\Server\\RarApiConsole\\server",
+    "\\RAR\\Server\\RarApiGUI",
+    "\\RAR\\Server\\RarApiGUI\\bin",
+    "\\RAR\\Server\\RarApiGUI\\obj\\Release"
   ],
-  "SelectedNode": "\\RAR",
+  "SelectedNode": "\\RAR\\Server\\RarApiConsole\\RarApiConsole.csproj",
   "PreviewInSolutionExplorer": false
 }
