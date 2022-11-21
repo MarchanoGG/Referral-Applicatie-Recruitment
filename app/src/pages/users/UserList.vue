@@ -4,13 +4,17 @@
       <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       <q-separator vertical inset />
     </q-toolbar>
-    <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading">
-    </q-table>
+    <div v-if="rows">
+      <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading">
+      </q-table>
+    </div>
   </div>
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+  import EssentialLink from 'components/EssentialLink.vue'
+  import { ref } from 'vue'
+  import { api } from 'boot/axios'
 const linksList = [
   {
     title: '',
@@ -22,44 +26,41 @@ const linksList = [
 
 const columns = [
   {
-    name: 'name',
+    name: 'username',
     required: true,
     label: 'Name',
     align: 'left',
-    field: row => row.fullname,
+    field: 'username',
     format: val => `${val}`,
     sortable: true
   },
   { 
-    name: 'email',
-    label: 'Email',
-    field: 'email',
+    name: 'password',
+    label: 'Password',
+    field: 'password',
     align: 'left',
     sortable: true
   },
   {
-    name: 'phone',
-    label: 'Phone',
-    field: 'phone',
+    name: 'recruiter',
+    label: 'Recruiter',
+    field: 'recruiter',
     align: 'left',
     sortable: true
   },
   {
-    name: 'birthday',
-    label: 'Birthday',
-    field: 'birthday',
+    name: 'creation_dt',
+    label: 'Creation date',
+    field: 'creation_dt',
     align: 'left',
     sortable: true
-  },
-  // { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-  // { name: 'protein', label: 'Protein (g)', field: 'protein' },
-  // { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-  // { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
-  // { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+  }
 ]
 
-const rows = [
-  {
+  /*
+  var rows = []
+var rows = [
+ {
     "fullname": "Tobias"
     , "email": "Tobias@gmail.com"
     , "phone": "1234567"
@@ -95,23 +96,36 @@ const rows = [
     , "phone": "1234567"
     , "birthday": "01-01-1996"
   }
-  ,
 ]
-
+*/
 
 import { defineComponent } from 'vue'
 
-export default defineComponent({
+  export default defineComponent({
   name: 'UserList'
   , components: {
     EssentialLink
   }
-  , setup() {
+    , setup() {
     return {
       essentialLinks: linksList,
       columns,
-      rows
+      
     }
-  }
+    },
+    data() {
+      return {
+        rows: []
+      }
+    },
+    mounted() {
+      api.get('/Users')
+        .then((response) => {
+          this.rows = response.data
+          console.log(response)
+        })
+        .catch(() => {
+        })
+    }
 })
 </script>
