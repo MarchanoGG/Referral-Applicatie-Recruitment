@@ -30,9 +30,27 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-  { name: 'email', label: 'email', field: 'email', align: 'center', sortable: true },
-  { name: 'phone', label: 'phone', field: 'phone', sortable: true },
-  { name: 'birthday', label: 'birthday', field: 'birthday', sortable: true },
+  { 
+    name: 'email',
+    label: 'Email',
+    field: 'email',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'phone',
+    label: 'Phone',
+    field: 'phone',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'birthday',
+    label: 'Birthday',
+    field: 'birthday',
+    align: 'left',
+    sortable: true
+  },
   // { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
   // { name: 'protein', label: 'Protein (g)', field: 'protein' },
   // { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
@@ -77,7 +95,7 @@ const rows = [
     , "phone": "1234567"
     , "birthday": "01-01-1996"
   }
-  , 
+  ,
 ]
 
 
