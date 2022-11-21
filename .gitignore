@@ -4,8 +4,8 @@
 
 /RAR/Server/RarApiGUI/bin/Debug
 /RAR/Server/RarApiGUI/obj/Debug
-/.vs/Referral-Applicatie-Recruitment/FileContentIndex
-/.vs/Referral-Applicatie-Recruitment/v17
-*.sqlite
-/.vs
+/Database/DatabaseConnection/ConsoleApp1/obj
+/Database/DatabaseConnection/ConsoleApp1/.vs/ConsoleApp1
+/Database/DatabaseConnection/ConsoleApp1/bin/Debug
 /RAR/Server/RarApiGUI/obj/Release
+/.vs
