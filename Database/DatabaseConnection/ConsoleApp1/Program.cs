@@ -105,8 +105,10 @@ namespace ConsoleApp1
                         Post(className, context, request);  
                         break;
                     case "PUT":
+                        Put(className, context, request);
                         break;
                     case "DELETE":
+                        Delete(className, context, request);
                         break;
                     default:
                         NotSupported(context);
@@ -127,7 +129,7 @@ namespace ConsoleApp1
 
                 if (aRequest.QueryString.HasKeys() == true)
                 {
-                    arr = ReadSpecific(db, int.Parse(aRequest.QueryString.Get("ObjectKey")));
+                    arr = ReadSpecific(db, int.Parse(aRequest.QueryString.Get("object_key")));
                 }
                 else
                 {
@@ -162,8 +164,131 @@ namespace ConsoleApp1
 
                 string arr = "";
 
-                if ((aRequest.HasEntityBody == true) && (ValidateUserInput(aRequest)))
+                var keyPair = new Dictionary<string, string>();
+
+                if ((aRequest.HasEntityBody == true) && (ValidateUserInput(aRequest, keyPair)))
                 {
+                    var obj = new User();
+
+                    foreach (var pair in keyPair)
+                    {
+                        if (pair.Key.Equals("username"))
+                        {
+                            obj.username = pair.Value;
+                        }
+                        if (pair.Key.Equals("password"))
+                        {
+                            obj.password = pair.Value;
+                        }
+                        if (pair.Key.Equals("recruiter"))
+                        {
+                            obj.recruiter = int.Parse(pair.Value);
+                        }
+                    }
+
+                    if (Create(db, obj) == true)
+                    {
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    }
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+
+                byte[] bytes = Encoding.UTF8.GetBytes(arr);
+                response.OutputStream.Write(bytes, 0, bytes.Length);
+                response.OutputStream.Close();
+            }
+            else
+            {
+                NotSupported(aContext);
+            }
+        }
+
+        static void Put(string aClassName, HttpListenerContext aContext, HttpListenerRequest aRequest)
+        {
+            if (aClassName.CompareTo("Users") == 0)
+            {
+                var response = aContext.Response;
+
+                string arr = "";
+
+                var keyPair = new Dictionary<string, string>();
+
+                if ((aRequest.HasEntityBody == true) && (ValidateUserInput(aRequest, keyPair)))
+                {
+                    var obj = new User();
+                    bool keyIsSet = false;
+
+                    foreach (var pair in keyPair)
+                    {
+                        if (pair.Key.Equals("username"))
+                        {
+                            obj.username = pair.Value;
+                        }
+                        if (pair.Key.Equals("password"))
+                        {
+                            obj.password = pair.Value;
+                        }
+                        if (pair.Key.Equals("recruiter"))
+                        {
+                            obj.recruiter = int.Parse(pair.Value);
+                        }
+                        if (pair.Key.Equals("object_key"))
+                        {
+                            obj.object_key = int.Parse(pair.Value);
+                            keyIsSet = true;
+                        }
+                    }
+
+                    if ((keyIsSet == true) && (Update(db, obj) == true))
+                    {
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    }
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+
+                byte[] bytes = Encoding.UTF8.GetBytes(arr);
+                response.OutputStream.Write(bytes, 0, bytes.Length);
+                response.OutputStream.Close();
+            }
+            else
+            {
+                NotSupported(aContext);
+            }
+        }
+
+        static void Delete(string aClassName, HttpListenerContext aContext, HttpListenerRequest aRequest)
+        {
+            if (aClassName.CompareTo("Users") == 0)
+            {
+                var response = aContext.Response;
+
+                string arr = "";
+
+                if (aRequest.QueryString.HasKeys() == true)
+                {
+                    if (Delete(db, int.Parse(aRequest.QueryString.Get("object_key"))))
+                    {
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                        response.ContentType = "application/json";
+                    }
+                    else
+                    {
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    }
                 }
                 else
                 {
@@ -247,12 +372,10 @@ namespace ConsoleApp1
             return arr;
         }
 
-        static bool ValidateUserInput(HttpListenerRequest aRequest)
+        static bool ValidateUserInput(HttpListenerRequest aRequest, Dictionary<string, string> aPair)
         {
             bool retVal = false;
-
-            var KeyVal = new Dictionary<string, string>();
-
+            
             var stream = aRequest.InputStream;
             var type = aRequest.ContentType;
 
@@ -278,6 +401,7 @@ namespace ConsoleApp1
                 {
                     if (aVal.IndexOf("=") >= 0)
                     {
+                        retVal = true;
                         aVal = aVal.Substring(aVal.IndexOf("=") + 1);
                         if (aVal.IndexOf("--Content-Disposition: form-data; name") >= 0)
                         {
@@ -286,7 +410,7 @@ namespace ConsoleApp1
                             string aValue = aKey.Substring(aKey.IndexOf("\"") + 1);
                             aKey = aKey.Substring(0, aKey.IndexOf("\""));
 
-                            KeyVal[aKey] = aValue;
+                            aPair[aKey] = aValue;
                         }
                         else if (aVal.IndexOf("----") >= 0)
                         {
@@ -296,7 +420,7 @@ namespace ConsoleApp1
                             string aValue = aKey.Substring(aKey.IndexOf("\"") + 1);
                             aKey = aKey.Substring(0, aKey.IndexOf("\""));
 
-                            KeyVal[aKey] = aValue;
+                            aPair[aKey] = aValue;
                         }
                     }
                     else
@@ -305,158 +429,97 @@ namespace ConsoleApp1
                     }
                 }
             }
-            Console.WriteLine("Received form data:\r\n");
-            foreach (var pair in KeyVal)
-            {   
-                Console.WriteLine(pair.Key + ": " + pair.Value);
-            }
 
             return retVal;
         }
 
-        static void Create(MyContext myDB)
+        static bool Create(MyContext myDB, User aObject)
         {
-            var user = new User();
-
-            Console.WriteLine("\n\nInsert username:");
-            user.username = Console.ReadLine();
-
-            Console.WriteLine("\nInsert password:");
-            user.password = Console.ReadLine();
-
+            bool retVal = false; 
             int highestKey = 0;
-
 
             foreach (var temp in myDB.users.ToList())
             {
                 if (temp.object_key > highestKey)
                 { 
-                    highestKey = user.object_key;
+                    highestKey = temp.object_key;
                 }
             }
 
-            user.object_key = highestKey + 1;
-            user.fk_profile = null;
-            user.recruiter = 1;
-            user.creation_dt = DateTime.Now;
-            user.modification_dt = DateTime.Now;
+            aObject.object_key = highestKey + 1;
+            aObject.creation_dt = DateTime.Now;
+            aObject.modification_dt = DateTime.Now;
 
             try
             { 
-                var res = myDB.Add<User>(user);
+                var res = myDB.Add<User>(aObject);
 
                 myDB.SaveChanges();
-
-                Console.WriteLine("\nSuccessfully added new user.");
+                retVal = true;
             }
             catch (Exception ex) 
             {
                 Console.WriteLine("\n\nError: " + ex.InnerException.Message);
             }
-
-            Console.WriteLine("\nPress any key to continue..");
-
-            Console.ReadKey();
+            return retVal;
         }
 
-        static void Update(MyContext myDB)
+        static bool Update(MyContext myDB, User aObject)
         {
-            Console.WriteLine("\n\nProvide object key: \n");
-            var input = Console.ReadLine();
-
-            int key;
-            bool isNumeric = int.TryParse(input, out key);
-
-            while (isNumeric == false)
+            bool userFound = false;
+            foreach (var user in myDB.users.ToList())
             {
-                Console.WriteLine("Please provide a valid key!\n");
-                Console.WriteLine("Provide object key: \n");
-                input = Console.ReadLine();
-                isNumeric = int.TryParse(input, out key);
-            }
-            if (isNumeric)
-            {
-                bool userFound = false;
-                foreach (var user in myDB.users.ToList())
+                if (user.object_key == aObject.object_key)
                 {
-                    if (user.object_key == key)
-                    {
-                        Console.WriteLine("\n\nInsert new username:");
-                        user.username = Console.ReadLine();
-
-                        user.modification_dt = DateTime.Now;
-                        try
-                        {
-                            userFound = true;
-
-                            myDB.users.Update(user);
-
-                            myDB.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("\n\nError: " + ex.InnerException.Message);
-                        }
-                    }
-                }
-
-                if (userFound == false)
-                {
-                    Console.WriteLine("Could not retrieve user with this object key!");
+                    userFound = true;
+                    myDB.Entry(user).State = EntityState.Detached;
                 }
             }
+            if (userFound == true)
+            { 
+                aObject.modification_dt = DateTime.Now;
+                try
+                {
+                    myDB.Update<User>(aObject);
+                    myDB.Entry(aObject).State = EntityState.Modified;
 
-            Console.WriteLine("\nPress any key to continue..");
+                    myDB.SaveChanges();
 
-            Console.ReadKey();
+                    userFound = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\n\nError: " + ex.InnerException.Message);
+                } 
+            }
+
+            return userFound;
         }
 
-        static void Delete(MyContext myDB)
+        static bool Delete(MyContext myDB, int aObjectKey)
         {
-            Console.WriteLine("\n\nProvide object key: \n");
-            var input = Console.ReadLine();
-
-            int key;
-            bool isNumeric = int.TryParse(input, out key);
-
-            while (isNumeric == false)
+            bool userFound = false;
+            foreach (var user in myDB.users.ToList())
             {
-                Console.WriteLine("Please provide a valid key!\n");
-                Console.WriteLine("Provide object key: \n");
-                input = Console.ReadLine();
-                isNumeric = int.TryParse(input, out key);
-            }
-            if (isNumeric)
-            {
-                bool userFound = false;
-                foreach (var user in myDB.users.ToList())
+                if (user.object_key == aObjectKey)
                 {
-                    if (user.object_key == key)
+                    myDB.Entry(user).State = EntityState.Detached;
+                    try
                     {
-                        try
-                        {
-                            userFound = true;
+                        myDB.Remove<User>(user);
+                        myDB.Entry(user).State = EntityState.Deleted;
 
-                            myDB.users.Remove(user);
+                        myDB.SaveChanges();
 
-                            myDB.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("\n\nError: " + ex.InnerException.Message);
-                        }
+                        userFound = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("\n\nError: " + ex.InnerException.Message);
                     }
                 }
-
-                if (userFound == false)
-                {
-                    Console.WriteLine("Could not retrieve user with this object key!");
-                }
             }
-
-            Console.WriteLine("\nPress any key to continue..");
-
-            Console.ReadKey();
+            return userFound;
         }
     }
 }
