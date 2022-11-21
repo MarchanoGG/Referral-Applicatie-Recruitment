@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Server",
+    "\\Server\\RarApiConsole",
+    "\\Server\\RarApiConsole\\obj\\Debug",
+    "\\Server\\RarApiConsole\\obj\\Release",
+    "\\Server\\RarApiConsole\\server"
+  ],
+  "SelectedNode": "\\Server\\RarApiConsole\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}
