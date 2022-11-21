@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Design;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
@@ -60,7 +61,6 @@ namespace ConsoleApp1
             db = new MyContext();
             Console.Clear();
 
-
             listener.Prefixes.Add("http://localhost:" + Port.ToString() + "/");
 
             listener.Start();
@@ -84,18 +84,29 @@ namespace ConsoleApp1
 
         private static void ListenerCallback(IAsyncResult result)
         {
-            if (listener.IsListening)
+            if (listener.IsListening == true)
             {
                 var context = listener.EndGetContext(result);
                 var request = context.Request;
 
-                // do something with the request
                 string className = request.RawUrl.Remove(0, 1);
+
+                if (className.IndexOf('?') >= 0)
+                {
+                    className = className.Substring(0, className.IndexOf('?'));
+                }
 
                 switch (request.HttpMethod)
                 {
                     case "GET":
-                        Get(className, context);
+                        Get(className, context, request);
+                        break;
+                    case "POST":
+                        Post(className, context, request);  
+                        break;
+                    case "PUT":
+                        break;
+                    case "DELETE":
                         break;
                     default:
                         NotSupported(context);
@@ -106,14 +117,58 @@ namespace ConsoleApp1
             }
         }
 
-        static void Get(string aClassName, HttpListenerContext aContext)
+        static void Get(string aClassName, HttpListenerContext aContext, HttpListenerRequest aRequest)
         {
             if (aClassName.CompareTo("Users") == 0)
             {
                 var response = aContext.Response;
-                response.StatusCode = (int)HttpStatusCode.OK;
-                response.ContentType = "application/json";
-                string arr = ReadAll(db);
+
+                string arr = "";
+
+                if (aRequest.QueryString.HasKeys() == true)
+                {
+                    arr = ReadSpecific(db, int.Parse(aRequest.QueryString.Get("ObjectKey")));
+                }
+                else
+                {
+                    arr = ReadAll(db);
+                }
+
+                if (arr.Length > 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.ContentType = "application/json";
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.NoContent;
+                }
+
+                byte[] bytes = Encoding.UTF8.GetBytes(arr);
+                response.OutputStream.Write(bytes, 0, bytes.Length);
+                response.OutputStream.Close();
+            }
+            else
+            {
+                NotSupported(aContext);
+            }
+        }
+
+        static void Post(string aClassName, HttpListenerContext aContext, HttpListenerRequest aRequest)
+        {
+            if (aClassName.CompareTo("Users") == 0)
+            {
+                var response = aContext.Response;
+
+                string arr = "";
+
+                if ((aRequest.HasEntityBody == true) && (ValidateUserInput(aRequest)))
+                {
+                }
+                else
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
 
                 byte[] bytes = Encoding.UTF8.GetBytes(arr);
                 response.OutputStream.Write(bytes, 0, bytes.Length);
@@ -137,9 +192,11 @@ namespace ConsoleApp1
         {
             String arr = "[";
             bool second = false;
+            bool aUserFound = false;
 
             foreach (var user in myDB.users.ToList())
             {
+                aUserFound = true;
                 if (second == true)
                 {
                     arr += ",";
@@ -154,49 +211,107 @@ namespace ConsoleApp1
                 second = true;
             }
 
-            arr += "]";
+            if (aUserFound == true)
+            {
+                arr += "]";
+            }
+            else
+            {
+                arr = "";
+            }
 
             return arr;
         }
 
-        static void ReadSpecific(MyContext myDB)
+        static string ReadSpecific(MyContext myDB, int aObjectKey)
         {
-            Console.WriteLine("\n\nProvide object key: \n");
-            var input = Console.ReadLine();
-
-            int key;
-            bool isNumeric = int.TryParse(input, out key);
-
-            while (isNumeric == false)
+            String arr = "[";
+            bool userFound = false;
+            foreach (var user in myDB.users.ToList())
             {
-                Console.WriteLine("Please provide a valid key!\n");
-                Console.WriteLine("Provide object key: \n");
-                input = Console.ReadLine();
-                isNumeric = int.TryParse(input, out key);
-            }
-            if (isNumeric)
-            {
-                bool userFound = false;
-                foreach (var user in myDB.users.ToList())
+                if(user.object_key == aObjectKey)
                 {
-                    if(user.object_key == key)
+                    userFound = true;
+                    arr += JsonConvert.SerializeObject(user);
+                }
+            }
+
+            if (userFound == false)
+            {
+                arr = "";
+            }
+            else
+            {
+                arr += "]";
+            }
+            return arr;
+        }
+
+        static bool ValidateUserInput(HttpListenerRequest aRequest)
+        {
+            bool retVal = false;
+
+            var KeyVal = new Dictionary<string, string>();
+
+            var stream = aRequest.InputStream;
+            var type = aRequest.ContentType;
+
+            string boundary = "";
+            if (type.IndexOf('=') >= 0)
+            {
+                boundary = type.Substring(type.IndexOf('=') + 1);
+            }
+
+            var encoding = aRequest.ContentEncoding.BodyName;
+            Encoding decoder = Encoding.GetEncoding(encoding);
+
+            if ((stream != null) && (decoder != null))
+            {
+                MemoryStream ms = new MemoryStream();
+                stream.CopyTo(ms);
+
+                var aVal = decoder.GetString(ms.ToArray());
+                aVal = aVal.Replace(boundary, "");
+                aVal = aVal.Replace("\r\n", "");
+
+                while (aVal.Length > 0)
+                {
+                    if (aVal.IndexOf("=") >= 0)
                     {
-                        userFound = true;
-                        Console.WriteLine("Username:" + user.username + "\n");
-                        Console.WriteLine("Creation date:" + user.creation_dt + "\n");
-                        Console.WriteLine("Last modification date:" + user.modification_dt + "\n");
+                        aVal = aVal.Substring(aVal.IndexOf("=") + 1);
+                        if (aVal.IndexOf("--Content-Disposition: form-data; name") >= 0)
+                        {
+                            var sub = aVal.Substring(0, aVal.IndexOf("--Content-Disposition: form-data; name"));
+                            string aKey = sub.Substring(aVal.IndexOf("\"") + 1);
+                            string aValue = aKey.Substring(aKey.IndexOf("\"") + 1);
+                            aKey = aKey.Substring(0, aKey.IndexOf("\""));
+
+                            KeyVal[aKey] = aValue;
+                        }
+                        else if (aVal.IndexOf("----") >= 0)
+                        {
+                            aVal = aVal.Substring(aVal.IndexOf("=") + 1);
+                            var sub = aVal.Substring(0, aVal.IndexOf("----"));
+                            string aKey = sub.Substring(aVal.IndexOf("\"") + 1);
+                            string aValue = aKey.Substring(aKey.IndexOf("\"") + 1);
+                            aKey = aKey.Substring(0, aKey.IndexOf("\""));
+
+                            KeyVal[aKey] = aValue;
+                        }
+                    }
+                    else
+                    {
+                        aVal = "";
                     }
                 }
-
-                if (userFound == false)
-                {
-                    Console.WriteLine("Could not retrieve user with this object key!");
-                }
+            }
+            Console.WriteLine("Received form data:\r\n");
+            foreach (var pair in KeyVal)
+            {   
+                Console.WriteLine(pair.Key + ": " + pair.Value);
             }
 
-            Console.WriteLine("\nPress any key to continue..");
-
-            Console.ReadKey();
+            return retVal;
         }
 
         static void Create(MyContext myDB)
