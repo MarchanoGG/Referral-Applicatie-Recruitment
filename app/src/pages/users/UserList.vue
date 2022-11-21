@@ -34,13 +34,6 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-  { 
-    name: 'password',
-    label: 'Password',
-    field: 'password',
-    align: 'left',
-    sortable: true
-  },
   {
     name: 'recruiter',
     label: 'Recruiter',
@@ -50,7 +43,7 @@ const columns = [
   },
   {
     name: 'creation_dt',
-    label: 'Creation date',
+    label: 'Last modified',
     field: 'creation_dt',
     align: 'left',
     sortable: true
