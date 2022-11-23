@@ -5,8 +5,10 @@ namespace RarApiConsole.formData
 {
     internal class FormData
     {
-        public void GetFormData(HttpListenerRequest aRequest, Dictionary<string, string> aPair)
+        static public Dictionary<string, string> GetFormData(HttpListenerRequest aRequest)
         {
+            Dictionary<string, string> retVal = new();
+
             var stream = aRequest.InputStream;
             var type = aRequest.ContentType;
 
@@ -42,7 +44,7 @@ namespace RarApiConsole.formData
                                 string aValue = aKey.Substring(aKey.IndexOf("\"") + 1);
                                 aKey = aKey.Substring(0, aKey.IndexOf("\""));
 
-                                aPair[aKey] = aValue;
+                                retVal[aKey] = aValue;
                             }
                             else if (aVal.IndexOf("----") >= 0)
                             {
@@ -52,7 +54,7 @@ namespace RarApiConsole.formData
                                 string aValue = aKey.Substring(aKey.IndexOf("\"") + 1);
                                 aKey = aKey.Substring(0, aKey.IndexOf("\""));
 
-                                aPair[aKey] = aValue;
+                                retVal[aKey] = aValue;
                             }
                         }
                         else
@@ -62,6 +64,7 @@ namespace RarApiConsole.formData
                     }
                 }
             }
+            return retVal;
         }
     }
 }

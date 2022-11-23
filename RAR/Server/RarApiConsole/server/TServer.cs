@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.IO;
 
 namespace RAR
 {
@@ -26,19 +19,19 @@ namespace RAR
         public static int s_logging { get; set; }
 
 
-        private static Dictionary<String, Func<HttpListenerRequest, HttpListenerResponse, bool>> s_callbackMethod = new Dictionary<string, Func<HttpListenerRequest, HttpListenerResponse, bool>>();
+        private static Dictionary<string, Func<HttpListenerContext, bool>> s_callbackMethod = new Dictionary<string, Func<HttpListenerContext, bool>>();
 
         public static int pageViews = 0;
         public static int requestCount = 0;
         public static string pageData =
-            "<!DOCTYPE>" +
-            "<html>" +
-            "  <head>" +
-            "    <title>Referral Application Requirements</title>" +
-            "  </head>" +
-            "  <body>" +
-            "    <p>Page Views: {0}</p>" +
-            "  </body>" +
+            "<!DOCTYPE>\r\n" +
+            "<html>\r\n" +
+            "  <head>\r\n" +
+            "    <title>Referral Application API</title>\r\n" +
+            "  </head>\r\n" +
+            "  <body>\r\n" +
+            "    <p>Page Views: {0}</p>\r\n" +
+            "  </body>\r\n" +
             "</html>";
 
         private static volatile bool Terminated = false;
@@ -79,15 +72,12 @@ namespace RAR
             Terminated = true;
         }
 
-
-        public static void RegisterCallback(String aEndpoint,Func<HttpListenerRequest, HttpListenerResponse, bool> aCallback)
+        public void RegisterCallback(string aEndpoint,Func<HttpListenerContext, bool> aCallback)
         {
             s_callbackMethod.Add(aEndpoint, aCallback);
         }
 
-
-
-        private static TServer Instance()
+        public static TServer Instance()
         {
             if (s_instance == null)
             {
@@ -104,94 +94,83 @@ namespace RAR
             }
         }
 
-     
-
         private TServer()
         {
         }
 
-        private static async Task HandleIncomingConnections()
+        private static void HandleIncomingConnections(IAsyncResult result)
         {
             bool runServer = true;
 
-            // While a user hasn't visited the `shutdown` url, keep on handling requests
-            while (Terminated == false)
+            if ((listener != null) && (listener.IsListening == true))
             {
-                if (listener != null)
+                // Will wait here until we hear from a connection
+                HttpListenerContext ctx = listener.EndGetContext(result);
+
+                // Peel out the requests and response objects
+                HttpListenerRequest req = ctx.Request;
+                HttpListenerResponse resp = ctx.Response;
+
+                if((req.Url != null) && (req.RawUrl != null))
                 {
-                    // Will wait here until we hear from a connection
-                    HttpListenerContext ctx = await listener.GetContextAsync();
-
-                    // Peel out the requests and response objects
-                    HttpListenerRequest req = ctx.Request;
-                    HttpListenerResponse resp = ctx.Response;
-
-                    if((req.Url != null) && (req.RawUrl != null))
+                    if (s_logging == 1)
                     {
-                        if (s_logging == 1)
-                        {
-                            // Print out some info about the request
-                            Console.WriteLine("Request #: {0}", ++requestCount);
-                            Console.WriteLine(req.Url.ToString());
-                            Console.WriteLine(req.HttpMethod);
-                            Console.WriteLine(req.UserHostName);
-                            Console.WriteLine(req.UserAgent);
-                            Console.WriteLine();
-                        }
-                        else if (s_logging == 2)
-                        {
-                            string[] log =
-                             {
+                        // Print out some info about the request
+                        Console.WriteLine("Request #: {0}", ++requestCount);
+                        Console.WriteLine(req.Url.ToString());
+                        Console.WriteLine(req.HttpMethod);
+                        Console.WriteLine(req.UserHostName);
+                        Console.WriteLine(req.UserAgent);
+                        Console.WriteLine();
+                    }
+                    else if (s_logging == 2)
+                    {
+                        string[] log =
+                            {
                             "Request "+ ++requestCount, req.Url.ToString(), req.HttpMethod, req.UserHostName, req.UserAgent
                         };
 
-                            if (!Directory.Exists("logs"))
-                            {
-                                Directory.CreateDirectory("Logs");
-                            }
-                            await File.WriteAllLinesAsync("logs/Log-" + requestCount + "-" + req.HttpMethod + ".txt", log);
-                        }
-
-                        // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
-                        String url = req.RawUrl;
-
-                        bool success = true;
-                        if ((url != null) && (s_callbackMethod.ContainsKey(url)))
+                        if (!Directory.Exists("logs"))
                         {
-                            success = s_callbackMethod[url](req, resp);
+                            Directory.CreateDirectory("Logs");
                         }
+                        File.WriteAllLinesAsync("logs/Log-" + requestCount + "-" + req.HttpMethod + ".txt", log);
+                    }
 
-                        // Make sure we don't increment the page views counter if `favicon.ico` is requested
-                        if (req.Url.AbsolutePath != "/favicon.ico")
-                        {
-                            pageViews += 1;
-                        }
+                    // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
+                    string url = req.RawUrl;
 
+                    if (url.Contains('?') == true)
+                    {
+                        url = url.Substring(0, url.IndexOf('?'));
+                    }
+
+                    if (s_callbackMethod.ContainsKey(url))
+                    {
+                        s_callbackMethod[url](ctx);
+                    }
+                    else
+                    {
+                        // No endpint found/registered, displaying default page
                         string disableSubmit = !runServer ? "disabled" : "";
                         byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
-                        // Write the response info
-                        if (success)
-                        {
-                            resp.ContentType = "application/json";
-                            resp.ContentEncoding = Encoding.UTF8;
-                            resp.ContentLength64 = data.LongLength;
-                            await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                        }
-                        else // not success
-                        {
-                            resp.ContentType = "application/json";
-                            resp.ContentEncoding = Encoding.UTF8;
-                            resp.ContentLength64 = data.LongLength;
-                            await resp.OutputStream.WriteAsync(data, 0, data.Length);
-                        }
-
-
-                        // Write out to the response stream (asynchronously), then close it
-                        resp.Close();
+                        resp.OutputStream.WriteAsync(data, 0, data.Length);
+                        resp.ContentType = "text/html";
+                        resp.OutputStream.Close();
                     }
+
+                    // Make sure we don't increment the page views counter if `favicon.ico` is requested
+                    if (req.Url.AbsolutePath != "/favicon.ico")
+                    {
+                        pageViews += 1;
+                    }
+
+                    // Close this callback and open the following
+                    listener.BeginGetContext(new AsyncCallback(HandleIncomingConnections), listener);
                 }
             }
         }
+
         public void StartServer(String aUrl)
         {
             // Create a Http server and start listening for incoming connections
@@ -202,11 +181,7 @@ namespace RAR
             Console.WriteLine("Listening for connections on {0}", aUrl);
 
             // Handle requests
-           Task listenTask = HandleIncomingConnections();
-            listenTask.GetAwaiter().GetResult();
-
-            // Close the listener
-          listener.Close();
+            listener.BeginGetContext(new AsyncCallback(HandleIncomingConnections), listener);
         }
     }
 }

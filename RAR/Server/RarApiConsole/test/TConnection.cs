@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Net;
 
 namespace RAR
 {
@@ -12,19 +6,27 @@ namespace RAR
     {
         public TConnection()
         {
-            TServer.RegisterCallback("/System", System);
-
+            TServer server = TServer.Instance();
+            server.RegisterCallback("/Systems", System);
         }
 
-        private bool System(HttpListenerRequest aReq, HttpListenerResponse aRes)
+        private bool System(HttpListenerContext aContext)
         {
-            if (aReq.HttpMethod != "GET")
-            {
-                aRes.StatusCode = 403;
-                return false;
-            }
-            return true;
-        }
+            bool retVal = false;
+            var aReq = aContext.Request;
+            var aRes = aContext.Response;
 
+            switch (aReq.HttpMethod)
+            {
+                case "GET":
+                    retVal = true;
+                    break;
+                default:
+                    aRes.StatusCode = 403;
+                    break;
+            }
+
+            return retVal;
+        }
     }
 }

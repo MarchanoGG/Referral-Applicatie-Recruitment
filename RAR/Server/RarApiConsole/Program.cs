@@ -1,4 +1,5 @@
 ﻿using RAR;
+using RarApiConsole.providers;
 
 namespace RarApiConsole
 {
@@ -10,6 +11,7 @@ namespace RarApiConsole
             // Initialize configs
             TSettings.Instance();
 
+
             if (args.Length > 0)
             {
                 if (args.Length > 1)
@@ -19,7 +21,6 @@ namespace RarApiConsole
 
                 Options(args);
             }
-
             else
             {
                 // Start server because no arguments are provided
@@ -27,7 +28,7 @@ namespace RarApiConsole
             }
 
             // Register all modules
-            var conn = new TConnection();
+            ControllerProvider.RegisterControllers();
         }
 
         public static void Options(string[] aVal)
@@ -46,7 +47,6 @@ namespace RarApiConsole
                 case "restart":
                     RestartServer();
                     break;
-
             }
         }
 
