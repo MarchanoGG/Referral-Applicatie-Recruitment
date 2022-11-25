@@ -6,22 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RarApiConsole.dataObjects
 {
-    internal class DoUser
+    internal class DoReferral
     {
         [Key]
         public int object_key { get; set; }
 
         [Column(TypeName = "int")]
-        public int? fk_profile { get; set; }
-
-        [Column(TypeName = "varchar(100)")]
-        public string username { get; set; }
-
-        [Column(TypeName = "varchar(100)")]
-        public string password { get; set; }
+        public int fk_user { get; set; }
 
         [Column(TypeName = "int")]
-        public int recruiter { get; set; }
+        public int fk_task { get; set; }
+
+        [Column(TypeName = "int")]
+        public int fk_candidate { get; set; }
+
+        [Column(TypeName = "int")]
+        public int fk_scoreboard { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime creation_dt { get; set; }
@@ -29,43 +29,59 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime modification_dt { get; set; }
 
-        public DoUser() 
+        public DoReferral()
         {
-            username = "temp";
-            password = "temp";
+            fk_user = 0;
+            fk_task = 0;
+            fk_candidate = 0;
+            fk_scoreboard = 0;
+            creation_dt = DateTime.Now;
+            modification_dt = DateTime.Now;
         }
 
-        public DoUser(string Username, string Password)
+        public DoReferral(int UserKey, int TaskKey, int CandidateKey, int ScoreboardKey, DateTime CreationDate, DateTime ModificationDate)
         {
-            username = Username;
-            password = Password;
+            fk_user = UserKey;
+            fk_task = TaskKey;
+            fk_candidate = CandidateKey;
+            fk_scoreboard = ScoreboardKey;
+            creation_dt = CreationDate;
+            modification_dt = ModificationDate;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)
         {
             bool retVal = false;
 
-            if (aPair.ContainsKey("username") &&
-                aPair["username"].Length > 0 &&
-                aPair.ContainsKey("password") &&
-                aPair["password"].Length > 0)
+            if (aPair.ContainsKey("fk_user") &&
+                aPair["fk_user"].Length > 0 &&
+                aPair.ContainsKey("fk_task") &&
+                aPair["fk_task"].Length > 0 &&
+                aPair.ContainsKey("fk_candidate") &&
+                aPair["fk_candidate"].Length > 0 &&
+                aPair.ContainsKey("fk_scoreboard") &&
+                aPair["fk_scoreboard"].Length > 0 &&
+                aPair.ContainsKey("creation_dt") &&
+                aPair["creation_dt"].Length > 0 &&
+                aPair.ContainsKey("modification_dt") &&
+                aPair["modification_dt"].Length > 0)
             {
                 retVal = true;
             }
 
-            return retVal;  
+            return retVal;
         }
 
         public string ReadAll(DatabaseContext myDB)
         {
             string arr = "[";
 
-            if(myDB.users != null)
+            if (myDB.referrals != null)
             {
                 bool second = false;
                 bool found = false;
 
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.referrals.ToList())
                 {
                     found = true;
                     if (second == true)
@@ -103,10 +119,10 @@ namespace RarApiConsole.dataObjects
         {
             string arr = "[";
 
-            if (myDB.users != null)
+            if (myDB.referrals != null)
             {
                 bool found = false;
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.referrals.ToList())
                 {
                     if (obj.object_key == aObjectKey)
                     {
@@ -132,14 +148,14 @@ namespace RarApiConsole.dataObjects
             return arr;
         }
 
-        public bool Create(DatabaseContext myDB, DoUser aObject)
+        public bool Create(DatabaseContext myDB, DoReferral aObject)
         {
             bool retVal = false;
             int highestKey = 0;
 
-            if (myDB.users != null)
+            if (myDB.referrals != null)
             {
-                foreach (var temp in myDB.users.ToList())
+                foreach (var temp in myDB.referrals.ToList())
                 {
                     if (temp.object_key > highestKey)
                     {
@@ -148,12 +164,10 @@ namespace RarApiConsole.dataObjects
                 }
 
                 aObject.object_key = highestKey + 1;
-                aObject.creation_dt = DateTime.Now;
-                aObject.modification_dt = DateTime.Now;
 
                 try
                 {
-                    var res = myDB.Add<DoUser>(aObject);
+                    var res = myDB.Add<DoReferral>(aObject);
 
                     myDB.SaveChanges();
                     retVal = true;
@@ -174,14 +188,14 @@ namespace RarApiConsole.dataObjects
             return retVal;
         }
 
-        public bool Update(DatabaseContext myDB, DoUser aObject)
+        public bool Update(DatabaseContext myDB, DoReferral aObject)
         {
             bool found = false;
 
-            if (myDB.users != null)
+            if (myDB.referrals != null)
             {
-                foreach (var obj in myDB.users.ToList())
-                {
+                foreach (var obj in myDB.referrals.ToList())
+                { 
                     if (obj.object_key == aObject.object_key)
                     {
                         found = true;
@@ -190,10 +204,9 @@ namespace RarApiConsole.dataObjects
                 }
                 if (found == true)
                 {
-                    aObject.modification_dt = DateTime.Now;
                     try
                     {
-                        myDB.Update<DoUser>(aObject);
+                        myDB.Update<DoReferral>(aObject);
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
@@ -221,16 +234,16 @@ namespace RarApiConsole.dataObjects
         {
             bool found = false;
 
-            if (myDB.users != null)
+            if (myDB.tasks != null)
             {
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.referrals.ToList())
                 {
                     if (obj.object_key == aObjectKey)
                     {
                         myDB.Entry(obj).State = EntityState.Detached;
                         try
                         {
-                            myDB.Remove<DoUser>(obj);
+                            myDB.Remove<DoReferral>(obj);
                             myDB.Entry(obj).State = EntityState.Deleted;
 
                             myDB.SaveChanges();

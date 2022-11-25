@@ -6,66 +6,61 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RarApiConsole.dataObjects
 {
-    internal class DoUser
+    internal class DoReward
     {
         [Key]
         public int object_key { get; set; }
 
         [Column(TypeName = "int")]
-        public int? fk_profile { get; set; }
+        public int fk_user { get; set; }
 
-        [Column(TypeName = "varchar(100)")]
-        public string username { get; set; }
-
-        [Column(TypeName = "varchar(100)")]
-        public string password { get; set; }
-
-        [Column(TypeName = "int")]
-        public int recruiter { get; set; }
+        [Column(TypeName = "varchar(50)")]
+        public string name { get; set; }
 
         [Column(TypeName = "timestamp")]
-        public DateTime creation_dt { get; set; }
+        public DateTime award_dt { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        public DateTime modification_dt { get; set; }
-
-        public DoUser() 
+        public DoReward()
         {
-            username = "temp";
-            password = "temp";
+            fk_user = 0;
+            name = "temp";
+            award_dt = DateTime.Now;
         }
 
-        public DoUser(string Username, string Password)
+        public DoReward(int UserKey, string Name, DateTime AwardDate)
         {
-            username = Username;
-            password = Password;
+            fk_user = UserKey;
+            name = Name;
+            award_dt = AwardDate;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)
         {
             bool retVal = false;
 
-            if (aPair.ContainsKey("username") &&
-                aPair["username"].Length > 0 &&
-                aPair.ContainsKey("password") &&
-                aPair["password"].Length > 0)
+            if (aPair.ContainsKey("fk_user") &&
+                aPair["fk_user"].Length > 0 &&
+                aPair.ContainsKey("name") &&
+                aPair["name"].Length > 0 &&
+                aPair.ContainsKey("award_dt") &&
+                aPair["award_dt"].Length > 0)
             {
                 retVal = true;
             }
 
-            return retVal;  
+            return retVal;
         }
 
         public string ReadAll(DatabaseContext myDB)
         {
             string arr = "[";
 
-            if(myDB.users != null)
+            if (myDB.rewards != null)
             {
                 bool second = false;
                 bool found = false;
 
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.rewards.ToList())
                 {
                     found = true;
                     if (second == true)
@@ -103,10 +98,10 @@ namespace RarApiConsole.dataObjects
         {
             string arr = "[";
 
-            if (myDB.users != null)
+            if (myDB.rewards != null)
             {
                 bool found = false;
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.rewards.ToList())
                 {
                     if (obj.object_key == aObjectKey)
                     {
@@ -132,14 +127,14 @@ namespace RarApiConsole.dataObjects
             return arr;
         }
 
-        public bool Create(DatabaseContext myDB, DoUser aObject)
+        public bool Create(DatabaseContext myDB, DoReward aObject)
         {
             bool retVal = false;
             int highestKey = 0;
 
-            if (myDB.users != null)
+            if (myDB.rewards != null)
             {
-                foreach (var temp in myDB.users.ToList())
+                foreach (var temp in myDB.rewards.ToList())
                 {
                     if (temp.object_key > highestKey)
                     {
@@ -148,12 +143,10 @@ namespace RarApiConsole.dataObjects
                 }
 
                 aObject.object_key = highestKey + 1;
-                aObject.creation_dt = DateTime.Now;
-                aObject.modification_dt = DateTime.Now;
 
                 try
                 {
-                    var res = myDB.Add<DoUser>(aObject);
+                    var res = myDB.Add<DoReward>(aObject);
 
                     myDB.SaveChanges();
                     retVal = true;
@@ -174,26 +167,25 @@ namespace RarApiConsole.dataObjects
             return retVal;
         }
 
-        public bool Update(DatabaseContext myDB, DoUser aObject)
+        public bool Update(DatabaseContext myDB, DoReward aObject)
         {
             bool found = false;
 
-            if (myDB.users != null)
+            if (myDB.rewards != null)
             {
-                foreach (var obj in myDB.users.ToList())
-                {
-                    if (obj.object_key == aObject.object_key)
+                foreach (var task in myDB.rewards.ToList())
+                { 
+                    if (task.object_key == aObject.object_key)
                     {
                         found = true;
-                        myDB.Entry(obj).State = EntityState.Detached;
+                        myDB.Entry(task).State = EntityState.Detached;
                     }
                 }
                 if (found == true)
                 {
-                    aObject.modification_dt = DateTime.Now;
                     try
                     {
-                        myDB.Update<DoUser>(aObject);
+                        myDB.Update<DoReward>(aObject);
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
@@ -221,16 +213,16 @@ namespace RarApiConsole.dataObjects
         {
             bool found = false;
 
-            if (myDB.users != null)
+            if (myDB.rewards != null)
             {
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.rewards.ToList())
                 {
                     if (obj.object_key == aObjectKey)
                     {
                         myDB.Entry(obj).State = EntityState.Detached;
                         try
                         {
-                            myDB.Remove<DoUser>(obj);
+                            myDB.Remove<DoReward>(obj);
                             myDB.Entry(obj).State = EntityState.Deleted;
 
                             myDB.SaveChanges();

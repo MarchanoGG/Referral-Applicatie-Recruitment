@@ -154,8 +154,8 @@ namespace RAR
                         // No endpint found/registered, displaying default page
                         string disableSubmit = !runServer ? "disabled" : "";
                         byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, disableSubmit));
-                        resp.OutputStream.WriteAsync(data, 0, data.Length);
                         resp.ContentType = "text/html";
+                        resp.OutputStream.WriteAsync(data, 0, data.Length);
                         resp.OutputStream.Close();
                     }
 

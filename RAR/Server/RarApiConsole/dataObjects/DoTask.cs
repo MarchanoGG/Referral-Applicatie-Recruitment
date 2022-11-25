@@ -6,66 +6,55 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RarApiConsole.dataObjects
 {
-    internal class DoUser
+    internal class DoTask
     {
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
-        public int? fk_profile { get; set; }
-
         [Column(TypeName = "varchar(100)")]
-        public string username { get; set; }
-
-        [Column(TypeName = "varchar(100)")]
-        public string password { get; set; }
+        public string name { get; set; }
 
         [Column(TypeName = "int")]
-        public int recruiter { get; set; }
+        public int points { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        public DateTime creation_dt { get; set; }
+        [Column(TypeName = "varchar(255)")]
+        public string ? description { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        public DateTime modification_dt { get; set; }
-
-        public DoUser() 
+        public DoTask()
         {
-            username = "temp";
-            password = "temp";
+            name = "temp";
+            points = 0;
         }
 
-        public DoUser(string Username, string Password)
+        public DoTask(string Name, int Points)
         {
-            username = Username;
-            password = Password;
+            name = Name;
+            points = Points;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)
         {
             bool retVal = false;
 
-            if (aPair.ContainsKey("username") &&
-                aPair["username"].Length > 0 &&
-                aPair.ContainsKey("password") &&
-                aPair["password"].Length > 0)
+            if (aPair.ContainsKey("name") &&
+                aPair["name"].Length > 0)
             {
                 retVal = true;
             }
 
-            return retVal;  
+            return retVal;
         }
 
         public string ReadAll(DatabaseContext myDB)
         {
             string arr = "[";
 
-            if(myDB.users != null)
+            if (myDB.tasks != null)
             {
                 bool second = false;
                 bool found = false;
 
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.tasks.ToList())
                 {
                     found = true;
                     if (second == true)
@@ -103,10 +92,10 @@ namespace RarApiConsole.dataObjects
         {
             string arr = "[";
 
-            if (myDB.users != null)
+            if (myDB.tasks != null)
             {
                 bool found = false;
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.tasks.ToList())
                 {
                     if (obj.object_key == aObjectKey)
                     {
@@ -132,14 +121,14 @@ namespace RarApiConsole.dataObjects
             return arr;
         }
 
-        public bool Create(DatabaseContext myDB, DoUser aObject)
+        public bool Create(DatabaseContext myDB, DoTask aObject)
         {
             bool retVal = false;
             int highestKey = 0;
 
-            if (myDB.users != null)
+            if (myDB.tasks != null)
             {
-                foreach (var temp in myDB.users.ToList())
+                foreach (var temp in myDB.tasks.ToList())
                 {
                     if (temp.object_key > highestKey)
                     {
@@ -148,12 +137,10 @@ namespace RarApiConsole.dataObjects
                 }
 
                 aObject.object_key = highestKey + 1;
-                aObject.creation_dt = DateTime.Now;
-                aObject.modification_dt = DateTime.Now;
 
                 try
                 {
-                    var res = myDB.Add<DoUser>(aObject);
+                    var res = myDB.Add<DoTask>(aObject);
 
                     myDB.SaveChanges();
                     retVal = true;
@@ -174,14 +161,14 @@ namespace RarApiConsole.dataObjects
             return retVal;
         }
 
-        public bool Update(DatabaseContext myDB, DoUser aObject)
+        public bool Update(DatabaseContext myDB, DoTask aObject)
         {
             bool found = false;
 
-            if (myDB.users != null)
+            if (myDB.tasks != null)
             {
-                foreach (var obj in myDB.users.ToList())
-                {
+                foreach (var obj in myDB.tasks.ToList())
+                { 
                     if (obj.object_key == aObject.object_key)
                     {
                         found = true;
@@ -190,10 +177,9 @@ namespace RarApiConsole.dataObjects
                 }
                 if (found == true)
                 {
-                    aObject.modification_dt = DateTime.Now;
                     try
                     {
-                        myDB.Update<DoUser>(aObject);
+                        myDB.Update<DoTask>(aObject);
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
@@ -221,16 +207,16 @@ namespace RarApiConsole.dataObjects
         {
             bool found = false;
 
-            if (myDB.users != null)
+            if (myDB.tasks != null)
             {
-                foreach (var obj in myDB.users.ToList())
+                foreach (var obj in myDB.tasks.ToList())
                 {
                     if (obj.object_key == aObjectKey)
                     {
                         myDB.Entry(obj).State = EntityState.Detached;
                         try
                         {
-                            myDB.Remove<DoUser>(obj);
+                            myDB.Remove<DoTask>(obj);
                             myDB.Entry(obj).State = EntityState.Deleted;
 
                             myDB.SaveChanges();
