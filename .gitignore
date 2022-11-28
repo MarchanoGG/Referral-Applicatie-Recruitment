@@ -9,3 +9,8 @@
 /Database/DatabaseConnection/ConsoleApp1/bin/Debug
 /RAR/Server/RarApiGUI/obj/Release
 /.vs
+/RAR/Server/RarApiConsole/.vs
+/RAR/Server/RarApiConsole/bin/Debug/net6.0
+/RAR/Server/RarApiConsole/obj/Debug/net6.0
+/RAR/Server/RarApiConsole/obj/Release/net6.0
+/app/node_modules
