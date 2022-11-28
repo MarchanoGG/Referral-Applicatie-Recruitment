@@ -57,16 +57,16 @@ const routes = [
     ],
   },
   {
-    path: "/campagnes",
+    path: "/campaignes",
     component: MainLayoutVue,
     children: [
       {
         path: "",
-        component: () => import("src/pages/campagnes/CampagnesList.vue"),
+        component: () => import("src/pages/campaignes/CampaignesList.vue"),
       },
       {
         path: "add",
-        component: () => import("src/pages/campagnes/CampagnesAddForm.vue"),
+        component: () => import("src/pages/campaignes/CampaignesAddForm.vue"),
       },
     ],
   },
