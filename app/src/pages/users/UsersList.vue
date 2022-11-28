@@ -4,7 +4,8 @@
       <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       <q-separator vertical inset />
     </q-toolbar>
-    <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading">
+    <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading"
+      :pagination="pagination">
     </q-table>
   </div>
 </template>
@@ -110,7 +111,8 @@ export default defineComponent({
     return {
       essentialLinks: linksList,
       columns,
-      rows
+      rows,
+      pagination: { rowsPerPage: 10 },
     }
   }
 })

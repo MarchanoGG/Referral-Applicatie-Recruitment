@@ -1,8 +1,8 @@
 {
   "name": "app",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "Alten Referral",
+  "productName": "Alten Referral",
   "author": "Tobias Roessingh <t.roessingh@guidance.nl>",
   "private": true,
   "scripts": {
