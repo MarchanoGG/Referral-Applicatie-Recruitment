@@ -4,7 +4,8 @@
       <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       <q-separator vertical inset />
     </q-toolbar>
-    <q-table title="Rewards" dense :rows="rows" :columns="columns" row-key="id" :loading="loading">
+    <q-table title="Rewards" dense :rows="rows" :columns="columns" row-key="id" :loading="loading"
+      :pagination="pagination">
     </q-table>
   </div>
 </template>
@@ -26,28 +27,21 @@ const columns = [
     required: true,
     label: 'Name',
     align: 'left',
-    field: row => row.fullname,
+    field: row => row.name,
     format: val => `${val}`,
     sortable: true
   },
   {
-    name: 'email',
-    label: 'Email',
-    field: 'email',
+    name: 'description',
+    label: 'Description',
+    field: 'description',
     align: 'left',
     sortable: true
   },
   {
-    name: 'phone',
-    label: 'Phone',
-    field: 'phone',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'birthday',
-    label: 'Birthday',
-    field: 'birthday',
+    name: 'award_dt',
+    label: 'Award Date',
+    field: 'award_dt',
     align: 'left',
     sortable: true
   },
@@ -60,40 +54,40 @@ const columns = [
 
 const rows = [
   {
-    "fullname": "Tobias"
-    , "email": "Tobias@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
+    "name": "Award 1"
+    , "description": ""
+
+    , "award_dt": "01-01-2023"
   }
   , {
-    "fullname": "Marchano"
-    , "email": "Marchano@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
+    "name": "Award 2"
+    , "description": ""
+
+    , "award_dt": "01-01-2023"
   }
   , {
-    "fullname": "Jeremey"
-    , "email": "Jeremey@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
+    "name": "Award 3"
+    , "description": ""
+
+    , "award_dt": "01-01-2023"
   }
   , {
-    "fullname": "Michael"
-    , "email": "Michael@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
+    "name": "Award 4"
+    , "description": ""
+
+    , "award_dt": "01-01-2023"
   }
   , {
-    "fullname": "Mervin"
-    , "email": "Mervin@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
+    "name": "Award 5"
+    , "description": ""
+
+    , "award_dt": "01-01-2023"
   }
   , {
-    "fullname": "Jon Snow"
-    , "email": "jonsnow@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
+    "name": "Award 6"
+    , "description": ""
+
+    , "award_dt": "01-01-2023"
   }
   ,
 ]
@@ -110,7 +104,8 @@ export default defineComponent({
     return {
       essentialLinks: linksList,
       columns,
-      rows
+      rows,
+      pagination: { rowsPerPage: 10 },
     }
   }
 })
