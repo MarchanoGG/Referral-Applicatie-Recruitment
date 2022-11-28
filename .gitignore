@@ -1,0 +1,11 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/RAR/Server/RarApiGUI/bin/Debug
+/RAR/Server/RarApiGUI/obj/Debug
+/Database/DatabaseConnection/ConsoleApp1/obj
+/Database/DatabaseConnection/ConsoleApp1/.vs/ConsoleApp1
+/Database/DatabaseConnection/ConsoleApp1/bin/Debug
+/RAR/Server/RarApiGUI/obj/Release
+/.vs
