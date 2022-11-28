@@ -96,7 +96,7 @@ const rows = [
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'UserList'
+  name: 'RewardsList'
   , components: {
     EssentialLink
   }
