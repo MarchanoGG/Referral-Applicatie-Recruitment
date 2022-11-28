@@ -46,6 +46,12 @@ const linksList = [
     link: '/users'
   },
   {
+    title: 'Candidates',
+    // caption: '',
+    icon: 'people',
+    link: '/candidates'
+  },
+  {
     title: 'Rewards',
     // caption: '',
     icon: 'emoji_events',

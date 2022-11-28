@@ -18,6 +18,20 @@ const routes = [
     ],
   },
   {
+    path: "/candidates",
+    component: MainLayoutVue,
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/candidates/CandidatesList.vue"),
+      },
+      {
+        path: "add",
+        component: () => import("src/pages/candidates/CandidateAddForm.vue"),
+      },
+    ],
+  },
+  {
     path: "/rewards",
     component: MainLayoutVue,
     children: [
