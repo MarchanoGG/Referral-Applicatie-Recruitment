@@ -6,8 +6,8 @@ namespace RAR
 {
 	public class TSettings
 	{
-		private static TSettings s_instance = null;
-		private string d_path = Directory.GetCurrentDirectory() + "\\config\\";
+		private static TSettings ?s_instance = null;
+		private readonly string d_path = Directory.GetCurrentDirectory() + "\\config\\";
 
 		public static TSettings Instance()
 		{
@@ -38,43 +38,42 @@ namespace RAR
 			}
 		}
 
-		public ApplicationConf GetApplication()
+		public ApplicationConf? GetApplication()
 		{			
-			using (StreamReader r = new StreamReader(d_path + "application.json"))
+			using (StreamReader r = new(d_path + "application.json"))
 			{
 				string json = r.ReadToEnd();
 				var obj = JsonConvert.DeserializeObject<ApplicationConf>(json);
+				
 				return obj;
 			}
-			return null;
-
 		}
 
-		public DatabaseConf GetDataBase()
+		public DatabaseConf? GetDataBase()
 		{
-			using (StreamReader r = new StreamReader(d_path + "database.json"))
+			using (StreamReader r = new(d_path + "database.json"))
 			{
 				string json = r.ReadToEnd();
 				var obj = JsonConvert.DeserializeObject<DatabaseConf>(json);
 				return obj;
 			}
-			return null;
 
 		}
 
 		public class ApplicationConf
 		{
-			public string Protocol { get; set; }
-			public string Server { get; set; }
-			public int Port { get; set; }	}
+			public string? Protocol { get; set; }
+			public string? Server { get; set; }
+			public int Port { get; set; }
+		}
 
 		public class DatabaseConf
 		{
-			public string UserID { get; set; }
-			public string Password { get; set; }
-			public string Host { get; set; }
-			public string Port { get; set; }
-			public string DataBase { get; set; }
+			public string ?UserID { get; set; }
+			public string ?Password { get; set; }
+			public string ?Host { get; set; }
+			public string ?Port { get; set; }
+			public string ?DataBase { get; set; }
 			public bool Pooling { get; set; }
 
 		}
