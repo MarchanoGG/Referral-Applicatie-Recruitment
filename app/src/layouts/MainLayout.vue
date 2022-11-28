@@ -63,6 +63,18 @@ const linksList = [
     icon: 'list',
     link: '/tasks'
   },
+  {
+    title: 'Campagne',
+    // caption: '',
+    icon: 'checklist',
+    link: '/campagnes'
+  },
+  {
+    title: 'Scoreboards',
+    // caption: '',
+    icon: 'leaderboard',
+    link: '/scoreboards'
+  },
 ]
 
 export default defineComponent({
