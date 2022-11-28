@@ -64,7 +64,7 @@ const linksList = [
     link: '/tasks'
   },
   {
-    title: 'Campagne',
+    title: 'Campagnes',
     // caption: '',
     icon: 'checklist',
     link: '/campagnes'

@@ -56,6 +56,34 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/campagnes",
+    component: MainLayoutVue,
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/campagnes/CampagnesList.vue"),
+      },
+      {
+        path: "add",
+        component: () => import("src/pages/campagnes/CampagnesAddForm.vue"),
+      },
+    ],
+  },
+  {
+    path: "/scoreboards",
+    component: MainLayoutVue,
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/scoreboards/ScoreboardsList.vue"),
+      },
+      {
+        path: "add",
+        component: () => import("src/pages/scoreboards/ScoreboardAddForm.vue"),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
