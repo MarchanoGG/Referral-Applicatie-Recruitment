@@ -42,8 +42,20 @@ const linksList = [
   {
     title: 'Users',
     // caption: '',
-    icon: 'list',
+    icon: 'manage_accounts',
     link: '/users'
+  },
+  {
+    title: 'Rewards',
+    // caption: '',
+    icon: 'emoji_events',
+    link: '/rewards'
+  },
+  {
+    title: 'Tasks',
+    // caption: '',
+    icon: 'list',
+    link: '/tasks'
   },
 ]
 

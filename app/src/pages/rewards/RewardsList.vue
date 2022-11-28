@@ -4,7 +4,7 @@
       <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       <q-separator vertical inset />
     </q-toolbar>
-    <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading">
+    <q-table title="Rewards" dense :rows="rows" :columns="columns" row-key="id" :loading="loading">
     </q-table>
   </div>
 </template>
@@ -16,7 +16,7 @@ const linksList = [
     title: '',
     // caption: '',
     icon: 'add',
-    link: '/users/add'
+    link: '/rewards/add'
   },
 ]
 
@@ -30,7 +30,7 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-  { 
+  {
     name: 'email',
     label: 'Email',
     field: 'email',

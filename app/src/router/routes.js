@@ -10,10 +10,35 @@ const routes = [
     path: "/users",
     component: MainLayoutVue,
     children: [
-      { path: "", component: () => import("src/pages/users/UserList.vue") },
+      { path: "", component: () => import("src/pages/users/UsersList.vue") },
       {
         path: "add",
         component: () => import("src/pages/users/UserAddForm.vue"),
+      },
+    ],
+  },
+  {
+    path: "/rewards",
+    component: MainLayoutVue,
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/rewards/RewardsList.vue"),
+      },
+      {
+        path: "add",
+        component: () => import("src/pages/rewards/RewardAddForm.vue"),
+      },
+    ],
+  },
+  {
+    path: "/tasks",
+    component: MainLayoutVue,
+    children: [
+      { path: "", component: () => import("src/pages/tasks/TasksList.vue") },
+      {
+        path: "add",
+        component: () => import("src/pages/tasks/TaskAddForm.vue"),
       },
     ],
   },
