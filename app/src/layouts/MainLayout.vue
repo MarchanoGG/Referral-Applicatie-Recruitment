@@ -64,16 +64,22 @@ const linksList = [
     link: '/tasks'
   },
   {
-    title: 'Campagnes',
+    title: 'Campaignes',
     // caption: '',
     icon: 'checklist',
-    link: '/campagnes'
+    link: '/campaignes'
   },
   {
     title: 'Scoreboards',
     // caption: '',
     icon: 'leaderboard',
     link: '/scoreboards'
+  },
+  {
+    title: 'Employees',
+    // caption: '',
+    icon: 'person',
+    link: '/employees'
   },
 ]
 
