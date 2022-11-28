@@ -75,6 +75,12 @@ const linksList = [
     icon: 'leaderboard',
     link: '/scoreboards'
   },
+  {
+    title: 'Employees',
+    // caption: '',
+    icon: 'person',
+    link: '/employees'
+  },
 ]
 
 export default defineComponent({

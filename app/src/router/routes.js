@@ -84,6 +84,16 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/employees",
+    component: MainLayoutVue,
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/employees/employeeHome.vue"),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
