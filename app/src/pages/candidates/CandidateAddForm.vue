@@ -2,21 +2,10 @@
     <div class="q-pa-md" style="max-width: 400px">
 
         <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-            <q-input filled v-model="name" label="Your name *" hint="Name and surname" lazy-rules
+            <q-input filled v-model="fk_profile" label="Your profile key *" hint="Profile key" lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled v-model="surname" label="Your surname *" hint="Surname" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="email" label="Your email *" hint="Email" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="phonenumber" label="Your Phone number *" hint="Phone number" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-date filled v-model="age" title="Birthdate" subtitle lazy-rules />
-
-            <q-toggle v-model="accept" label="I accept the license and terms" />
+            <q-date filled v-model="referred_at" title="Referred at" subtitle lazy-rules />
 
             <div>
                 <q-btn label="Submit" type="submit" color="primary" />
@@ -28,59 +17,53 @@
 </template>
   
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+  import { useQuasar } from 'quasar'
+  import { useRouter } from 'vue-router'
+  import { ref, reactive } from 'vue'
+  import { api } from 'boot/axios'
+
 
 export default {
     setup() {
-        const $q = useQuasar()
+      const router = useRouter()
 
-        const name = ref(null)
-        const surname = ref(null)
-        const email = ref(null)
-        const phonenumber = ref(null)
-        const age = ref('1980/01/01')
-        const accept = ref(false)
+    const fk_profile = ref(null)
+    const referred_at = ref(Date.now)
 
         return {
-            name,
-            surname,
-            email,
-            phonenumber,
-            age,
-            accept,
+            fk_profile,
+            referred_at,
 
             onSubmit() {
-                if (accept.value !== true) {
-                    $q.notify({
-                        color: 'red-5',
-                        textColor: 'white',
-                        icon: 'warning',
-                        message: 'You need to accept the license and terms first'
-                    })
-                }
-                else {
-                    $q.notify({
-                        color: 'green-4',
-                        textColor: 'white',
-                        icon: 'cloud_done',
-                        message: 'Submitted'
-                    })
-                }
+              if (fk_profile.value !== null && referred_at.value !== null) {
+                const userForm = reactive({
+                  fk_profile: fk_profile.value,
+                  referred_at: referred_at.value,
+                });
+
+                api.post('/Candidates', userForm)
+                  .then((response) => {
+                    if (response.status == 200) {
+                      console.log(1);
+                      router.push("/Candidates");
+                    }
+                    else {
+                      console.log(2);
+                    }
+                  })
+                  .catch(() => {
+                  })
+              }
+              else {
+                console.log(3);
+              }
             },
 
             onReset() {
-                name.value = null
-                age.value = null
-                accept.value = false
-            },
-
-            setCalendarTo() {
-                year = '1980'
-                month = '1'
+                fk_profile.value = null
+                referred_at.value = null
             }
         }
     }
 }
 </script>
-  

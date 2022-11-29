@@ -8,25 +8,26 @@ namespace RarApiConsole.dataObjects
 {
     internal class DoUser
     {
-        [Key]
+        [Key, Required]
         public int object_key { get; set; }
 
         [Column(TypeName = "int")]
         public int? fk_profile { get; set; }
+        public DoProfile? profile { get; set; }
 
-        [Column(TypeName = "varchar(100)")]
+        [Column(TypeName = "varchar(100)"), Required]
         public string username { get; set; }
 
-        [Column(TypeName = "varchar(100)")]
+        [Column(TypeName = "varchar(100)"), Required]
         public string password { get; set; }
 
-        [Column(TypeName = "int")]
+        [Column(TypeName = "int"), Required]
         public int recruiter { get; set; }
 
-        [Column(TypeName = "timestamp")]
+        [Column(TypeName = "timestamp"), Required]
         public DateTime creation_dt { get; set; }
 
-        [Column(TypeName = "timestamp")]
+        [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
 
         public DoUser() 
@@ -35,10 +36,11 @@ namespace RarApiConsole.dataObjects
             password = "temp";
         }
 
-        public DoUser(string Username, string Password)
+        public DoUser(string Username, string Password, int Recruiter)
         {
             username = Username;
             password = Password;
+            recruiter = Recruiter;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)
@@ -72,6 +74,7 @@ namespace RarApiConsole.dataObjects
                     {
                         arr += ",";
                     }
+
                     string json = JsonConvert.SerializeObject(obj);
 
                     if (json.Length > 0)

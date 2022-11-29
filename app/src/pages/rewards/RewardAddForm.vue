@@ -2,21 +2,13 @@
     <div class="q-pa-md" style="max-width: 400px">
 
         <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-            <q-input filled v-model="name" label="Your name *" hint="Name and surname" lazy-rules
+            <q-input filled v-model="fk_user" label="Your user key *" hint="User key" lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled v-model="surname" label="Your surname *" hint="Surname" lazy-rules
+            <q-input filled v-model="name" label="Reward name *" hint="Name" lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled v-model="email" label="Your email *" hint="Email" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="phonenumber" label="Your Phone number *" hint="Phone number" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-date filled v-model="age" title="Birthdate" subtitle lazy-rules />
-
-            <q-toggle v-model="accept" label="I accept the license and terms" />
+            <q-date filled v-model="award_dt" title="Award date" subtitle lazy-rules />
 
             <div>
                 <q-btn label="Submit" type="submit" color="primary" />
@@ -28,59 +20,46 @@
 </template>
   
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { ref, reactive } from 'vue'
+  import { api } from 'boot/axios'
+
 
 export default {
     setup() {
-        const $q = useQuasar()
-
+        const router = useRouter()
+        const fk_user = ref(null)
         const name = ref(null)
-        const surname = ref(null)
-        const email = ref(null)
-        const phonenumber = ref(null)
-        const age = ref('1980/01/01')
-        const accept = ref(false)
+        const award_dt = ref(Date.now)
 
         return {
+            fk_user,
             name,
-            surname,
-            email,
-            phonenumber,
-            age,
-            accept,
+            award_dt,
+          onSubmit() {
+            if (fk_user.value !== null && name.value !== null && award_dt.value !== null) {
+              const userForm = reactive({
+                fk_user: fk_user.value,
+                name: name.value,
+                award_dt: award_dt.value,
+              });
 
-            onSubmit() {
-                if (accept.value !== true) {
-                    $q.notify({
-                        color: 'red-5',
-                        textColor: 'white',
-                        icon: 'warning',
-                        message: 'You need to accept the license and terms first'
-                    })
-                }
-                else {
-                    $q.notify({
-                        color: 'green-4',
-                        textColor: 'white',
-                        icon: 'cloud_done',
-                        message: 'Submitted'
-                    })
-                }
+              api.post('/Rewards', userForm)
+                .then((response) => {
+                  if (response.status == 200) {
+                    router.push("/Rewards");
+                  }
+                })
+                .catch(() => {
+                })
+            }
             },
-
             onReset() {
+                fk_user.value = null
                 name.value = null
-                age.value = null
-                accept.value = false
-            },
-
-            setCalendarTo() {
-                year = '1980'
-                month = '1'
+                award_dt.value = false
             }
         }
     }
 }
 </script>
-  

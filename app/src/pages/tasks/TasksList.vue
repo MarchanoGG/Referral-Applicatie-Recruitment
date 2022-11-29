@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+  import EssentialLink from 'components/EssentialLink.vue'
+  import { api } from 'boot/axios'
 const linksList = [
   {
     title: '',
@@ -47,28 +48,6 @@ const columns = [
   },
 ]
 
-const rows = [
-  {
-    "name": "Sollicitatie gesprek"
-    , "description": ""
-
-    , "points": 10
-  }
-  , {
-    "name": "Telefonisch gesprek"
-    , "description": ""
-
-    , "points": 10
-  }
-  , {
-    "name": "CV controlleren"
-    , "description": ""
-
-    , "points": 10
-  }
-]
-
-
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -80,9 +59,21 @@ export default defineComponent({
     return {
       essentialLinks: linksList,
       columns,
-      rows,
       pagination: { rowsPerPage: 10 },
     }
+  },
+  data() {
+    return {
+      rows: []
+    }
+  },
+  mounted() {
+    api.get('/Tasks')
+      .then((response) => {
+        this.rows = response.data
+      })
+      .catch(() => {
+      })
   }
 })
 </script>

@@ -1,86 +1,62 @@
 <template>
     <div class="q-pa-md" style="max-width: 400px">
-
         <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-            <q-input filled v-model="name" label="Your name *" hint="Name and surname" lazy-rules
+            <q-input filled v-model="username" label="Your username *" hint="Username" lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled v-model="surname" label="Your surname *" hint="Surname" lazy-rules
+            <q-input filled v-model="password" label="Your password *" hint="Password" lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="email" label="Your email *" hint="Email" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="phonenumber" label="Your Phone number *" hint="Phone number" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
-
-            <q-date filled v-model="age" title="Birthdate" subtitle lazy-rules />
-
-            <q-toggle v-model="accept" label="I accept the license and terms" />
 
             <div>
-                <q-btn label="Submit" type="submit" color="primary" />
+                <q-btn label="Submit" type="submit" color="primary"/>
                 <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
             </div>
         </q-form>
-
     </div>
 </template>
   
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+  import { useQuasar } from 'quasar'
+  import { useRouter } from 'vue-router'
+  import { ref, reactive } from 'vue'
+  import { api } from 'boot/axios'
 
 export default {
     setup() {
-        const $q = useQuasar()
+    const router = useRouter()
 
-        const name = ref(null)
-        const surname = ref(null)
-        const email = ref(null)
-        const phonenumber = ref(null)
-        const age = ref('1980/01/01')
-        const accept = ref(false)
+        const username = ref(null)
+        const password = ref(null)
 
         return {
-            name,
-            surname,
-            email,
-            phonenumber,
-            age,
-            accept,
-
+            username,
+            password,
             onSubmit() {
-                if (accept.value !== true) {
-                    $q.notify({
-                        color: 'red-5',
-                        textColor: 'white',
-                        icon: 'warning',
-                        message: 'You need to accept the license and terms first'
-                    })
+              if (username.value !== null && password.value !== null) {
+                const userForm = reactive({
+                  username: username.value,
+                  password: password.value,
+                });
+
+                api.post('/Users', userForm)
+                  .then((response) => {
+                    if (response.status == 200) {
+                      console.log(1);
+                      router.push("/Users");
+                    }
+                  })
+                  .catch(() => {
+                  })
                 }
-                else {
-                    $q.notify({
-                        color: 'green-4',
-                        textColor: 'white',
-                        icon: 'cloud_done',
-                        message: 'Submitted'
-                    })
+              else {
                 }
             },
 
             onReset() {
-                name.value = null
-                age.value = null
-                accept.value = false
-            },
-
-            setCalendarTo() {
-                year = '1980'
-                month = '1'
+                username.value = null
+                password.value = null
             }
         }
     }
 }
 </script>
-  

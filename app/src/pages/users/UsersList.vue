@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+  import EssentialLink from 'components/EssentialLink.vue'
+  import { api } from 'boot/axios'
 const linksList = [
   {
     title: '',
@@ -27,78 +28,25 @@ const columns = [
     required: true,
     label: 'Name',
     align: 'left',
-    field: row => row.fullname,
+    field: 'username',
     format: val => `${val}`,
     sortable: true
   },
   {
-    name: 'email',
-    label: 'Email',
-    field: 'email',
+    name: 'recruiter',
+    label: 'Is a recruiter',
+    field: 'recruiter',
     align: 'left',
     sortable: true
   },
   {
-    name: 'phone',
-    label: 'Phone',
-    field: 'phone',
+    name: 'modificationDate',
+    label: 'Last modified',
+    field: 'modification_dt',
     align: 'left',
     sortable: true
-  },
-  {
-    name: 'birthday',
-    label: 'Birthday',
-    field: 'birthday',
-    align: 'left',
-    sortable: true
-  },
-  // { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-  // { name: 'protein', label: 'Protein (g)', field: 'protein' },
-  // { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-  // { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
-  // { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+  }
 ]
-
-const rows = [
-  {
-    "fullname": "Tobias"
-    , "email": "Tobias@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  , {
-    "fullname": "Marchano"
-    , "email": "Marchano@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  , {
-    "fullname": "Jeremey"
-    , "email": "Jeremey@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  , {
-    "fullname": "Michael"
-    , "email": "Michael@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  , {
-    "fullname": "Mervin"
-    , "email": "Mervin@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  , {
-    "fullname": "Jon Snow"
-    , "email": "jonsnow@gmail.com"
-    , "phone": "1234567"
-    , "birthday": "01-01-1996"
-  }
-  ,
-]
-
 
 import { defineComponent } from 'vue'
 
@@ -111,9 +59,21 @@ export default defineComponent({
     return {
       essentialLinks: linksList,
       columns,
-      rows,
       pagination: { rowsPerPage: 10 },
     }
+  },
+  data() {
+    return {
+      rows: []
+    }
+  },
+  mounted() {
+    api.get('/Users')
+      .then((response) => {
+        this.rows = response.data
+      })
+      .catch(() => {
+      })
   }
 })
 </script>

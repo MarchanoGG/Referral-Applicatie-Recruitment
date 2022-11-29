@@ -26,7 +26,7 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "varchar(30)")]
         public string? phone_number { get; set; }
 
-        [Column(TypeName = "varchar(10)")]
+        [Column(TypeName = "varchar(100)")]
         public string? address { get; set; }
 
 

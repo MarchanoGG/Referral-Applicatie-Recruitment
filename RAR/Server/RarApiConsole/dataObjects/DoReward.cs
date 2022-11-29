@@ -13,6 +13,7 @@ namespace RarApiConsole.dataObjects
 
         [Column(TypeName = "int")]
         public int fk_user { get; set; }
+        public DoUser user { get; set; }
 
         [Column(TypeName = "varchar(50)")]
         public string name { get; set; }
@@ -23,6 +24,7 @@ namespace RarApiConsole.dataObjects
         public DoReward()
         {
             fk_user = 0;
+            user = new();
             name = "temp";
             award_dt = DateTime.Now;
         }
@@ -30,6 +32,7 @@ namespace RarApiConsole.dataObjects
         public DoReward(int UserKey, string Name, DateTime AwardDate)
         {
             fk_user = UserKey;
+            user = new();
             name = Name;
             award_dt = AwardDate;
         }

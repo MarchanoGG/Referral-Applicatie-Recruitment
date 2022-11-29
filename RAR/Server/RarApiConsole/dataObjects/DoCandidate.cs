@@ -13,6 +13,7 @@ namespace RarApiConsole.dataObjects
 
         [Column(TypeName = "int")]
         public int fk_profile { get; set; }
+        public DoProfile profile { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime referred_at { get; set; }

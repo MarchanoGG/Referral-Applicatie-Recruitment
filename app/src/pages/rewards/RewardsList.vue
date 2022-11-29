@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+  import EssentialLink from 'components/EssentialLink.vue'
+  import { api } from 'boot/axios'
 const linksList = [
   {
     title: '',
@@ -32,66 +33,13 @@ const columns = [
     sortable: true
   },
   {
-    name: 'description',
-    label: 'Description',
-    field: 'description',
-    align: 'left',
-    sortable: true
-  },
-  {
     name: 'award_dt',
     label: 'Award Date',
     field: 'award_dt',
     align: 'left',
     sortable: true
   },
-  // { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-  // { name: 'protein', label: 'Protein (g)', field: 'protein' },
-  // { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-  // { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
-  // { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
 ]
-
-const rows = [
-  {
-    "name": "Award 1"
-    , "description": ""
-
-    , "award_dt": "01-01-2023"
-  }
-  , {
-    "name": "Award 2"
-    , "description": ""
-
-    , "award_dt": "01-01-2023"
-  }
-  , {
-    "name": "Award 3"
-    , "description": ""
-
-    , "award_dt": "01-01-2023"
-  }
-  , {
-    "name": "Award 4"
-    , "description": ""
-
-    , "award_dt": "01-01-2023"
-  }
-  , {
-    "name": "Award 5"
-    , "description": ""
-
-    , "award_dt": "01-01-2023"
-  }
-  , {
-    "name": "Award 6"
-    , "description": ""
-
-    , "award_dt": "01-01-2023"
-  }
-  ,
-]
-
 
 import { defineComponent } from 'vue'
 
@@ -104,9 +52,21 @@ export default defineComponent({
     return {
       essentialLinks: linksList,
       columns,
-      rows,
       pagination: { rowsPerPage: 10 },
     }
+  },
+  data() {
+    return {
+      rows: []
+    }
+  },
+  mounted() {
+    api.get('/Rewards')
+      .then((response) => {
+        this.rows = response.data
+      })
+      .catch(() => {
+      })
   }
 })
 </script>

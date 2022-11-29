@@ -1,86 +1,73 @@
 <template>
     <div class="q-pa-md" style="max-width: 400px">
 
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-            <q-input filled v-model="name" label="Your name *" hint="Name and surname" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-input filled v-model="fk_user" label="User key *" hint="User key" lazy-rules
+                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled v-model="surname" label="Your surname *" hint="Surname" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+        <q-input filled v-model="name" label="Scoreboard name *" hint="Name" lazy-rules
+                 :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-            <q-input filled v-model="email" label="Your email *" hint="Email" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+        <q-date filled v-model="start_dt" title="Start date" subtitle lazy-rules />
 
-            <q-input filled v-model="phonenumber" label="Your Phone number *" hint="Phone number" lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type something']" />
+        <q-date filled v-model="end_dt" title="End date" subtitle lazy-rules />
 
-            <q-date filled v-model="age" title="Birthdate" subtitle lazy-rules />
-
-            <q-toggle v-model="accept" label="I accept the license and terms" />
-
-            <div>
-                <q-btn label="Submit" type="submit" color="primary" />
-                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-            </div>
-        </q-form>
+        <div>
+          <q-btn label="Submit" type="submit" color="primary" />
+          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        </div>
+      </q-form>
 
     </div>
 </template>
   
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { ref, reactive } from 'vue'
+  import { api } from 'boot/axios'
 
 export default {
     setup() {
-        const $q = useQuasar()
+        const router = useRouter()
 
+        const fk_user = ref(null)
         const name = ref(null)
-        const surname = ref(null)
-        const email = ref(null)
-        const phonenumber = ref(null)
-        const age = ref('1980/01/01')
-        const accept = ref(false)
+        const start_dt = ref(Date.now)
+        const end_dt = ref(Date.now)
 
         return {
+            fk_user,
             name,
-            surname,
-            email,
-            phonenumber,
-            age,
-            accept,
+            start_dt,
+            end_dt,
 
-            onSubmit() {
-                if (accept.value !== true) {
-                    $q.notify({
-                        color: 'red-5',
-                        textColor: 'white',
-                        icon: 'warning',
-                        message: 'You need to accept the license and terms first'
-                    })
-                }
-                else {
-                    $q.notify({
-                        color: 'green-4',
-                        textColor: 'white',
-                        icon: 'cloud_done',
-                        message: 'Submitted'
-                    })
-                }
+          onSubmit() {
+            if (fk_user.value !== null && name.value !== null && start_dt.value !== null && end_dt.value !== null) {
+              const userForm = reactive({
+                fk_user: fk_user.value,
+                name: name.value,
+                start_dt: start_dt.value,
+                end_dt: end_dt.value,
+              });
+
+              api.post('/Scoreboards', userForm)
+                .then((response) => {
+                  if (response.status == 200) {
+                    router.push("/Scoreboards");
+                  }
+                })
+                .catch(() => {
+                })
+            }
             },
 
             onReset() {
-                name.value = null
-                age.value = null
-                accept.value = false
-            },
-
-            setCalendarTo() {
-                year = '1980'
-                month = '1'
+              fk_user.value = null
+              name.value = null
+              start_dt.value = Date.now
+              end_dt.value = Date.now
             }
         }
     }
 }
 </script>
-  

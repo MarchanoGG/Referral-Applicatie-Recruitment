@@ -11,30 +11,38 @@ namespace RarApiConsole.dataObjects
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+        [Column(TypeName = "int"), Required]
         public int fk_user { get; set; }
+        public DoUser user { get; set; }
 
-        [Column(TypeName = "int")]
+        [Column(TypeName = "int"), Required]
         public int fk_task { get; set; }
+        public DoTask task { get; set; }
 
-        [Column(TypeName = "int")]
+        [Column(TypeName = "int"), Required]
         public int fk_candidate { get; set; }
+        public DoCandidate candidate { get; set; }
 
-        [Column(TypeName = "int")]
+        [Column(TypeName = "int"), Required]
         public int fk_scoreboard { get; set; }
+        public DoScoreboard scoreboard { get; set; }
 
-        [Column(TypeName = "timestamp")]
+        [Column(TypeName = "timestamp"), Required]
         public DateTime creation_dt { get; set; }
 
-        [Column(TypeName = "timestamp")]
+        [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
 
         public DoReferral()
         {
             fk_user = 0;
+            user = new();
             fk_task = 0;
+            task = new();
             fk_candidate = 0;
+            candidate = new();
             fk_scoreboard = 0;
+            scoreboard = new();
             creation_dt = DateTime.Now;
             modification_dt = DateTime.Now;
         }
@@ -42,9 +50,13 @@ namespace RarApiConsole.dataObjects
         public DoReferral(int UserKey, int TaskKey, int CandidateKey, int ScoreboardKey, DateTime CreationDate, DateTime ModificationDate)
         {
             fk_user = UserKey;
+            user = new();
             fk_task = TaskKey;
+            task = new();
             fk_candidate = CandidateKey;
+            candidate = new();
             fk_scoreboard = ScoreboardKey;
+            scoreboard = new();
             creation_dt = CreationDate;
             modification_dt = ModificationDate;
         }
