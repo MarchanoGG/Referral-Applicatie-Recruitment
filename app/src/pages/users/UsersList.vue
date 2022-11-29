@@ -1,11 +1,14 @@
 <template>
   <div class="q-pa-md">
-    <q-toolbar class="q-my-md shadow-2">
-      <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
-      <q-separator vertical inset />
-    </q-toolbar>
     <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading"
       :pagination="pagination">
+      <template v-slot:top>
+        <q-toolbar class="q-my-md ">
+          <q-toolbar-title :shrink="true">Users</q-toolbar-title>
+          <q-separator vertical inset />
+          <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        </q-toolbar>
+      </template>
     </q-table>
   </div>
 </template>

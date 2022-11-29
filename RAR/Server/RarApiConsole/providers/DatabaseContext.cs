@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RAR;
 
 namespace RarApiConsole.providers
 {
@@ -14,7 +15,18 @@ namespace RarApiConsole.providers
         public DbSet<DoCandidate> candidates { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("User ID = postgres; Password = Fewnbd6g; Host = localhost; port = 5432; Database = Project C; Pooling = true");
+
+            var s = TSettings.Instance();
+            var conf = s.GetDataBase();
+
+            string dbConnection = "User ID = postgres; Password = Fewnbd6g; Host = localhost; port = 5432; Database = Project C; Pooling = true";
+
+            if (conf !=null)
+            {
+                 dbConnection = "User ID = " + conf.UserID + "; Password = " + conf.Password + "; Host = " + conf.Host + "; port = " + conf.Port + "; Database = " + conf.DataBase + "; Pooling = " + conf.Pooling + ";";
+            }
+           
+            optionsBuilder.UseNpgsql(dbConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

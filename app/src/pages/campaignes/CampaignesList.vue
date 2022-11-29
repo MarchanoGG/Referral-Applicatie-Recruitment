@@ -18,7 +18,7 @@ const linksList = [
     title: '',
     // caption: '',
     icon: 'person_add',
-    link: '/users/add'
+    link: '/campaignes/add'
   },
 ]
 
