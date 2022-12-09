@@ -1,19 +1,21 @@
 <template>
-  <div class="q-pa-md">
+  <q-page class="q-pa-md">
     <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading"
       :pagination="pagination">
 
       <template v-slot:top>
-        <q-toolbar class="q-my-md ">
+        <q-toolbar>
           <q-toolbar-title :shrink="true">Users</q-toolbar-title>
           <q-separator vertical inset />
-          <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+          <q-btn type="a" href="/users/add" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
         </q-toolbar>
       </template>
 
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th auto-width />
+          <q-th>
+            <q-btn class="float-left" color="secondary" dense :icon="'info'" />
+          </q-th>
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
@@ -24,9 +26,9 @@
         <q-tr :props="props">
           <q-td auto-width>
             <q-btn-group>
-              <q-btn size="sm" color="secondary" round dense @click="props.expand = !props.expand" :icon="'info'" />
-              <q-btn size="sm" color="secondary" round dense @click="props.expand = !props.expand" :icon="'edit'" />
-              <q-btn size="sm" color="secondary" round dense @click="props.expand = !props.expand" :icon="'delete'" />
+              <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" />
+              <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'edit'" />
+              <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'delete'" />
             </q-btn-group>
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
@@ -40,11 +42,10 @@
         </q-tr>
       </template>
     </q-table>
-  </div>
+  </q-page>
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
 const linksList = [
   {
     title: '',
@@ -150,12 +151,9 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'UserList'
-  , components: {
-    EssentialLink
-  }
+
   , setup() {
     return {
-      essentialLinks: linksList,
       columns,
       rows,
       pagination: { rowsPerPage: 10 },
