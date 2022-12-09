@@ -7,7 +7,7 @@
         <q-toolbar>
           <q-toolbar-title :shrink="true">Users</q-toolbar-title>
           <q-separator vertical inset />
-          <q-btn type="a" href="/users/add" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
+          <q-btn @click="addform = true" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
         </q-toolbar>
       </template>
 
@@ -42,10 +42,31 @@
         </q-tr>
       </template>
     </q-table>
+
+    <q-dialog v-model="addform">
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="flex">
+            <div class="text-h6">Users</div>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <UserAddFormVue />
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import UserAddFormVue from './UserAddForm.vue'
+
 const linksList = [
   {
     title: '',
@@ -147,16 +168,20 @@ const rows = [
 ]
 
 
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'UserList'
 
+  , components: {
+    UserAddFormVue
+  }
   , setup() {
     return {
       columns,
       rows,
       pagination: { rowsPerPage: 10 },
+      addform: ref(false),
     }
   }
 })
