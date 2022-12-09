@@ -40,6 +40,12 @@ const linksList = [
     link: '/'
   },
   {
+    title: 'Login',
+    // caption: '',
+    icon: 'login',
+    link: '/login'
+  },
+  {
     title: 'Users',
     // caption: '',
     icon: 'manage_accounts',
