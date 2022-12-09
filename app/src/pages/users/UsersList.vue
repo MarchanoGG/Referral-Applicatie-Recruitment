@@ -14,7 +14,7 @@
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th>
-            <q-btn class="float-left" color="secondary" dense :icon="'info'" />
+            <!-- <q-btn class="float-left" color="secondary" dense :icon="'info'" /> -->
           </q-th>
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
@@ -26,7 +26,7 @@
         <q-tr :props="props">
           <q-td auto-width>
             <q-btn-group>
-              <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" />
+              <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
               <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'edit'" />
               <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'delete'" />
             </q-btn-group>
