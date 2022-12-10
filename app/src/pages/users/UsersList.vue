@@ -26,7 +26,7 @@
           <q-td auto-width>
             <q-btn-group>
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
-              <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'edit'" />
+              <q-btn class="" color="secondary" dense @click="addform = true" :icon="'edit'" />
               <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'delete'" />
             </q-btn-group>
           </q-td>
