@@ -26,7 +26,7 @@
           <q-td auto-width>
             <q-btn-group>
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
-              <q-btn class="" color="secondary" dense @click="addform = true" :icon="'edit'" />
+              <q-btn class="" color="secondary" dense @click="addform = true; selected_item = props.row.object_key;" :icon="'edit'" />
               <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'delete'" />
             </q-btn-group>
           </q-td>
@@ -36,7 +36,7 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
-            <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
+            <div class="text-left">This is expand slot for row above: {{ props.row.object_key }}.</div>
           </q-td>
         </q-tr>
       </template>
@@ -51,8 +51,8 @@
           </div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <UserAddFormVue />
+        <q-card-section class="q-pt-none">  
+          <UserAddFormVue :objectkey="selected_item"/>
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
@@ -69,7 +69,16 @@ import { api } from 'boot/axios'
 import UserAddFormVue from './UserAddForm.vue'
 
 
-const columns = [
+  const columns = [
+  {
+    name: 'object_key',
+    required: true,
+    label: 'Key',
+    align: 'left',
+    field: 'object_key',
+    format: val => `${val}`,
+    sortable: true
+  },
   {
     name: 'name',
     required: true,
@@ -104,8 +113,10 @@ export default defineComponent({
     UserAddFormVue
   }
   , setup() {
+    const selected_item = ref(null)
     return {
       columns,
+      selected_item,
       pagination: { rowsPerPage: 10 },
       addform: ref(false),
     }

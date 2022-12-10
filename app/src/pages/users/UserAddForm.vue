@@ -20,6 +20,7 @@
     <div class="col-5">
       <q-btn label="Submit" type="submit" color="primary" />
       <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+      <p>{{objectkey}}</p>
     </div>
   </q-form>
 </template>
@@ -29,21 +30,24 @@ import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { ref, reactive } from 'vue'
 import { api } from 'boot/axios'
+import { LocalStorage } from 'quasar'
 
-export default {
+  export default {
     setup() {
         const router = useRouter()
 
         const username = ref(null)
         const password = ref(null)
         const recruiter = ref(true)
-        var recruiterVal = ref(0)
+      var recruiterVal = ref(0)
+      var objectkey = document.getElementsByClassName("q-form")
 
     return {
             isPwd: ref(true),
             recruiter,
             username,
             password,
+            objectkey,
             onSubmit() {
               if (username.value !== null && password.value !== null) {
 
@@ -76,6 +80,12 @@ export default {
                 password.value = null
             }
         }
+    },
+    watch() {
+      var objectkey = document.getElementsByClassName("q-form")
+      return {
+          objectkey
+      }
     }
 }
 </script>
