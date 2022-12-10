@@ -3,6 +3,7 @@ using System.Text;
 using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
+using System.Security.Cryptography;
 
 namespace RarApiConsole.controllers
 {
@@ -103,7 +104,7 @@ namespace RarApiConsole.controllers
                     }
                     if (pair.Key.Equals("password"))
                     {
-                        obj.password = pair.Value;
+                        obj.password = GetHashString(pair.Value);
                     }
                     if (pair.Key.Equals("recruiter"))
                     {
@@ -157,7 +158,7 @@ namespace RarApiConsole.controllers
                     }
                     if (pair.Key.Equals("password"))
                     {
-                        obj.password = pair.Value;
+                        obj.password = GetHashString(pair.Value);
                     }
                     if (pair.Key.Equals("recruiter"))
                     {
@@ -233,6 +234,27 @@ namespace RarApiConsole.controllers
             response.ContentType = "text/plain";
             response.OutputStream.Close();
             return false;
+        }
+        public static byte[] GetHash(string inputString)
+        {
+            byte[] arr = null;
+            using (HashAlgorithm algorithm = SHA256.Create()) 
+            {
+                arr = algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+            }
+
+            return arr;
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+            {
+                sb.Append(b.ToString("X2")); // X2 is for Hexadecimal 
+            }
+
+            return sb.ToString();
         }
     }
 }

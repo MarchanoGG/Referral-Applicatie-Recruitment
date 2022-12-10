@@ -8,6 +8,7 @@ namespace RarApiConsole.providers
         public static void RegisterControllers()
         {
             TConnection connection = new();
+            CtlAuthentication authentication = new();
             CtlCandidates candidates = new();
             CtlProfiles profiles = new();
             CtlReferrals referrals = new();
