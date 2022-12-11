@@ -63,6 +63,8 @@
 
       </q-card>
     </q-dialog>
+
+    <!-- edit form -->
     <q-dialog v-model="editform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
@@ -81,6 +83,8 @@
 
       </q-card>
     </q-dialog>
+
+    <!-- delete form -->
     <q-dialog v-model="delform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
@@ -89,12 +93,9 @@
           </div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <UserDeleteFormVue :objectkey="selected_item" />
-        </q-card-section>
-
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
+        <q-card-actions class="bg-white ">
+          <q-btn @click="deleteItem" label="Delete" type="submit" color="primary" />
+          <q-btn label="Cancel" v-close-popup color="primary" flat class="float-right" />
         </q-card-actions>
 
       </q-card>
@@ -106,7 +107,6 @@
 import { api } from 'boot/axios'
 import UserAddFormVue from './UserAddForm.vue'
 import UserEditFormVue from './UserEditForm.vue'
-import UserDeleteFormVue from './UserDeleteForm.vue'
 
 const columns = [
   {
@@ -151,7 +151,7 @@ export default defineComponent({
   , components: {
     UserAddFormVue,
     UserEditFormVue,
-    UserDeleteFormVue,
+    // UserDeleteFormVue,
   }
   , setup() {
     const selected_item = ref(null)
@@ -169,13 +169,31 @@ export default defineComponent({
       rows: []
     }
   },
+  methods: {
+    deleteItem() {
+      const userForm = {
+        params: { object_key: this.selected_item, }
+      }
+      api.delete('/Users', userForm)
+        .then((response) => {
+          if (response.status == 200) {
+            this.getUsers()
+          }
+        })
+        .catch(() => {
+        })
+    },
+    getUsers() {
+      api.get('/Users')
+        .then((response) => {
+          this.rows = response.data
+        })
+        .catch(() => {
+        })
+    }
+  },
   mounted() {
-    api.get('/Users')
-      .then((response) => {
-        this.rows = response.data
-      })
-      .catch(() => {
-      })
-  }
+    this.getUsers()
+  },
 })
 </script>
