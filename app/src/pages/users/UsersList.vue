@@ -26,7 +26,8 @@
           <q-td auto-width>
             <q-btn-group>
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
-              <q-btn class="" color="secondary" dense @click="addform = true; selected_item = props.row.object_key;" :icon="'edit'" />
+              <q-btn class="" color="secondary" dense @click="editform = true; selected_item = props.row.object_key;"
+                :icon="'edit'" />
               <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'delete'" />
             </q-btn-group>
           </q-td>
@@ -51,8 +52,26 @@
           </div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">  
-          <UserAddFormVue :objectkey="selected_item"/>
+        <q-card-section class="q-pt-none">
+          <UserAddFormVue />
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="editform">
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="flex">
+            <div class="text-h6">Users</div>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <UserEditFormVue :objectkey="selected_item" />
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
@@ -67,9 +86,10 @@
 <script>
 import { api } from 'boot/axios'
 import UserAddFormVue from './UserAddForm.vue'
+import UserEditFormVue from './UserEditForm.vue'
 
 
-  const columns = [
+const columns = [
   {
     name: 'object_key',
     required: true,
@@ -110,7 +130,8 @@ export default defineComponent({
   name: 'UserList'
 
   , components: {
-    UserAddFormVue
+    UserAddFormVue,
+    UserEditFormVue,
   }
   , setup() {
     const selected_item = ref(null)
@@ -119,6 +140,7 @@ export default defineComponent({
       selected_item,
       pagination: { rowsPerPage: 10 },
       addform: ref(false),
+      editform: ref(false),
     }
   },
   data() {
