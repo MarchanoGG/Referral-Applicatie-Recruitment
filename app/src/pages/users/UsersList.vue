@@ -28,7 +28,8 @@
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
               <q-btn class="" color="secondary" dense @click="editform = true; selected_item = props.row.object_key;"
                 :icon="'edit'" />
-              <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'delete'" />
+              <q-btn class="" color="secondary" dense @click="delform = true; selected_item = props.row.object_key;"
+                :icon="'delete'" />
             </q-btn-group>
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
@@ -48,7 +49,7 @@
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
-            <div class="text-h6">Users</div>
+            <div class="text-h6">Add User</div>
           </div>
         </q-card-section>
 
@@ -66,12 +67,30 @@
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
-            <div class="text-h6">Users</div>
+            <div class="text-h6">Update User</div>
           </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
           <UserEditFormVue :objectkey="selected_item" />
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="delform">
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="flex">
+            <div class="text-h6">Delete User</div>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <UserDeleteFormVue :objectkey="selected_item" />
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
@@ -87,7 +106,7 @@
 import { api } from 'boot/axios'
 import UserAddFormVue from './UserAddForm.vue'
 import UserEditFormVue from './UserEditForm.vue'
-
+import UserDeleteFormVue from './UserDeleteForm.vue'
 
 const columns = [
   {
@@ -132,6 +151,7 @@ export default defineComponent({
   , components: {
     UserAddFormVue,
     UserEditFormVue,
+    UserDeleteFormVue,
   }
   , setup() {
     const selected_item = ref(null)
@@ -141,6 +161,7 @@ export default defineComponent({
       pagination: { rowsPerPage: 10 },
       addform: ref(false),
       editform: ref(false),
+      delform: ref(false),
     }
   },
   data() {
