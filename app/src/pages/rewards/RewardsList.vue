@@ -59,7 +59,7 @@
                 <q-input filled v-model="selected_item.name" label="Reward name *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-select filled v-model="selected_item.fk_user" :options="userRows" option-value="object_key"
+                <q-select filled v-model="selected_item.fk_user" :options="userrows" option-value="object_key"
                   option-label="username" label="Standard" emit-value />
 
                 <q-date v-model="selected_item.award_dt" />
@@ -177,16 +177,17 @@ export default defineComponent({
     const default_item = {
       name: null,
       fk_user: null,
+      object_key: null,
       award_dt: new Date().toLocaleDateString(),
     }
     console.log(default_item)
     return {
       rows: [],
       rewardRows: [],
+      userrows: [],
       isPwd: false,
       default_item: default_item,
       selected_item: default_item,
-      // userRows: [],
     }
   },
   computed: {
@@ -212,7 +213,6 @@ export default defineComponent({
       return item
     },
     addItem() {
-      this.selected_item.award_dt = new Date(this.selected_item.award_dt).toISOString()
       api.post('/Rewards', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
@@ -274,7 +274,7 @@ export default defineComponent({
       api.get('/Users')
         .then((response) => {
           if (response.data && response.data.length > 0) {
-            this.userRows = response.data
+            this.userrows = response.data
           }
         })
         .catch(() => {
