@@ -17,6 +17,7 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime referred_at { get; set; }
 
+        public DoProfile? profile;
         public DoCandidate()
         {
             fk_profile = 0;
@@ -59,6 +60,13 @@ namespace RarApiConsole.dataObjects
                     if (second == true)
                     {
                         arr += ",";
+                    }
+                    foreach (var profile in myDB.profiles.ToList())
+                    {
+                        if (profile.object_key == obj.fk_profile)
+                        {
+                            obj.profile = profile;
+                        }
                     }
                     string json = JsonConvert.SerializeObject(obj);
 
