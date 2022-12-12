@@ -32,9 +32,6 @@ namespace RarApiConsole.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("object_key"));
 
                     b.Property<int>("fk_profile")
-                        .HasColumnType("int");
-
-                    b.Property<int>("profileobject_key")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("referred_at")
@@ -43,8 +40,6 @@ namespace RarApiConsole.Migrations
                     b.HasKey("object_key");
 
                     b.HasIndex("fk_profile");
-
-                    b.HasIndex("profileobject_key");
 
                     b.ToTable("candidates", "public");
                 });
@@ -58,7 +53,7 @@ namespace RarApiConsole.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("object_key"));
 
                     b.Property<string>("address")
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("email")
                         .HasColumnType("varchar(40)");
@@ -88,39 +83,25 @@ namespace RarApiConsole.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("object_key"));
 
-                    b.Property<int>("candidateobject_key")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("creation_dt")
                         .HasColumnType("timestamp");
 
                     b.Property<int>("fk_candidate")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("fk_scoreboard")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("fk_task")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("fk_user")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("modification_dt")
                         .HasColumnType("timestamp");
 
-                    b.Property<int>("scoreboardobject_key")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("taskobject_key")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("userobject_key")
-                        .HasColumnType("integer");
-
                     b.HasKey("object_key");
-
-                    b.HasIndex("candidateobject_key");
 
                     b.HasIndex("fk_candidate");
 
@@ -129,12 +110,6 @@ namespace RarApiConsole.Migrations
                     b.HasIndex("fk_task");
 
                     b.HasIndex("fk_user");
-
-                    b.HasIndex("scoreboardobject_key");
-
-                    b.HasIndex("taskobject_key");
-
-                    b.HasIndex("userobject_key");
 
                     b.ToTable("referrals", "public");
                 });
@@ -151,20 +126,15 @@ namespace RarApiConsole.Migrations
                         .HasColumnType("timestamp");
 
                     b.Property<int>("fk_user")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("userobject_key")
-                        .HasColumnType("integer");
-
                     b.HasKey("object_key");
 
                     b.HasIndex("fk_user");
-
-                    b.HasIndex("userobject_key");
 
                     b.ToTable("rewards", "public");
                 });
@@ -181,7 +151,7 @@ namespace RarApiConsole.Migrations
                         .HasColumnType("timestamp");
 
                     b.Property<int>("fk_user")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -190,14 +160,9 @@ namespace RarApiConsole.Migrations
                     b.Property<DateTime>("start_dt")
                         .HasColumnType("timestamp");
 
-                    b.Property<int>("userobject_key")
-                        .HasColumnType("integer");
-
                     b.HasKey("object_key");
 
                     b.HasIndex("fk_user");
-
-                    b.HasIndex("userobject_key");
 
                     b.ToTable("scoreboards", "public");
                 });
@@ -237,7 +202,7 @@ namespace RarApiConsole.Migrations
                         .HasColumnType("timestamp");
 
                     b.Property<int?>("fk_profile")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("modification_dt")
                         .HasColumnType("timestamp");
@@ -245,9 +210,6 @@ namespace RarApiConsole.Migrations
                     b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
-
-                    b.Property<int?>("profileobject_key")
-                        .HasColumnType("integer");
 
                     b.Property<int>("recruiter")
                         .HasColumnType("int");
@@ -260,8 +222,6 @@ namespace RarApiConsole.Migrations
 
                     b.HasIndex("fk_profile");
 
-                    b.HasIndex("profileobject_key");
-
                     b.ToTable("users", "public");
                 });
 
@@ -272,24 +232,10 @@ namespace RarApiConsole.Migrations
                         .HasForeignKey("fk_profile")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("RarApiConsole.dataObjects.DoProfile", "profile")
-                        .WithMany()
-                        .HasForeignKey("profileobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("profile");
                 });
 
             modelBuilder.Entity("RarApiConsole.dataObjects.DoReferral", b =>
                 {
-                    b.HasOne("RarApiConsole.dataObjects.DoCandidate", "candidate")
-                        .WithMany()
-                        .HasForeignKey("candidateobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RarApiConsole.dataObjects.DoCandidate", null)
                         .WithMany()
                         .HasForeignKey("fk_candidate")
@@ -313,32 +259,6 @@ namespace RarApiConsole.Migrations
                         .HasForeignKey("fk_user")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("RarApiConsole.dataObjects.DoScoreboard", "scoreboard")
-                        .WithMany()
-                        .HasForeignKey("scoreboardobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RarApiConsole.dataObjects.DoTask", "task")
-                        .WithMany()
-                        .HasForeignKey("taskobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RarApiConsole.dataObjects.DoUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("candidate");
-
-                    b.Navigation("scoreboard");
-
-                    b.Navigation("task");
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("RarApiConsole.dataObjects.DoReward", b =>
@@ -348,14 +268,6 @@ namespace RarApiConsole.Migrations
                         .HasForeignKey("fk_user")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("RarApiConsole.dataObjects.DoUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("RarApiConsole.dataObjects.DoScoreboard", b =>
@@ -365,14 +277,6 @@ namespace RarApiConsole.Migrations
                         .HasForeignKey("fk_user")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("RarApiConsole.dataObjects.DoUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userobject_key")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("RarApiConsole.dataObjects.DoUser", b =>
@@ -380,12 +284,6 @@ namespace RarApiConsole.Migrations
                     b.HasOne("RarApiConsole.dataObjects.DoProfile", null)
                         .WithMany()
                         .HasForeignKey("fk_profile");
-
-                    b.HasOne("RarApiConsole.dataObjects.DoProfile", "profile")
-                        .WithMany()
-                        .HasForeignKey("profileobject_key");
-
-                    b.Navigation("profile");
                 });
 #pragma warning restore 612, 618
         }

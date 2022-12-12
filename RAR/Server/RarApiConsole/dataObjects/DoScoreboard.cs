@@ -11,9 +11,8 @@ namespace RarApiConsole.dataObjects
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoUser")]
         public int fk_user { get; set; }
-        public DoUser user { get; set; }
 
         [Column(TypeName = "varchar(40)")]
         public string name { get; set; }
@@ -27,7 +26,6 @@ namespace RarApiConsole.dataObjects
         public DoScoreboard()
         {
             fk_user = 0;
-            user = new();
             name = "temp";
             start_dt = DateTime.Now;
         }
@@ -35,7 +33,6 @@ namespace RarApiConsole.dataObjects
         public DoScoreboard(int UserKey, string Name, DateTime StartDate)
         {
             fk_user = UserKey;
-            user = new();
             name = Name;
             start_dt = StartDate;
         }

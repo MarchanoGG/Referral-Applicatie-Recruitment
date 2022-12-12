@@ -11,9 +11,8 @@ namespace RarApiConsole.dataObjects
         [Key, Required]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoProfile")]
         public int? fk_profile { get; set; }
-        public DoProfile? profile { get; set; }
 
         [Column(TypeName = "varchar(100)"), Required]
         public string username { get; set; }

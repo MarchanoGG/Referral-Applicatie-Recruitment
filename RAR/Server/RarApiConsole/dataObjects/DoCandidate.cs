@@ -11,9 +11,8 @@ namespace RarApiConsole.dataObjects
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoProfile")]
         public int fk_profile { get; set; }
-        public DoProfile profile { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime referred_at { get; set; }
