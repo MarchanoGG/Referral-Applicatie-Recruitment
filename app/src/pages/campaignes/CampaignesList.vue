@@ -5,7 +5,7 @@
         <q-toolbar>
           <q-toolbar-title :shrink="true">Campaigns</q-toolbar-title>
           <q-separator vertical inset />
-          <q-btn @click="addform = true" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
+          <q-btn type="a" href="/campaignes/add" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
         </q-toolbar>
       </template>
 
