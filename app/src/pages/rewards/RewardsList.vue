@@ -154,13 +154,13 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-  {
-    name: 'awardAt',
-    label: 'Awarded at',
-    field: 'award_dt',
-    align: 'left',
-    sortable: true
-  }
+  // {
+  //   name: 'awardAt',
+  //   label: 'Awarded at',
+  //   field: 'award_dt',
+  //   align: 'left',
+  //   sortable: true
+  // }
 ]
 export default defineComponent({
   name: 'UserList',
@@ -182,10 +182,10 @@ export default defineComponent({
     console.log(default_item)
     return {
       rows: [],
+      rewardRows: [],
       isPwd: false,
       default_item: default_item,
       selected_item: default_item,
-      // rewardRows: [],
       // userRows: [],
     }
   },
@@ -246,11 +246,11 @@ export default defineComponent({
       const params = {
         params: { object_key: this.selected_item.object_key, }
       }
-      api.delete('/Users', params)
+      api.delete('/Rewards', params)
         .then((response) => {
           if (response.status == 200) {
             this.delform = false
-            this.getUsers()
+            this.getRewards()
             this.resetForm()
           }
         })
@@ -263,7 +263,9 @@ export default defineComponent({
     getRewards() {
       api.get('/Rewards')
         .then((response) => {
-          this.rewardRows = response.data
+          if (response.data && response.data.length > 0) {
+            this.rewardRows = response.data
+          }
         })
         .catch(() => {
         })
@@ -271,7 +273,9 @@ export default defineComponent({
     getUsers() {
       api.get('/Users')
         .then((response) => {
-          this.userRows = response.data
+          if (response.data && response.data.length > 0) {
+            this.userRows = response.data
+          }
         })
         .catch(() => {
         })
