@@ -222,7 +222,6 @@ export default defineComponent({
       })
       return item
     },
-    // also used for the editItem
     addItem() {
       api.post('/Users', this.selected_item)
         .then((response) => {
@@ -236,7 +235,13 @@ export default defineComponent({
         })
     },
     editItem() {
-      api.post('/Users', this.selected_item)
+      const params = {
+        username: this.selected_item.username,
+        password: this.selected_item.password,
+        recruiter: this.selected_item.recruiter,
+        object_key: this.selected_item.object_key,
+      }
+      api.put('/Users', params)
         .then((response) => {
           if (response.status == 200) {
             this.editform = false
