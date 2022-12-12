@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <q-table title="Users" dense :rows="tablerows" :columns="columns" row-key="id" :pagination="pagination">
+    <q-table dense :rows="tablerows" :columns="columns" row-key="id" :pagination="pagination">
       <template v-slot:top>
         <q-toolbar>
           <q-toolbar-title :shrink="true">Users</q-toolbar-title>

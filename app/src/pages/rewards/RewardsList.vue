@@ -163,7 +163,7 @@ const columns = [
   // }
 ]
 export default defineComponent({
-  name: 'UserList',
+  name: 'RewardsList',
   setup() {
     return {
       columns,
