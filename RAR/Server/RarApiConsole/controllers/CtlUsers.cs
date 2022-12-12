@@ -12,11 +12,21 @@ namespace RarApiConsole.controllers
     {
         private DoUser temp = new();
         private DatabaseContext db = new();
+        private static CtlUsers? instance;
 
         public CtlUsers()
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Users", HandleRequest);
+        }
+
+        public static CtlUsers Instance()
+        {
+            if (instance == null)
+            {
+                instance = new();
+            }
+            return instance;
         }
 
         public bool HandleRequest(HttpListenerContext aContext)
@@ -55,10 +65,11 @@ namespace RarApiConsole.controllers
             var response = aContext.Response;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                arr = temp.ReadSpecific(db, int.Parse(aRequest.QueryString.Get("object_key")));
+                arr = temp.ReadSpecific(db, int.Parse(ok));
             }
             else
             {
@@ -116,16 +127,21 @@ namespace RarApiConsole.controllers
 
                     if (pair.Key.Equals("profile"))
                     {
-                        int profileKey = ctlProfiles.CreateAction(JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value));
-                        if (profileKey > 0)
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
                         {
-                            obj.fk_profile = profileKey;
+                            int profileKey = ctlProfiles.CreateAction(profilePair);
+                            if (profileKey > 0)
+                            {
+                                obj.fk_profile = profileKey;
+                            }
                         }
                     }
                 }
 
                 if (temp.Create(db, obj) == true)
-                {
+                {   
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     retVal = true;
                 }
@@ -171,10 +187,11 @@ namespace RarApiConsole.controllers
                         {
                             obj.username = pair.Value;
                         }
-                        if (pair.Key.Equals("password"))
-                        {
-                            obj.password = GetHashString(pair.Value);
-                        }
+                        // Create new end point to update password
+                        //if (pair.Key.Equals("password"))
+                        //{
+                        //    obj.password = GetHashString(pair.Value);
+                        //}
                         if (pair.Key.Equals("recruiter"))
                         {
                             obj.recruiter = int.Parse(pair.Value);
@@ -182,7 +199,12 @@ namespace RarApiConsole.controllers
 
                         if (pair.Key.Equals("profile"))
                         {
-                            obj.fk_profile = ctlProfiles.UpdateAction(JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value), obj.fk_profile.Value);
+                            var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                            if(profilePair != null && obj.fk_profile != null)
+                            {
+                                obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
+                            }
                         }
                     }
 
@@ -220,15 +242,17 @@ namespace RarApiConsole.controllers
             string arr = "";
 
             var ctlProfiles = CtlProfiles.Instance();
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                if (db.users.Find(int.Parse(aRequest.QueryString.Get("object_key"))).fk_profile != null)
+                var tempObj = db.users.Find(int.Parse(ok));
+                if (tempObj != null && tempObj.fk_profile != null)
                 {
-                    ctlProfiles.DeleteAction(db.users.Find(int.Parse(aRequest.QueryString.Get("object_key"))).fk_profile.Value);
+                    ctlProfiles.DeleteAction(tempObj.fk_profile.Value);
                 }
 
-                if (temp.Delete(db, int.Parse(aRequest.QueryString.Get("object_key"))))
+                if (temp.Delete(db, int.Parse(ok)))
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     aResponse.ContentType = "application/json";
@@ -261,7 +285,7 @@ namespace RarApiConsole.controllers
         }
         public static byte[] GetHash(string inputString)
         {
-            byte[] arr = null;
+            byte[] arr;
             using (HashAlgorithm algorithm = SHA256.Create()) 
             {
                 arr = algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));

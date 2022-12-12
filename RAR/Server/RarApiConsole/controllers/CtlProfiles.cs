@@ -63,10 +63,11 @@ namespace RarApiConsole.controllers
             var response = aContext.Response;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                arr = temp.ReadSpecific(db, int.Parse(aRequest.QueryString.Get("object_key")));
+                arr = temp.ReadSpecific(db, int.Parse(ok));
             }
             else
             {
@@ -263,10 +264,11 @@ namespace RarApiConsole.controllers
             var aRequest = aContext.Request;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                if (DeleteAction(int.Parse(aRequest.QueryString.Get("object_key"))))
+                if (DeleteAction(int.Parse(ok)))
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     aResponse.ContentType = "application/json";

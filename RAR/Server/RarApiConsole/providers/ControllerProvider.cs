@@ -8,15 +8,15 @@ namespace RarApiConsole.providers
         public static void RegisterControllers()
         {
             TConnection connection = new();
-            CtlAuthentication authentication = new();
-            CtlCandidates candidates = new();
+            CtlAuthentication authentication = CtlAuthentication.Instance();
+            CtlCandidates candidates = CtlCandidates.Instance();
             CtlProfiles profiles = CtlProfiles.Instance();
-            CtlReferrals referrals = new();
-            CtlRewards rewards = new();
-            CtlScoreboards scoreboards = new();
-            CtlTasks tasks = new();
-            CtlUsers users = new();
-            CtlSystems systems = new();
+            CtlReferrals referrals = CtlReferrals.Instance();
+            CtlRewards rewards = CtlRewards.Instance();
+            CtlScoreboards scoreboards = CtlScoreboards.Instance();
+            CtlTasks tasks = CtlTasks.Instance();
+            CtlUsers users = CtlUsers.Instance();
+            CtlSystems systems = CtlSystems.Instance();
         }
     }
 }

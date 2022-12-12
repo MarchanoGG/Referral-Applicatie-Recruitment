@@ -11,11 +11,21 @@ namespace RarApiConsole.controllers
     {
         private DoUser temp = new();
         private DatabaseContext db = new();
+        private static CtlAuthentication? instance;
 
         public CtlAuthentication()
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Authentication", HandleRequest);
+        }
+
+        public static CtlAuthentication Instance()
+        {
+            if (instance == null)
+            {
+                instance = new();
+            }
+            return instance;
         }
 
         public bool HandleRequest(HttpListenerContext aContext)
@@ -119,7 +129,7 @@ namespace RarApiConsole.controllers
         }
         public static byte[] GetHash(string inputString)
         {
-            byte[] arr = null;
+            byte[] arr;
             using (HashAlgorithm algorithm = SHA256.Create())
             {
                 arr = algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));

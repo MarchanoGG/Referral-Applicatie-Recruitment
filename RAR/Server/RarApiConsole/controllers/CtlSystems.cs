@@ -9,10 +9,20 @@ namespace RarApiConsole.controllers
     internal class CtlSystems
     {
         private DatabaseContext db = new();
+        private static CtlSystems? instance;
         public CtlSystems()
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Systems/SeedDatabase", HandleSeeding);
+        }
+
+        public static CtlSystems Instance()
+        {
+            if (instance == null)
+            {
+                instance = new();
+            }
+            return instance;
         }
 
         public bool HandleSeeding(HttpListenerContext aContext)
