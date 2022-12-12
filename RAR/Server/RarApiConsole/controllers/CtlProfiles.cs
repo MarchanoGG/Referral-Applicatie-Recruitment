@@ -10,11 +10,21 @@ namespace RarApiConsole.controllers
     {
         private DoProfile temp = new();
         private DatabaseContext db = new();
+        private static CtlProfiles ?instance;
 
         public CtlProfiles()
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Profiles", HandleRequest);
+        }
+
+        public static CtlProfiles Instance()
+        {
+            if (instance == null)
+            {
+                instance = new();
+            }
+            return instance;
         }
 
         public bool HandleRequest(HttpListenerContext aContext)
@@ -93,37 +103,7 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoProfile();
-
-                foreach (var pair in keyPair)
-                {
-                    if (pair.Key.Equals("initials"))
-                    {
-                        obj.initials = pair.Value;
-                    }
-                    if (pair.Key.Equals("name"))
-                    {
-                        obj.name = pair.Value;
-                    }
-                    if (pair.Key.Equals("surname"))
-                    {
-                        obj.surname = pair.Value;
-                    }
-                    if (pair.Key.Equals("email"))
-                    {
-                        obj.email = pair.Value;
-                    }
-                    if (pair.Key.Equals("phone_number"))
-                    {
-                        obj.phone_number = pair.Value;
-                    }
-                    if (pair.Key.Equals("address"))
-                    {
-                        obj.address = pair.Value;
-                    }
-                }
-
-                if (temp.Create(db, obj) == true)
+                if (CreateAction(keyPair) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     retVal = true;
@@ -141,6 +121,48 @@ namespace RarApiConsole.controllers
             byte[] bytes = Encoding.UTF8.GetBytes(arr);
             aResponse.OutputStream.Write(bytes, 0, bytes.Length);
             aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public int CreateAction(Dictionary<string, string> aPair)
+        {
+            int retVal = 0;
+
+            var obj = new DoProfile();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Key.Equals("initials"))
+                {
+                    obj.initials = pair.Value;
+                }
+                if (pair.Key.Equals("name"))
+                {
+                    obj.name = pair.Value;
+                }
+                if (pair.Key.Equals("surname"))
+                {
+                    obj.surname = pair.Value;
+                }
+                if (pair.Key.Equals("email"))
+                {
+                    obj.email = pair.Value;
+                }
+                if (pair.Key.Equals("phone_number"))
+                {
+                    obj.phone_number = pair.Value;
+                }
+                if (pair.Key.Equals("address"))
+                {
+                    obj.address = pair.Value;
+                }
+            }
+
+            if (temp.Create(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
 
             return retVal;
         }
