@@ -10,7 +10,7 @@ namespace RarApiConsole.providers
             TConnection connection = new();
             CtlAuthentication authentication = new();
             CtlCandidates candidates = new();
-            CtlProfiles profiles = new();
+            CtlProfiles profiles = CtlProfiles.Instance();
             CtlReferrals referrals = new();
             CtlRewards rewards = new();
             CtlScoreboards scoreboards = new();

@@ -29,6 +29,9 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
 
+        public DoProfile ?profile;
+
+
         public DoUser() 
         {
             username = "temp";
@@ -73,6 +76,14 @@ namespace RarApiConsole.dataObjects
                     {
                         arr += ",";
                     }
+
+                    foreach (var profile in myDB.profiles.ToList())
+                    {
+                        if (profile.object_key == obj.fk_profile)
+                        {
+                            obj.profile = profile;
+                        }
+                    }    
 
                     string json = JsonConvert.SerializeObject(obj);
 

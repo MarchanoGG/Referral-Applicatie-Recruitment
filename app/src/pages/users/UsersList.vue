@@ -68,6 +68,25 @@
                 </q-input>
                 <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter?" />
               </div>
+
+              <div class="col-5">
+                <q-input filled v-model="selected_item.profile.initials" label="Your initials" hint="Initials"
+                  lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.name" label="Your firstname" hint="Firstname"
+                  lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.surname" label="Your surname" hint="Surname"
+                  lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.email" label="Your email" hint="Email" lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.phone_number" label="Your phone number"
+                  hint="Phone number" lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.address" label="Your address" hint="Address"
+                  lazy-rules />
+              </div>
             </div>
 
             <div class="col-5">
@@ -103,6 +122,25 @@
                   </template>
                 </q-input>
                 <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter" />
+              </div>
+
+              <div class="col-5">
+                <q-input filled v-model="selected_item.profile.initials" label="Your initials" hint="Initials"
+                  lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.name" label="Your firstname" hint="Firstname"
+                  lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.surname" label="Your surname" hint="Surname"
+                  lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.email" label="Your email" hint="Email" lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.phone_number" label="Your phone number"
+                  hint="Phone number" lazy-rules />
+
+                <q-input filled v-model="selected_item.profile.address" label="Your address" hint="Address"
+                  lazy-rules />
               </div>
             </div>
 
@@ -192,6 +230,14 @@ export default defineComponent({
       recruiter_bool: false,
       recruiter_str: "",
       object_key: null,
+      profile: {
+        initials: null,
+        name: null,
+        surname: null,
+        email: null,
+        phone_number: null,
+        address: null,
+      }
     }
     return {
       rows: [],
@@ -239,6 +285,12 @@ export default defineComponent({
         password: this.selected_item.password,
         recruiter: this.selected_item.recruiter,
         object_key: this.selected_item.object_key,
+        initials: this.selected_item.profile.initials,
+        name: this.selected_item.profile.name,
+        surname: this.selected_item.profile.surname,
+        email: this.selected_item.profile.email,
+        phone_number: this.selected_item.profile.phone_number,
+        address: this.selected_item.profile.address,
       }
       api.put('/Users', params)
         .then((response) => {

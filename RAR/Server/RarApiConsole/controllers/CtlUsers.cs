@@ -3,6 +3,7 @@ using System.Text;
 using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
+using Newtonsoft.Json;
 using System.Security.Cryptography;
 
 namespace RarApiConsole.controllers
@@ -88,6 +89,8 @@ namespace RarApiConsole.controllers
             var aResponse = aContext.Response;
             var aRequest = aContext.Request;
 
+            var ctlProfiles = CtlProfiles.Instance();
+
             string arr = "";
 
             var keyPair = formData.FormData.GetFormData(aRequest);
@@ -109,6 +112,15 @@ namespace RarApiConsole.controllers
                     if (pair.Key.Equals("recruiter"))
                     {
                         obj.recruiter = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        int profileKey = ctlProfiles.CreateAction(JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value));
+                        if (profileKey > 0)
+                        {
+                            obj.fk_profile = profileKey;
+                        }
                     }
                 }
 
