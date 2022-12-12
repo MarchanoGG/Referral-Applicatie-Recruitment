@@ -109,7 +109,7 @@
                 <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
                          :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-input filled label="Password *" :type="isPwd ? 'password' : 'text'"
+                <q-input filled label="Password *" v-model="selected_item.password"  :type="isPwd ? 'password' : 'text'"
                          hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
@@ -219,6 +219,7 @@ export default defineComponent({
       recruiter: 0,
       recruiter_bool: false,
       recruiter_str: "",
+      fk_profile: null,
       object_key: null,
       profile: {
         initials: null,
@@ -271,19 +272,7 @@ export default defineComponent({
         })
     },
     editItem() {
-      const params = {
-        username: this.selected_item.username,
-        password: this.selected_item.password,
-        recruiter: this.selected_item.recruiter,
-        object_key: this.selected_item.object_key,
-        initials: this.selected_item.profile.initials,
-        name: this.selected_item.profile.name,
-        surname: this.selected_item.profile.surname,
-        email: this.selected_item.profile.email,
-        phone_number: this.selected_item.profile.phone_number,
-        address: this.selected_item.profile.address,
-      }
-      api.put('/Users', params)
+      api.put('/Users', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
             this.editform = false

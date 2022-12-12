@@ -77,13 +77,7 @@ namespace RarApiConsole.dataObjects
                         arr += ",";
                     }
 
-                    foreach (var profile in myDB.profiles.ToList())
-                    {
-                        if (profile.object_key == obj.fk_profile)
-                        {
-                            obj.profile = profile;
-                        }
-                    }    
+                    obj.profile = myDB.profiles.Find(obj.fk_profile);
 
                     string json = JsonConvert.SerializeObject(obj);
 
@@ -210,6 +204,8 @@ namespace RarApiConsole.dataObjects
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
+
+                        myDB.ChangeTracker.Clear();
 
                         found = true;
                     }
