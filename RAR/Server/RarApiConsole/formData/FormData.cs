@@ -82,7 +82,10 @@ namespace RarApiConsole.formData
                         {
                            foreach(var pair in dictionary)
                             {
-                                retVal[pair.Key] = pair.Value.ToString();
+                                if(pair.Value != null)
+                                {
+                                    retVal[pair.Key] = pair.Value.ToString();
+                                }
                             }
                         }
                     }
