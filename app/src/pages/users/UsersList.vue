@@ -1,7 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <q-table title="Users" dense :rows="rows" :columns="columns" row-key="id" :loading="loading"
-      :pagination="pagination">
+    <q-table title="Users" dense :rows="tablerows" :columns="columns" row-key="id" :pagination="pagination">
       <template v-slot:top>
         <q-toolbar>
           <q-toolbar-title :shrink="true">Users</q-toolbar-title>
@@ -26,9 +25,9 @@
           <q-td auto-width>
             <q-btn-group>
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
-              <q-btn class="" color="secondary" dense @click="addform = true; selected_id = props.row.object_key;"
+              <q-btn class="" color="secondary" dense @click="editform = true; selected_item = props.row;"
                 :icon="'edit'" />
-              <q-btn class="" color="secondary" dense @click="delform = true; selected_id = props.row.object_key;"
+              <q-btn class="" color="secondary" dense @click="delform = true; selected_item = props.row;"
                 :icon="'delete'" />
             </q-btn-group>
           </q-td>
@@ -45,7 +44,7 @@
 
     </q-table>
 
-    <q-dialog v-model="addform">
+    <q-dialog v-model="addform" @hide="resetForm">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -57,17 +56,17 @@
           <q-form @submit="addItem" @reset="resetForm">
             <div class="row">
               <div class="col-5">
-                <q-input filled v-model="username" label="Your username *" hint="Userame" lazy-rules
+                <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-input filled label="Password *" v-model="password" :type="isPwd ? 'password' : 'text'"
+                <q-input filled label="Password *" v-model="selected_item.password" :type="isPwd ? 'password' : 'text'"
                   hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                       @click="isPwd = !isPwd" />
                   </template>
                 </q-input>
-                <q-toggle v-model="recruiter" label="Is a recruiter" />
+                <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter?" />
               </div>
             </div>
 
@@ -81,7 +80,7 @@
     </q-dialog>
 
     <!-- edit form -->
-    <!-- <q-dialog v-model="editform">
+    <q-dialog v-model="editform" @hide="resetForm">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -90,18 +89,35 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <UserEditFormVue :objectkey="selected_id" />
+          <q-form @submit="editItem" @reset="resetForm">
+            <div class="row">
+              <div class="col-5">
+                <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
+                  :rules="[val => val && val.length > 0 || 'Please type something']" />
+
+                <q-input filled label="Password *" v-model="selected_item.password" :type="isPwd ? 'password' : 'text'"
+                  hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
+                  <template v-slot:append>
+                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="isPwd = !isPwd" />
+                  </template>
+                </q-input>
+                <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter" />
+              </div>
+            </div>
+
+            <div class="col-5">
+              <q-btn label="Submit" type="submit" color="primary" />
+              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+            </div>
+          </q-form>
         </q-card-section>
 
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
-
       </q-card>
-    </q-dialog> -->
+    </q-dialog>
 
     <!-- delete form -->
-    <q-dialog v-model="delform">
+    <q-dialog v-model="delform" @hide="resetForm">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -121,7 +137,7 @@
 
 <script>
 import { api } from 'boot/axios'
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, computed } from 'vue'
 
 const columns = [
   {
@@ -145,7 +161,7 @@ const columns = [
   {
     name: 'recruiter',
     label: 'Is a recruiter',
-    field: 'recruiter',
+    field: 'recruiter_str',
     align: 'left',
     sortable: true
   },
@@ -158,39 +174,74 @@ const columns = [
   }
 ]
 export default defineComponent({
-  name: 'UserList'
-  , setup() {
+  name: 'UserList',
+  setup() {
     return {
       columns,
       pagination: { rowsPerPage: 10 },
       addform: ref(false),
       delform: ref(false),
+      editform: ref(false),
     }
   },
   data() {
-    return {
+    const default_item = {
       username: null,
       password: null,
-      recruiter: false,
-      selected_id: null,
+      recruiter: 0,
+      recruiter_bool: false,
+      recruiter_str: "",
+      object_key: null,
+    }
+    return {
       rows: [],
+      isPwd: false,
+      default_item: default_item,
+      selected_item: default_item,
     }
   },
-  methods: {
-    // also the edit
-    addItem() {
-      const params = reactive({
-        username: this.username,
-        password: this.password,
-        recruiter: this.recruiter ? "1" : "0",
-      });
+  computed: {
+    tablerows() {
+      return this.rows.map(this.readyRowItem)
+    }
 
-      api.post('/Users', params)
+  },
+  methods: {
+    readyRowItem(item) {
+      item.recruiter_bool = computed({
+        get: () => Boolean(item.recruiter),
+        set: (val) => {
+          item.recruiter = Number(val)
+        }
+      })
+      item.recruiter_str = computed({
+        get: () => item.recruiter ? 'Yes' : 'No',
+        set: (val) => {
+          item.recruiter = Number(val)
+        }
+      })
+      return item
+    },
+    // also used for the editItem
+    addItem() {
+      api.post('/Users', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
             this.addform = false
             this.getUsers()
-            this.reset()
+            this.resetForm()
+          }
+        })
+        .catch(() => {
+        })
+    },
+    editItem() {
+      api.post('/Users', this.selected_item)
+        .then((response) => {
+          if (response.status == 200) {
+            this.editform = false
+            this.getUsers()
+            this.resetForm()
           }
         })
         .catch(() => {
@@ -198,24 +249,21 @@ export default defineComponent({
     },
     deleteItem() {
       const params = {
-        params: { object_key: this.selected_id, }
+        params: { object_key: this.selected_item.object_key, }
       }
       api.delete('/Users', params)
         .then((response) => {
           if (response.status == 200) {
             this.delform = false
             this.getUsers()
-            this.reset()
+            this.resetForm()
           }
         })
         .catch(() => {
         })
     },
     resetForm() {
-      this.username = null
-      this.password = null
-      this.recruiter = false
-      this.selected_id = null
+      this.selected_item = this.readyRowItem(this.default_item)
     },
     getUsers() {
       api.get('/Users')
