@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <q-table title="Users" dense :rows="tablerows" :columns="columns" row-key="id" :pagination="pagination">
+    <q-table dense :rows="tablerows" :columns="columns" row-key="id" :pagination="pagination">
       <template v-slot:top>
         <q-toolbar>
           <q-toolbar-title :shrink="true">Users</q-toolbar-title>
@@ -57,30 +57,35 @@
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
-                         :rules="[val => val && val.length > 0 || 'Please type something']" />
+                  :rules="[val => val && val.length > 0 || 'Please type something']" />
 
                 <q-input filled label="Password *" v-model="selected_item.password" :type="isPwd ? 'password' : 'text'"
-                         hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
+                  hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                            @click="isPwd = !isPwd" />
+                      @click="isPwd = !isPwd" />
                   </template>
                 </q-input>
                 <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter?" />
               </div>
 
               <div class="col-5">
-                <q-input filled v-model="selected_item.profile.initials" label="Your initials" hint="Initials" lazy-rules />
+                <q-input filled v-model="selected_item.profile.initials" label="Your initials" hint="Initials"
+                  lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.name" label="Your firstname" hint="Firstname" lazy-rules />
+                <q-input filled v-model="selected_item.profile.name" label="Your firstname" hint="Firstname"
+                  lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.surname" label="Your surname" hint="Surname" lazy-rules />
+                <q-input filled v-model="selected_item.profile.surname" label="Your surname" hint="Surname"
+                  lazy-rules />
 
                 <q-input filled v-model="selected_item.profile.email" label="Your email" hint="Email" lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.phone_number" label="Your phone number" hint="Phone number" lazy-rules />
+                <q-input filled v-model="selected_item.profile.phone_number" label="Your phone number"
+                  hint="Phone number" lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.address" label="Your address" hint="Address" lazy-rules />
+                <q-input filled v-model="selected_item.profile.address" label="Your address" hint="Address"
+                  lazy-rules />
               </div>
             </div>
 
@@ -107,30 +112,35 @@
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
-                         :rules="[val => val && val.length > 0 || 'Please type something']" />
+                  :rules="[val => val && val.length > 0 || 'Please type something']" />
 
                 <q-input filled label="Password *" v-model="selected_item.password"  :type="isPwd ? 'password' : 'text'"
                          hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                            @click="isPwd = !isPwd" />
+                      @click="isPwd = !isPwd" />
                   </template>
                 </q-input>
                 <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter" />
               </div>
 
               <div class="col-5">
-                <q-input filled v-model="selected_item.profile.initials" label="Your initials" hint="Initials" lazy-rules />
+                <q-input filled v-model="selected_item.profile.initials" label="Your initials" hint="Initials"
+                  lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.name" label="Your firstname" hint="Firstname" lazy-rules />
+                <q-input filled v-model="selected_item.profile.name" label="Your firstname" hint="Firstname"
+                  lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.surname" label="Your surname" hint="Surname" lazy-rules />
+                <q-input filled v-model="selected_item.profile.surname" label="Your surname" hint="Surname"
+                  lazy-rules />
 
                 <q-input filled v-model="selected_item.profile.email" label="Your email" hint="Email" lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.phone_number" label="Your phone number" hint="Phone number" lazy-rules />
+                <q-input filled v-model="selected_item.profile.phone_number" label="Your phone number"
+                  hint="Phone number" lazy-rules />
 
-                <q-input filled v-model="selected_item.profile.address" label="Your address" hint="Address" lazy-rules />
+                <q-input filled v-model="selected_item.profile.address" label="Your address" hint="Address"
+                  lazy-rules />
               </div>
             </div>
 
@@ -241,7 +251,6 @@ export default defineComponent({
     tablerows() {
       return this.rows.map(this.readyRowItem)
     }
-
   },
   methods: {
     readyRowItem(item) {
@@ -304,7 +313,9 @@ export default defineComponent({
     getUsers() {
       api.get('/Users')
         .then((response) => {
-          this.rows = response.data
+          if (response.data && response.data.length > 0) {
+            this.rows = response.data
+          }
         })
         .catch(() => {
         })
