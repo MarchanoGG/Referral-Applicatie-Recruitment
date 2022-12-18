@@ -58,6 +58,12 @@ const linksList = [
     link: '/candidates'
   },
   {
+    title: 'Scoreboards',
+    // caption: '',
+    icon: 'leaderboard',
+    link: '/scoreboards'
+  },
+  {
     title: 'Rewards',
     // caption: '',
     icon: 'emoji_events',
@@ -74,12 +80,6 @@ const linksList = [
     // caption: '',
     icon: 'checklist',
     link: '/campaignes'
-  },
-  {
-    title: 'Scoreboards',
-    // caption: '',
-    icon: 'leaderboard',
-    link: '/scoreboards'
   },
   {
     title: 'Employees',

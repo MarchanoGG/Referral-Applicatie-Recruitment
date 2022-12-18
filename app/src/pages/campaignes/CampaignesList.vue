@@ -137,7 +137,7 @@
 
 <script>
 import { api } from 'boot/axios'
-import { defineComponent, ref, reactive, computed } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 
 const columns = [
   {
@@ -178,7 +178,7 @@ const columns = [
   },
 ]
 export default defineComponent({
-  name: 'CampagnesList',
+  name: 'CampaignesList',
   setup() {
     return {
       columns,
@@ -190,11 +190,7 @@ export default defineComponent({
   },
   data() {
     const default_item = {
-      username: null,
-      password: null,
-      recruiter: 0,
-      recruiter_bool: false,
-      recruiter_str: "",
+      scoreboard: null,
       object_key: null,
     }
     return {
@@ -274,6 +270,16 @@ export default defineComponent({
     },
     resetForm() {
       this.selected_item = this.readyRowItem(this.default_item)
+    },
+    getScoreboards() {
+      api.get('/Scoreboards')
+        .then((response) => {
+          if (response.data && response.data.length > 0) {
+            this.scoreboardrows = response.data
+          }
+        })
+        .catch(() => {
+        })
     },
     getReferrals() {
       api.get('/Referrals')
