@@ -184,6 +184,8 @@ namespace RarApiConsole.dataObjects
 
                         myDB.SaveChanges();
 
+                        myDB.ChangeTracker.Clear();
+
                         found = true;
                     }
                     catch (Exception ex)

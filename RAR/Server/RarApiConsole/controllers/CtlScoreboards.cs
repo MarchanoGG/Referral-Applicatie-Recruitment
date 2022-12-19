@@ -10,11 +10,21 @@ namespace RarApiConsole.controllers
     {
         private DoScoreboard temp = new();
         private DatabaseContext db = new();
+        private static CtlScoreboards? instance;
 
         public CtlScoreboards()
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Scoreboards", HandleRequest);
+        }
+
+        public static CtlScoreboards Instance()
+        {
+            if (instance == null)
+            {
+                instance = new();
+            }
+            return instance;
         }
 
         public bool HandleRequest(HttpListenerContext aContext)
@@ -53,10 +63,11 @@ namespace RarApiConsole.controllers
             var response = aContext.Response;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                arr = temp.ReadSpecific(db, int.Parse(aRequest.QueryString.Get("object_key")));
+                arr = temp.ReadSpecific(db, int.Parse(ok));
             }
             else
             {
@@ -208,10 +219,11 @@ namespace RarApiConsole.controllers
             var aRequest = aContext.Request;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                if (temp.Delete(db, int.Parse(aRequest.QueryString.Get("object_key"))))
+                if (temp.Delete(db, int.Parse(ok)))
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     aResponse.ContentType = "application/json";

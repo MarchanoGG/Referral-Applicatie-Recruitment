@@ -84,7 +84,12 @@ namespace RarApiConsole.formData
                             {
                                 if(pair.Value != null)
                                 {
-                                    retVal[pair.Key] = pair.Value.ToString();
+                                    var val = pair.Value.ToString();
+
+                                    if(val != null)
+                                    {
+                                        retVal[pair.Key] = val;
+                                    }
                                 }
                             }
                         }

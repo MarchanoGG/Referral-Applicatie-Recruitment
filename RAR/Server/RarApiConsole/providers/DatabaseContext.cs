@@ -15,7 +15,6 @@ namespace RarApiConsole.providers
         public DbSet<DoCandidate> candidates { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             var s = TSettings.Instance();
             var conf = s.GetDataBase();
 
