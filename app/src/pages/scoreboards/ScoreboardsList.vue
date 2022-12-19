@@ -138,7 +138,7 @@ const columns = [
   {
     name: 'object_key',
     required: true,
-    label: 'Key',
+    label: '#',
     align: 'left',
     field: 'object_key',
     format: val => `${val}`,
