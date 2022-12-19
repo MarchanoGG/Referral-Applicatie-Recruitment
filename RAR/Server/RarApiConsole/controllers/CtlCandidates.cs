@@ -174,15 +174,15 @@ namespace RarApiConsole.controllers
                         obj.object_key = int.Parse(pair.Value);
                         keyIsSet = true;
                     }
-                    if (pair.Key.Equals("profile"))
-                    {
-                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+                    //if (pair.Key.Equals("profile"))
+                    //{
+                    //    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
 
-                        if (profilePair != null && obj.fk_profile != null)
-                        {
-                            obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
-                        }
-                    }
+                    //    if (profilePair != null && obj.fk_profile != null)
+                    //    {
+                    //        obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
+                    //    }
+                    //}
                 }
 
                 if ((keyIsSet == true) && (temp.Update(db, obj) == true))
