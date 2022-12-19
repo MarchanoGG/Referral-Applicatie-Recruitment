@@ -3,7 +3,7 @@ using System.Text;
 
 namespace RAR
 {
-  public class TServer
+    public class TServer
     {
         HttpClient d_client = new HttpClient();
         public static bool d_IsServerRunning = false;
@@ -111,6 +111,7 @@ namespace RAR
                 HttpListenerRequest req = ctx.Request;
                 HttpListenerResponse resp = ctx.Response;
 
+
                 if((req.Url != null) && (req.RawUrl != null))
                 {
                     if (s_logging == 1)
@@ -145,7 +146,14 @@ namespace RAR
                         url = url.Substring(0, url.IndexOf('?'));
                     }
 
-                    if (s_callbackMethod.ContainsKey(url))
+                    if (ctx.Request.HttpMethod == "OPTIONS")
+                    {
+                        resp.StatusCode = (int)HttpStatusCode.OK;
+                        resp.Headers.Add("Access-Control-Allow-Origin", "*");
+                        resp.Headers.Add("Access-Control-Allow-Headers", "content-type");
+                        resp.OutputStream.Close();
+                    }
+                    else if (s_callbackMethod.ContainsKey(url))
                     {
                         s_callbackMethod[url](ctx);
                     }

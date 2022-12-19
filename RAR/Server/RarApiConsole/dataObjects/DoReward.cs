@@ -11,7 +11,7 @@ namespace RarApiConsole.dataObjects
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoUser")]
         public int fk_user { get; set; }
 
         [Column(TypeName = "varchar(50)")]
@@ -189,6 +189,8 @@ namespace RarApiConsole.dataObjects
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
+
+                        myDB.ChangeTracker.Clear();
 
                         found = true;
                     }

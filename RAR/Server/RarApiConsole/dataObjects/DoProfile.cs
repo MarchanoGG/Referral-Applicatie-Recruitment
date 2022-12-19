@@ -26,8 +26,11 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "varchar(30)")]
         public string? phone_number { get; set; }
 
-        [Column(TypeName = "varchar(10)")]
+        [Column(TypeName = "varchar(100)")]
         public string? address { get; set; }
+        public string? fullname { 
+            get { return $"{name} {surname}"; }
+        }
 
 
         public DoProfile()
@@ -177,6 +180,8 @@ namespace RarApiConsole.dataObjects
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
+
+                        myDB.ChangeTracker.Clear();
 
                         found = true;
                     }

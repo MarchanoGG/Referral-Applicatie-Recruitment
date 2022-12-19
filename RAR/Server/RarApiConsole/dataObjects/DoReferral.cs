@@ -11,23 +11,29 @@ namespace RarApiConsole.dataObjects
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+
+        [ForeignKey("DoUser")]
         public int fk_user { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoTask")]
         public int fk_task { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoCandidate")]
         public int fk_candidate { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoScoreboard")]
         public int fk_scoreboard { get; set; }
 
-        [Column(TypeName = "timestamp")]
+        [Column(TypeName = "timestamp"), Required]
         public DateTime creation_dt { get; set; }
 
-        [Column(TypeName = "timestamp")]
+        [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
+        public DoUser? user;
+        public DoTask? task;
+        public DoCandidate? candidate;
+        public DoScoreboard? scoreboard;
+        public DoProfile? profile;
 
         public DoReferral()
         {
@@ -88,6 +94,42 @@ namespace RarApiConsole.dataObjects
                     {
                         arr += ",";
                     }
+                    foreach (var user in myDB.users.ToList())
+                    {
+                        if (user.object_key == obj.fk_user)
+                        {
+                            obj.user = user;
+                        }
+                    }
+                    foreach (var task in myDB.tasks.ToList())
+                    {
+                        if (task.object_key == obj.fk_task)
+                        {
+                            obj.task = task;
+                        }
+                    }
+                    foreach (var candidate in myDB.candidates.ToList())
+                    {
+                        if (candidate.object_key == obj.fk_candidate)
+                        {
+                            obj.candidate = candidate;
+                        }
+                    }
+                    foreach (var scoreboard in myDB.scoreboards.ToList())
+                    {
+                        if (scoreboard.object_key == obj.fk_scoreboard)
+                        {
+                            obj.scoreboard = scoreboard;
+                        }
+                    }
+                    foreach (var profile in myDB.profiles.ToList())
+                    {
+                        if (profile.object_key == obj.candidate?.fk_profile)
+                        {
+                            obj.profile = profile;
+                        }
+                    }
+
                     string json = JsonConvert.SerializeObject(obj);
 
                     if (json.Length > 0)
@@ -210,6 +252,8 @@ namespace RarApiConsole.dataObjects
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
+
+                        myDB.ChangeTracker.Clear();
 
                         found = true;
                     }

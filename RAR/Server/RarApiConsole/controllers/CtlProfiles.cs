@@ -10,11 +10,21 @@ namespace RarApiConsole.controllers
     {
         private DoProfile temp = new();
         private DatabaseContext db = new();
+        private static CtlProfiles ?instance;
 
         public CtlProfiles()
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Profiles", HandleRequest);
+        }
+
+        public static CtlProfiles Instance()
+        {
+            if (instance == null)
+            {
+                instance = new();
+            }
+            return instance;
         }
 
         public bool HandleRequest(HttpListenerContext aContext)
@@ -53,10 +63,11 @@ namespace RarApiConsole.controllers
             var response = aContext.Response;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                arr = temp.ReadSpecific(db, int.Parse(aRequest.QueryString.Get("object_key")));
+                arr = temp.ReadSpecific(db, int.Parse(ok));
             }
             else
             {
@@ -93,37 +104,7 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoProfile();
-
-                foreach (var pair in keyPair)
-                {
-                    if (pair.Key.Equals("initials"))
-                    {
-                        obj.initials = pair.Value;
-                    }
-                    if (pair.Key.Equals("name"))
-                    {
-                        obj.name = pair.Value;
-                    }
-                    if (pair.Key.Equals("surname"))
-                    {
-                        obj.surname = pair.Value;
-                    }
-                    if (pair.Key.Equals("email"))
-                    {
-                        obj.email = pair.Value;
-                    }
-                    if (pair.Key.Equals("phone_number"))
-                    {
-                        obj.phone_number = pair.Value;
-                    }
-                    if (pair.Key.Equals("address"))
-                    {
-                        obj.address = pair.Value;
-                    }
-                }
-
-                if (temp.Create(db, obj) == true)
+                if (CreateAction(keyPair) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     retVal = true;
@@ -141,6 +122,48 @@ namespace RarApiConsole.controllers
             byte[] bytes = Encoding.UTF8.GetBytes(arr);
             aResponse.OutputStream.Write(bytes, 0, bytes.Length);
             aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public int CreateAction(Dictionary<string, string> aPair)
+        {
+            int retVal = 0;
+
+            var obj = new DoProfile();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Key.Equals("initials"))
+                {
+                    obj.initials = pair.Value;
+                }
+                if (pair.Key.Equals("name"))
+                {
+                    obj.name = pair.Value;
+                }
+                if (pair.Key.Equals("surname"))
+                {
+                    obj.surname = pair.Value;
+                }
+                if (pair.Key.Equals("email"))
+                {
+                    obj.email = pair.Value;
+                }
+                if (pair.Key.Equals("phone_number"))
+                {
+                    obj.phone_number = pair.Value;
+                }
+                if (pair.Key.Equals("address"))
+                {
+                    obj.address = pair.Value;
+                }
+            }
+
+            if (temp.Create(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
 
             return retVal;
         }
@@ -158,43 +181,16 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoProfile();
-                bool keyIsSet = false;
-
+                int objectKey = 0;
                 foreach (var pair in keyPair)
                 {
-                    if (pair.Key.Equals("initials"))
-                    {
-                        obj.initials = pair.Value;
-                    }
-                    if (pair.Key.Equals("name"))
-                    {
-                        obj.name = pair.Value;
-                    }
-                    if (pair.Key.Equals("surname"))
-                    {
-                        obj.surname = pair.Value;
-                    }
-                    if (pair.Key.Equals("email"))
-                    {
-                        obj.email = pair.Value;
-                    }
-                    if (pair.Key.Equals("phone_number"))
-                    {
-                        obj.phone_number = pair.Value;
-                    }
-                    if (pair.Key.Equals("address"))
-                    {
-                        obj.address = pair.Value;
-                    }
                     if (pair.Key.Equals("object_key"))
                     {
-                        obj.object_key = int.Parse(pair.Value);
-                        keyIsSet = true;
+                        objectKey = int.Parse(pair.Value);
                     }
                 }
 
-                if ((keyIsSet == true) && (temp.Update(db, obj) == true))
+                if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     retVal = true;
@@ -216,6 +212,50 @@ namespace RarApiConsole.controllers
             return retVal;
         }
 
+        public int UpdateAction(Dictionary<string, string> aPair, int aObjectKey)
+        {
+            int retVal = 0;
+
+            var obj = new DoProfile();
+
+            obj.object_key = aObjectKey;
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Key.Equals("initials"))
+                {
+                    obj.initials = pair.Value;
+                }
+                if (pair.Key.Equals("name"))
+                {
+                    obj.name = pair.Value;
+                }
+                if (pair.Key.Equals("surname"))
+                {
+                    obj.surname = pair.Value;
+                }
+                if (pair.Key.Equals("email"))
+                {
+                    obj.email = pair.Value;
+                }
+                if (pair.Key.Equals("phone_number"))
+                {
+                    obj.phone_number = pair.Value;
+                }
+                if (pair.Key.Equals("address"))
+                {
+                    obj.address = pair.Value;
+                }
+            }
+
+            if (temp.Update(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
+
+            return retVal;
+        }
+
         bool Delete(HttpListenerContext aContext)
         {
             bool retVal = false;
@@ -224,10 +264,11 @@ namespace RarApiConsole.controllers
             var aRequest = aContext.Request;
 
             string arr = "";
+            var ok = aRequest.QueryString.Get("object_key");
 
-            if (aRequest.QueryString.HasKeys() == true)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
-                if (temp.Delete(db, int.Parse(aRequest.QueryString.Get("object_key"))))
+                if (DeleteAction(int.Parse(ok)))
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     aResponse.ContentType = "application/json";
@@ -246,6 +287,18 @@ namespace RarApiConsole.controllers
             byte[] bytes = Encoding.UTF8.GetBytes(arr);
             aResponse.OutputStream.Write(bytes, 0, bytes.Length);
             aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public bool DeleteAction(int aObjectKey)
+        {
+            bool retVal = false;
+
+            if (temp.Delete(db, aObjectKey))
+            {
+                retVal = true;
+            }
 
             return retVal;
         }

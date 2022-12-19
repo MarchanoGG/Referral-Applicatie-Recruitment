@@ -11,12 +11,13 @@ namespace RarApiConsole.dataObjects
         [Key]
         public int object_key { get; set; }
 
-        [Column(TypeName = "int")]
+        [ForeignKey("DoProfile")]
         public int fk_profile { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime referred_at { get; set; }
 
+        public DoProfile? profile;
         public DoCandidate()
         {
             fk_profile = 0;
@@ -59,6 +60,13 @@ namespace RarApiConsole.dataObjects
                     if (second == true)
                     {
                         arr += ",";
+                    }
+                    foreach (var profile in myDB.profiles.ToList())
+                    {
+                        if (profile.object_key == obj.fk_profile)
+                        {
+                            obj.profile = profile;
+                        }
                     }
                     string json = JsonConvert.SerializeObject(obj);
 
@@ -182,6 +190,8 @@ namespace RarApiConsole.dataObjects
                         myDB.Entry(aObject).State = EntityState.Modified;
 
                         myDB.SaveChanges();
+
+                        myDB.ChangeTracker.Clear();
 
                         found = true;
                     }

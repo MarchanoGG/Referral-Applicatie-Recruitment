@@ -40,6 +40,12 @@ const linksList = [
     link: '/'
   },
   {
+    title: 'Login',
+    // caption: '',
+    icon: 'login',
+    link: '/login'
+  },
+  {
     title: 'Users',
     // caption: '',
     icon: 'manage_accounts',
@@ -50,6 +56,12 @@ const linksList = [
     // caption: '',
     icon: 'people',
     link: '/candidates'
+  },
+  {
+    title: 'Scoreboards',
+    // caption: '',
+    icon: 'leaderboard',
+    link: '/scoreboards'
   },
   {
     title: 'Rewards',
@@ -68,12 +80,6 @@ const linksList = [
     // caption: '',
     icon: 'checklist',
     link: '/campaignes'
-  },
-  {
-    title: 'Scoreboards',
-    // caption: '',
-    icon: 'leaderboard',
-    link: '/scoreboards'
   },
   {
     title: 'Employees',

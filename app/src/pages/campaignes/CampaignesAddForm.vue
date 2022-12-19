@@ -1,86 +1,139 @@
 <template>
-    <div class="q-pa-md" style="max-width: 400px">
+    <div class="q-pa-md">
+        <q-form>
+            <q-stepper v-model="step" ref="stepper" color="primary" animated>
+                <q-step :name="1" title="Select Scoreboard" icon="settings" :done="step > 1">
+                    <div class="row">
+                        <div class="col-5">
+                            <q-select v-model="selected_item.scoreboard" :options="scoreboardrows"
+                                option-value="object_key" option-label="name" />
+                        </div>
+                    </div>
+                </q-step>
 
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-            <q-input filled v-model="name" label="Your name *" hint="Name and surname" lazy-rules
-                :rules="[val => val && val.length > 0 || 'Please type something']" />
+                <q-step :name="2" title="Select Recruiter" icon="create_new_folder" :done="step > 2">
+                    <div class="row">
+                        <div class="col-5">
+                            <q-select v-model="selected_item.recruiter" :options="recruiterrows"
+                                option-value="object_key" option-label="username" :multiple="true" :use-chips="true" />
+                        </div>
+                    </div>
+                </q-step>
 
-            <q-input filled v-model="surname" label="Your surname *" hint="Surname" lazy-rules
-                :rules="[val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="email" label="Your email *" hint="Email" lazy-rules
-                :rules="[val => val && val.length > 0 || 'Please type something']" />
-
-            <q-input filled v-model="phonenumber" label="Your Phone number *" hint="Phone number" lazy-rules
-                :rules="[val => val && val.length > 0 || 'Please type something']" />
-
-            <q-date filled v-model="age" title="Birthdate" subtitle lazy-rules />
-
-            <q-toggle v-model="accept" label="I accept the license and terms" />
-
-            <div>
-                <q-btn label="Submit" type="submit" color="primary" />
-                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-            </div>
+                <q-step :name="3" title="Select Candidate" icon="add_comment" :done="step > 3">
+                    <div class="row">
+                        <div class="col-5">
+                            <q-select v-model="selected_item.candidate" :options="candidaterows"
+                                option-value="object_key" :option-label="profilefullname" :multiple="true"
+                                :use-chips="true" />
+                        </div>
+                    </div>
+                </q-step>
+                <q-step :name="4" title="Select Tasks" icon="add_comment" :done="step > 4">
+                    <div class="row">
+                        <div class="col-5">
+                            <q-select v-model="selected_item.task" :options="taskrows" option-value="object_key"
+                                option-label="name" :multiple="true" :use-chips="true" />
+                        </div>
+                    </div>
+                </q-step>
+                <q-step :name="5" title="Finish" icon="add_comment">
+                </q-step>
+                <template v-slot:navigation>
+                    <q-stepper-navigation>
+                        <q-btn @click="$refs.stepper.next()" color="primary"
+                            :label="step === 4 ? 'Finish' : 'Continue'" />
+                        <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
+                            class="q-ml-sm" />
+                    </q-stepper-navigation>
+                </template>
+            </q-stepper>
         </q-form>
-
     </div>
+
 </template>
   
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+import { api } from 'boot/axios'
+import { defineComponent, ref, computed } from 'vue'
 
 export default {
+    name: 'CampaignesAddForm',
     setup() {
-        const $q = useQuasar()
-
-        const name = ref(null)
-        const surname = ref(null)
-        const email = ref(null)
-        const phonenumber = ref(null)
-        const age = ref('1980/01/01')
-        const accept = ref(false)
-
         return {
-            name,
-            surname,
-            email,
-            phonenumber,
-            age,
-            accept,
-
-            onSubmit() {
-                if (accept.value !== true) {
-                    $q.notify({
-                        color: 'red-5',
-                        textColor: 'white',
-                        icon: 'warning',
-                        message: 'You need to accept the license and terms first'
-                    })
-                }
-                else {
-                    $q.notify({
-                        color: 'green-4',
-                        textColor: 'white',
-                        icon: 'cloud_done',
-                        message: 'Submitted'
-                    })
-                }
-            },
-
-            onReset() {
-                name.value = null
-                age.value = null
-                accept.value = false
-            },
-
-            setCalendarTo() {
-                year = '1980'
-                month = '1'
-            }
         }
-    }
+    },
+    data() {
+        const default_item = {
+            scoreboard: null,
+            recruiter: null,
+            candidate: null,
+            task: null,
+            object_key: null,
+        }
+        return {
+            step: ref(1),
+            rows: [],
+            recruiterrows: [],
+            scoreboardrows: [],
+            candidaterows: [],
+            taskrows: [],
+            isPwd: false,
+            default_item: default_item,
+            selected_item: default_item,
+        }
+    },
+    methods: {
+        getScoreboards() {
+            api.get('/Scoreboards')
+                .then((response) => {
+                    if (response.data && response.data.length > 0) {
+                        this.scoreboardrows = response.data
+                    }
+                })
+                .catch(() => {
+                })
+        },
+        getRecruiter() {
+            api.get('/Users')
+                .then((response) => {
+                    if (response.data && response.data.length > 0) {
+                        this.recruiterrows = response.data
+                    }
+                })
+                .catch(() => {
+                })
+        },
+        getCandidate() {
+            api.get('/Candidates')
+                .then((response) => {
+                    if (response.data && response.data.length > 0) {
+                        this.candidaterows = response.data
+                    }
+                })
+                .catch(() => {
+                })
+        },
+        getTask() {
+            api.get('/Tasks')
+                .then((response) => {
+                    if (response.data && response.data.length > 0) {
+                        this.taskrows = response.data
+                    }
+                })
+                .catch(() => {
+                })
+        },
+        profilefullname(item) {
+            return item?.profile?.surname
+        }
+    },
+    mounted() {
+        this.getScoreboards()
+        this.getRecruiter()
+        this.getCandidate()
+        this.getTask()
+    },
 }
 </script>
   
