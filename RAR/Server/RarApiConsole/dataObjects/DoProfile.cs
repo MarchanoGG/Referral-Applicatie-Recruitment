@@ -28,6 +28,9 @@ namespace RarApiConsole.dataObjects
 
         [Column(TypeName = "varchar(100)")]
         public string? address { get; set; }
+        public string? fullname { 
+            get { return $"{name} {surname}"; }
+        }
 
 
         public DoProfile()
