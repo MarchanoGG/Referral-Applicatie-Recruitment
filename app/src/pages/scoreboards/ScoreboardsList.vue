@@ -87,17 +87,12 @@
           <q-form @submit="editItem" @reset="resetForm">
             <div class="row">
               <div class="col-5">
-                <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
+                <q-input filled v-model="selected_item.name" label="Your username *" hint="Userame" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
-
-                <q-input filled label="Password *" v-model="selected_item.password" :type="isPwd ? 'password' : 'text'"
-                  hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
-                  <template v-slot:append>
-                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                      @click="isPwd = !isPwd" />
-                  </template>
-                </q-input>
-                <q-toggle v-model="selected_item.recruiter_bool" label="Is a recruiter" />
+                <q-select filled v-model="selected_item.fk_user" :options="userrows" option-value="object_key"
+                  option-label="username" label="Standard" emit-value />
+                <q-date v-model="selected_item.start_dt" subtitle="Start Date" />
+                <q-date v-model="selected_item.end_dt" subtitle="End Date" />
               </div>
             </div>
 
@@ -138,7 +133,7 @@ const columns = [
   {
     name: 'object_key',
     required: true,
-    label: 'Key',
+    label: '#',
     align: 'left',
     field: 'object_key',
     format: val => `${val}`,
@@ -229,13 +224,7 @@ export default defineComponent({
         })
     },
     editItem() {
-      const params = {
-        username: this.selected_item.username,
-        password: this.selected_item.password,
-        recruiter: this.selected_item.recruiter,
-        object_key: this.selected_item.object_key,
-      }
-      api.put('/Scoreboards', params)
+      api.put('/Scoreboards', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
             this.editform = false

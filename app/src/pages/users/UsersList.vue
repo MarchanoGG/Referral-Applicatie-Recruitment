@@ -114,8 +114,8 @@
                 <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-input filled label="Password *" v-model="selected_item.password"  :type="isPwd ? 'password' : 'text'"
-                         hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
+                <q-input filled label="Password *" v-model="selected_item.password" :type="isPwd ? 'password' : 'text'"
+                  hint="Password" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                       @click="isPwd = !isPwd" />
@@ -181,7 +181,7 @@ const columns = [
   {
     name: 'object_key',
     required: true,
-    label: 'Key',
+    label: '#',
     align: 'left',
     field: 'object_key',
     format: val => `${val}`,
