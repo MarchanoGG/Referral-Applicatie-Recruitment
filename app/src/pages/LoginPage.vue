@@ -2,7 +2,7 @@
   <q-page class="">
     <div class="row flex justify-center">
       <div class="col-3">
-        <q-form @submit="onSubmit" @reset="onReset" class="">
+        <q-form @submit="onSubmit" @reset="resetForm" class="">
           <h1 class="text-h3 text-center">Login</h1>
           <q-input filled label="Username *" v-model="userForm.username" hint="Username" lazy-rules
             :rules="[val => val && val.length > 0 || 'Please type something']" />
@@ -26,8 +26,7 @@
 
 <script>
 import { useRouter } from 'vue-router'
-import { defineComponent } from 'vue'
-import { ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, computed } from 'vue'
 import { api } from 'boot/axios'
 
 const router = useRouter()
@@ -36,29 +35,37 @@ export default defineComponent({
   name: 'LoginPage'
   , methods: {
     onSubmit() {
-      console.log(this.userForm)
       if (this.userForm.username.value !== null && this.userForm.password.value !== null) {
         api.post('/Authentication', this.userForm)
           .then((response) => {
-            console.log(response)
             if (response.status == 200) {
-              router.push("/");
-              localStorage.setItem("user", response);
+              var user = response.data[0]
+              if (user) {
+                localStorage.setItem("user", user);
+                router.push("/");
+              }
             }
           })
           .catch(() => {
           })
       }
     },
+    resetForm() {
+      this.userForm = this.defaultForm
+    },
   }
   , data() {
+    const defaultForm = {
+      username: null,
+      password: null,
+    }
     return {
       isPwd: ref(true),
-      userForm: {
-        username: null,
-        password: null,
-      }
+      defaultForm: defaultForm,
+      userForm: defaultForm
     }
+  }
+  , setup() {
   }
 })
 </script>

@@ -81,12 +81,14 @@ namespace RarApiConsole.controllers
                 if ((usernameIsSet == true) && (passwordIsSet == true))
                 {
                     bool userFound = false;
+                    var loginUser = new DoUser();
                     foreach (var user in db.users)
                     {
                         if (userFound == false)
                         {
                             if ((user.username == obj.username) && (user.password == obj.password))
                             {
+                                loginUser = user;
                                 userFound = true;
                             }
                         }
@@ -95,6 +97,7 @@ namespace RarApiConsole.controllers
                     if (userFound == true)
                     {
                         aResponse.StatusCode = (int)HttpStatusCode.OK;
+                        arr = temp.ReadSpecific(db, loginUser.object_key); 
                         retVal = true;
                     }
                     else
