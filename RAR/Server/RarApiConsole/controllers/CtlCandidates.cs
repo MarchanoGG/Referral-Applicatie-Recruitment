@@ -99,6 +99,8 @@ namespace RarApiConsole.controllers
             var aResponse = aContext.Response;
             var aRequest = aContext.Request;
 
+            var ctlProfiles = CtlProfiles.Instance();
+
             string arr = "";
 
             var keyPair = formData.FormData.GetFormData(aRequest);
@@ -116,6 +118,19 @@ namespace RarApiConsole.controllers
                     if (pair.Key.Equals("referred_at"))
                     {
                         obj.referred_at = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
+                        {
+                            int profileKey = ctlProfiles.CreateAction(profilePair);
+                            if (profileKey > 0)
+                            {
+                                obj.fk_profile = profileKey;
+                            }
+                        }
                     }
                 }
 
@@ -156,43 +171,44 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoCandidate();
-                bool keyIsSet = false;
+                var obj = db.candidates.Find(int.Parse(keyPair["object_key"]));
 
-                foreach (var pair in keyPair)
+                if (obj != null)
                 {
-                    if (pair.Key.Equals("fk_profile"))
+                    foreach (var pair in keyPair)
                     {
-                        obj.fk_profile = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("referred_at"))
-                    {
-                        obj.referred_at = DateTime.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("object_key"))
-                    {
-                        obj.object_key = int.Parse(pair.Value);
-                        keyIsSet = true;
-                    }
-                    //if (pair.Key.Equals("profile"))
-                    //{
-                    //    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+                        if (pair.Key.Equals("fk_profile"))
+                        {
+                            obj.fk_profile = int.Parse(pair.Value);
+                        }
+                        if (pair.Key.Equals("referred_at"))
+                        {
+                            obj.referred_at = DateTime.Parse(pair.Value);
+                        }
+                        if (pair.Key.Equals("object_key"))
+                        {
+                            obj.object_key = int.Parse(pair.Value);
+                        }
+                        if (pair.Key.Equals("profile"))
+                        {
+                            var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
 
-                    //    if (profilePair != null && obj.fk_profile != null)
-                    //    {
-                    //        obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
-                    //    }
-                    //}
-                }
+                            if (profilePair != null && obj.fk_profile != 0)
+                            {
+                                obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile);
+                            }
+                        }
+                    }
 
-                if ((keyIsSet == true) && (temp.Update(db, obj) == true))
-                {
-                    aResponse.StatusCode = (int)HttpStatusCode.OK;
-                    retVal = true;
-                }
-                else
-                {
-                    aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                    if ((temp.Update(db, obj) == true))
+                    {
+                        aResponse.StatusCode = (int)HttpStatusCode.OK;
+                        retVal = true;
+                    }
+                    else
+                    {
+                        aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                    }
                 }
             }
             else
