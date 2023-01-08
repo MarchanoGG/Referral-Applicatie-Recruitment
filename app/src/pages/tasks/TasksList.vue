@@ -60,7 +60,7 @@
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
                 <q-input filled v-model="selected_item.points" label="Task points *" hint="" lazy-rules
-                  :rules="[val => val && val.length > 0 || 'Please type something']" />
+                  :rules="[val => parseFloat(val) > 0 || 'Please type something']" />
 
                 <q-input filled v-model="selected_item.description" label="Task Description *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
@@ -93,7 +93,7 @@
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
                 <q-input filled v-model="selected_item.points" label="Task points *" hint="" lazy-rules
-                  :rules="[val => val && val.length > 0 || 'Please type something']" />
+                  :rules="[val => parseFloat(val) > 0 || 'Please type something']" />
 
                 <q-input filled v-model="selected_item.description" label="Task Description *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
