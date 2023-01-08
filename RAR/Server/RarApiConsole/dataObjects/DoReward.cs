@@ -20,6 +20,8 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime award_dt { get; set; }
 
+        public DoUser? user;
+
         public DoReward()
         {
             fk_user = 0;

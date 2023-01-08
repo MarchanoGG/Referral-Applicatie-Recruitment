@@ -23,6 +23,8 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime ?end_dt { get; set; }
 
+        public DoUser? user;
+
         public DoScoreboard()
         {
             fk_user = 0;
