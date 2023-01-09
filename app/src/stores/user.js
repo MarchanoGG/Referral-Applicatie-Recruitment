@@ -24,10 +24,14 @@ export const useUserStore = defineStore("user", {
         username: username,
         password: password,
       });
-      const user = await res.data[0];
+      const user = await res?.data[0];
       localStorage.setItem("user", JSON.stringify(user));
       this.user = user;
-      this.router.push("/");
+      if (user?.recruiter == 1) {
+        this.router.push("/");
+      } else {
+        this.router.push("dashboard");
+      }
       // this.router.push(this.returnUrl || "/");
     },
     logout() {
