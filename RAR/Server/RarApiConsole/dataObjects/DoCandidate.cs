@@ -15,13 +15,12 @@ namespace RarApiConsole.dataObjects
         public int fk_profile { get; set; }
 
         [Column(TypeName = "timestamp")]
-        public DateTime referred_at { get; set; }
+        public DateTime referred_at { get; set; } = DateTime.Now;
 
         public DoProfile? profile;
         public DoCandidate()
         {
-            fk_profile = 0;
-            referred_at = DateTime.Now;
+
         }
 
         public DoCandidate(int ProfileKey, DateTime ReferredAt)
@@ -34,10 +33,9 @@ namespace RarApiConsole.dataObjects
         {
             bool retVal = false;
 
-            if (aPair.ContainsKey("fk_profile") &&
-                aPair["fk_profile"].Length > 0 &&
-                aPair.ContainsKey("referred_at") &&
-                aPair["referred_at"].Length > 0)
+            if (aPair.ContainsKey("profile") &&
+                aPair["profile"].Length > 0
+                )
             {
                 retVal = true;
             }

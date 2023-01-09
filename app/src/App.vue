@@ -4,8 +4,12 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useUserStore } from "stores/user";
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  setup() {
+
+  },
 })
 </script>

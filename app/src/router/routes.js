@@ -1,5 +1,7 @@
 import MainLayoutVue from "src/layouts/MainLayout.vue";
 import IndexPage from "src/pages/IndexPage.vue";
+import LoginLayoutVue from "src/layouts/LoginLayout.vue";
+
 const routes = [
   {
     path: "/",
@@ -8,7 +10,7 @@ const routes = [
   },
   {
     path: "/login",
-    component: MainLayoutVue,
+    component: LoginLayoutVue,
     children: [
       { path: "", component: () => import("src/pages/LoginPage.vue") },
     ],
