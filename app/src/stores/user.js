@@ -13,10 +13,10 @@ export const useUserStore = defineStore("user", {
   actions: {
     async fetchUser() {
       const res = await await api.get("/Users", {
-        token: this.user.sessiontoken,
+        object_key: this.user?.object_key,
       });
 
-      const user = res.data[0];
+      const user = res?.data[0];
       this.user = user;
     },
     async signIn(username, password) {
@@ -25,7 +25,6 @@ export const useUserStore = defineStore("user", {
         password: password,
       });
       const user = await res.data[0];
-      // console.log(user);
       localStorage.setItem("user", JSON.stringify(user));
       this.user = user;
       this.router.push("/");
