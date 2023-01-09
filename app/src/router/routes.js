@@ -6,13 +6,20 @@ const routes = [
   {
     path: "/",
     component: MainLayoutVue,
-    children: [{ path: "", component: IndexPage }],
+    b: [{ path: "", component: IndexPage }],
   },
   {
     path: "/login",
     component: LoginLayoutVue,
     children: [
       { path: "", component: () => import("src/pages/LoginPage.vue") },
+    ],
+  },
+  {
+    path: "/logout",
+    component: LoginLayoutVue,
+    children: [
+      { path: "", component: () => import("src/pages/LogoutPage.vue") },
     ],
   },
   {

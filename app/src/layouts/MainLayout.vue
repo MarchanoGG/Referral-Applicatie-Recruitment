@@ -87,6 +87,12 @@ const linksList = [
     icon: 'person',
     link: '/employees'
   },
+  {
+    title: 'Logout',
+    // caption: '',
+    icon: 'logout',
+    link: '/logout'
+  },
 ]
 
 export default defineComponent({
