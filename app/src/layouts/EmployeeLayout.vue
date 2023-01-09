@@ -37,43 +37,7 @@ const linksList = [
     title: 'Home',
     // caption: '',
     icon: 'home',
-    link: '/'
-  },
-  {
-    title: 'Users',
-    // caption: '',
-    icon: 'manage_accounts',
-    link: '/users'
-  },
-  {
-    title: 'Candidates',
-    // caption: '',
-    icon: 'people',
-    link: '/candidates'
-  },
-  {
-    title: 'Scoreboards',
-    // caption: '',
-    icon: 'leaderboard',
-    link: '/scoreboards'
-  },
-  {
-    title: 'Rewards',
-    // caption: '',
-    icon: 'emoji_events',
-    link: '/rewards'
-  },
-  {
-    title: 'Tasks',
-    // caption: '',
-    icon: 'list',
-    link: '/tasks'
-  },
-  {
-    title: 'Campaignes',
-    // caption: '',
-    icon: 'checklist',
-    link: '/campaignes'
+    link: '/dashboard'
   },
   {
     title: 'Logout',
@@ -84,7 +48,7 @@ const linksList = [
 ]
 
 export default defineComponent({
-  name: 'RecruiterLayout',
+  name: 'EmployeeLayout',
 
   components: {
     EssentialLink

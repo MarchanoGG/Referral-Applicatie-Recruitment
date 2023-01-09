@@ -1,4 +1,5 @@
 import MainLayoutVue from "src/layouts/RecruiterLayout.vue";
+import EmployeeLayoutVue from "src/layouts/EmployeeLayout.vue";
 import IndexPage from "src/pages/IndexPage.vue";
 import LoginLayoutVue from "src/layouts/LoginLayout.vue";
 
@@ -101,8 +102,8 @@ const routes = [
     ],
   },
   {
-    path: "/employees",
-    component: MainLayoutVue,
+    path: "/dashboard",
+    component: EmployeeLayoutVue,
     children: [
       {
         path: "",
