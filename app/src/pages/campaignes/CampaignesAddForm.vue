@@ -2,7 +2,8 @@
     <div class="q-pa-md">
         <q-form>
             <q-stepper v-model="step" ref="stepper" color="primary" animated>
-                <q-step :name="1" title="Scoreboard info" icon="settings" :done="step > 1">
+                <q-step :name="1" title="Scoreboard info" icon="settings" :done="step > 1"
+                    :error="scoreboardStore.has_errors">
                     <div class="row">
                         <div class="col-12 q-mb-lg">
                             <div class="text-h6 q-mx-md">Create Scoreboards</div>
@@ -12,16 +13,15 @@
                             option-value="object_key" option-label="name" /> -->
                             <div class="row">
                                 <div class="col-4 q-mx-md">
-                                    <q-input filled v-model="selected_item.name" label="Your username *" hint="Userame"
-                                        lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
-                                    <q-select filled v-model="selected_item.fk_user" :options="userrows"
-                                        option-value="object_key" option-label="username" label="Standard" emit-value />
+                                    <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *"
+                                        hint="Userame" lazy-rules
+                                        :rules="[val => val && val.length > 0 || 'Please type something']" />
                                 </div>
                                 <div class="col-3 q-mx-md">
-                                    <q-date v-model="selected_item.start_dt" subtitle="Start Date" />
+                                    <q-date v-model="scoreboardStore.selected_item.start_dt" subtitle="Start Date" />
                                 </div>
                                 <div class="col-3 q-mx-md">
-                                    <q-date v-model="selected_item.end_dt" subtitle="End Date" />
+                                    <q-date v-model="scoreboardStore.selected_item.end_dt" subtitle="End Date" />
                                 </div>
                             </div>
                         </div>
@@ -58,10 +58,17 @@
                 </q-step>
                 <template v-slot:navigation>
                     <q-stepper-navigation>
+                        <q-btn v-if="step == 1" @click="$refs.stepper.next()" color="primary" label="Continue" />
+                        <q-btn v-if="step == 2" @click="$refs.stepper.next()" color="primary" label="Continue" />
+                        <q-btn v-if="step == 3" @click="$refs.stepper.next()" color="primary" label="Continue" />
                         <q-btn v-if="step == 4" color="primary" href="/scoreboards" label="Finish" />
-                        <q-btn v-if="step < 4" @click="$refs.stepper.next()" color="primary" label="Continue" />
+
                         <q-btn v-if="step == 1" flat color="primary" href="/scoreboards" label="Back" class="q-ml-sm" />
-                        <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
+                        <q-btn v-if="step == 2" flat color="primary" @click="$refs.stepper.previous()" label="Back"
+                            class="q-ml-sm" />
+                        <q-btn v-if="step == 3" flat color="primary" @click="$refs.stepper.previous()" label="Back"
+                            class="q-ml-sm" />
+                        <q-btn v-if="step == 4" flat color="primary" @click="$refs.stepper.previous()" label="Back"
                             class="q-ml-sm" />
                     </q-stepper-navigation>
                 </template>
@@ -74,16 +81,19 @@
 <script>
 import { api } from 'boot/axios'
 import { defineComponent, ref, computed } from 'vue'
+import { useUserStore } from "stores/user";
+import { useScoreboardStore } from "stores/scoreboard";
 
 export default {
     name: 'CampaignesAddForm',
     setup() {
-        return {
-        }
+        const userStore = useUserStore();
+        const scoreboardStore = useScoreboardStore();
+        return { userStore, scoreboardStore };
     },
     data() {
         const default_item = {
-            scoreboard: null,
+            scoreboard: this.scoreboardStore.default_item,
             recruiter: null,
             candidate: null,
             task: null,
@@ -93,7 +103,7 @@ export default {
             step: ref(1),
             rows: [],
             recruiterrows: [],
-            scoreboardrows: [],
+            scoreboardrows: this.scoreboardStore.all().items,
             candidaterows: [],
             taskrows: [],
             isPwd: false,
@@ -102,6 +112,9 @@ export default {
         }
     },
     methods: {
+        test() {
+            console.log(this.scoreboardStore.selected_item)
+        },
         getScoreboards() {
             api.get('/Scoreboards')
                 .then((response) => {
