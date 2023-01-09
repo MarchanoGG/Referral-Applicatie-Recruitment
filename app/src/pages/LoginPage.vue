@@ -39,18 +39,14 @@
   </q-page>
 </template>
 <script>
-import { useRouter } from 'vue-router'
 import { defineComponent, ref, reactive, computed } from 'vue'
 import { useUserStore } from "stores/user";
-
-const router = useRouter()
 
 export default defineComponent({
   name: 'LoginPage'
   , methods: {
     async login() {
       await this.userStore.signIn(this.userForm.username, this.userForm.password);
-      // router.push("/");
     },
     resetForm() {
       this.userForm = this.defaultForm

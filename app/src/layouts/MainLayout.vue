@@ -5,10 +5,9 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Alten
+          Alten | {{ userStore.user.profile.name }}
         </q-toolbar-title>
 
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
@@ -31,6 +30,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useUserStore } from "stores/user";
 
 const linksList = [
   {
@@ -98,10 +98,12 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false)
+    const userStore = useUserStore();
 
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
+      userStore,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }

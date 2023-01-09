@@ -2,11 +2,10 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { api } from "boot/axios";
 
-const router = useRouter();
-
 export const useUserStore = defineStore("user", {
   state: () => ({
-    user: null,
+    user: JSON.parse(localStorage.getItem("user")),
+    router: useRouter(),
   }),
   getters: {
     currentUser: (state) => state.user,
@@ -14,7 +13,7 @@ export const useUserStore = defineStore("user", {
   actions: {
     async fetchUser() {
       const res = await await api.get("/Users", {
-        token: localStorage.getItem("token"),
+        token: this.user.sessiontoken,
       });
 
       const user = res.data[0];
@@ -27,8 +26,15 @@ export const useUserStore = defineStore("user", {
       });
       const user = await res.data[0];
       // console.log(user);
+      localStorage.setItem("user", JSON.stringify(user));
       this.user = user;
-      localStorage.setItem("token", user.sessiontoken);
+      this.router.push("/");
+      // this.router.push(this.returnUrl || "/");
+    },
+    logout() {
+      this.user = null;
+      localStorage.removeItem("user");
+      this.router.push("/login");
     },
   },
 });
