@@ -1,4 +1,4 @@
-import MainLayoutVue from "src/layouts/MainLayout.vue";
+import MainLayoutVue from "src/layouts/RecruiterLayout.vue";
 import IndexPage from "src/pages/IndexPage.vue";
 import LoginLayoutVue from "src/layouts/LoginLayout.vue";
 
