@@ -129,6 +129,7 @@ namespace RarApiConsole.controllers
                 if (temp.Create(db, obj) == true)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, obj.object_key);
                     retVal = true;
                 }
                 else

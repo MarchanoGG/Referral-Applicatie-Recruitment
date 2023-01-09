@@ -36,6 +36,7 @@ export const useScoreboardStore = defineStore("scoreboard", {
     async addItem() {
       this.last_res = await api.post("/Scoreboards", this.selected_item);
       if (this.last_res.status == 200) {
+        this.selected_item = this.last_res?.data[0];
       } else {
         errors = true;
       }
