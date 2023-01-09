@@ -4,14 +4,12 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { api } from 'boot/axios'
+import { useUserStore } from "stores/user";
 
 export default defineComponent({
   name: 'App',
-  async created() {
-    const response = await api.get('/Users', { token: localStorage.getItem('token') })
-    console.log(response)
-    this.user = response.data[0]
+  setup() {
+
   },
 })
 </script>
