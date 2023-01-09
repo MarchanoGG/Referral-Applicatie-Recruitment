@@ -5,7 +5,7 @@
                 <q-step :name="1" title="Scoreboard info" icon="settings" :done="step > 1">
                     <div class="row">
                         <div class="col-12 q-mb-lg">
-                            <div class="text-h4 q-mx-md">Add Scoreboards</div>
+                            <div class="text-h6 q-mx-md">Create Scoreboards</div>
                         </div>
                         <div class="col-12">
                             <!-- <q-select v-model="selected_item.scoreboard" :options="scoreboardrows"
@@ -31,12 +31,12 @@
                 <q-step :name="2" title="Recruiter | Candidate" icon="create_new_folder" :done="step > 2">
                     <div class="row">
                         <div class="col-4 q-mx-md">
-                            <div class="text-h4 q-mx-md">Select Recruiter</div>
+                            <div class="text-h6 q-mx-md">Select Recruiter</div>
                             <q-select v-model="selected_item.recruiter" :options="recruiterrows"
                                 option-value="object_key" option-label="username" :multiple="true" :use-chips="true" />
                         </div>
                         <div class="col-4 q-mx-md">
-                            <div class="text-h4 q-mx-md">Select Candidate</div>
+                            <div class="text-h6 q-mx-md">Select Candidate</div>
                             <q-select v-model="selected_item.candidate" :options="candidaterows"
                                 option-value="object_key" :option-label="profilefullname" :multiple="true"
                                 :use-chips="true" />
@@ -44,22 +44,22 @@
                     </div>
                 </q-step>
 
-                <q-step :name="3" title="Tasks" icon="add_comment" :done="step > 5">
+                <q-step :name="3" title="Tasks" icon="add_comment" :done="step > 3">
                     <div class="row">
                         <div class="col-4 q-mx-md">
-                            <div class="text-h4 q-mx-md">Select Tasks</div>
+                            <div class="text-h6 q-mx-md">Select Tasks</div>
                             <q-select v-model="selected_item.task" :options="taskrows" option-value="object_key"
                                 option-label="name" :multiple="true" :use-chips="true" />
                         </div>
                     </div>
                 </q-step>
                 <q-step :name="4" title="Finish" icon="add_comment">
-
+                    <div class="text-h6 q-mx-md">Scoreboard created</div>
                 </q-step>
                 <template v-slot:navigation>
                     <q-stepper-navigation>
-                        <q-btn @click="$refs.stepper.next()" color="primary"
-                            :label="step === 4 ? 'Finish' : 'Continue'" />
+                        <q-btn v-if="step == 4" color="primary" href="/scoreboards" label="Finish" />
+                        <q-btn v-if="step < 4" @click="$refs.stepper.next()" color="primary" label="Continue" />
                         <q-btn v-if="step == 1" flat color="primary" href="/scoreboards" label="Back" class="q-ml-sm" />
                         <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back"
                             class="q-ml-sm" />
