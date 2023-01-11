@@ -156,7 +156,44 @@ namespace RarApiConsole.dataObjects
 
             return arr;
         }
+        public string ReadByUserId(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
 
+            if (myDB.referrals != null)
+            {
+                bool second = false;
+                bool found = false;
+                foreach (var obj in myDB.referrals.Where(a => a.fk_user == aObjectKey).ToList())
+                {
+                    if (obj.fk_user == aObjectKey)
+                    {
+                        if (second == true)
+                        {
+                            arr += ",";
+                        }
+                        found = true;
+                        arr += JsonConvert.SerializeObject(obj);
+                        second = true;
+                    }
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
         public string ReadSpecific(DatabaseContext myDB, int aObjectKey)
         {
             string arr = "[";

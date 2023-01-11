@@ -7,6 +7,7 @@ import { useScoreboardStore } from "stores/scoreboard";
 export const useReferralStore = defineStore("referral", {
   state: () => ({
     scoreboardStore: useScoreboardStore(),
+    userStore: useUserStore(),
     router: useRouter(),
     default_item: {
       object_key: null,
@@ -47,6 +48,15 @@ export const useReferralStore = defineStore("referral", {
       this.last_res = await api.get("/Referrals");
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;
+      } else {
+        errors = true;
+      }
+    },
+    async allReferralByUser() {
+      this.last_res = await api.get("/Referrals", {
+        params: { fk_user: this.userStore.user.object_key },
+      });
+      if (this.last_res.status == 200) {
       } else {
         errors = true;
       }
