@@ -57,6 +57,7 @@ export const useReferralStore = defineStore("referral", {
         params: { fk_user: this.userStore.user.object_key },
       });
       if (this.last_res.status == 200) {
+        this.items = this.last_res?.data;
       } else {
         errors = true;
       }
