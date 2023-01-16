@@ -25,6 +25,9 @@ const routes = [
         component: () => import("src/pages/users/UserAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/candidates",
@@ -39,6 +42,9 @@ const routes = [
         component: () => import("src/pages/candidates/CandidateAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/rewards",
@@ -53,6 +59,9 @@ const routes = [
         component: () => import("src/pages/rewards/RewardAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/tasks",
@@ -64,6 +73,9 @@ const routes = [
         component: () => import("src/pages/tasks/TaskAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/campaignes",
@@ -78,6 +90,9 @@ const routes = [
         component: () => import("src/pages/campaignes/CampaignesAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/scoreboards",
@@ -92,6 +107,9 @@ const routes = [
         component: () => import("src/pages/scoreboards/ScoreboardAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/employees",
@@ -102,6 +120,9 @@ const routes = [
         component: () => import("src/pages/employees/employeeHome.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   // Always leave this as last one,
   // but you can also remove it

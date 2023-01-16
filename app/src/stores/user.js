@@ -17,18 +17,20 @@ export const useUserStore = defineStore("user", {
         token: localStorage.getItem("token"),
       });
 
-      const user = res.data[0];
-      this.user = user;
+      this.user = await res.data[0];
+    },
+    retrieveUser() {
+      return this.user;
     },
     async signIn(username, password) {
       const res = await api.post("/Authentication", {
         username: username,
         password: password,
       });
-      const user = await res.data[0];
-      // console.log(user);
-      this.user = user;
-      localStorage.setItem("token", user.sessiontoken);
+      this.user = await res.data[0];
+      localStorage.setItem("username", username);
+      localStorage.setItem("isAdmin", this.user.recruiter);
+      return res;
     },
   },
 });

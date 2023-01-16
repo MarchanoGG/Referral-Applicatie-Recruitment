@@ -72,10 +72,6 @@ namespace RarApiConsole.controllers
             {
                 arr = temp.ReadSpecific(db, int.Parse(ok));
             }
-            else if (aRequest.QueryString.HasKeys() == true && token != null)
-            {
-                arr = temp.ReadSpecific(db, token);
-            }
             else
             {
                 arr = temp.ReadAll(db);

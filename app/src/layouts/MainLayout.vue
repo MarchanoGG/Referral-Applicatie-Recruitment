@@ -8,7 +8,7 @@
           Alten
         </q-toolbar-title>
 
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
+        <div>Logged on: {{ user }}</div>
       </q-toolbar>
     </q-header>
 
@@ -31,6 +31,10 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useUserStore } from "stores/user";
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
 
 const linksList = [
   {
@@ -95,11 +99,13 @@ export default defineComponent({
   components: {
     EssentialLink
   },
-
   setup() {
-    const leftDrawerOpen = ref(false)
+    const leftDrawerOpen = ref(false);
+
+    const user = localStorage.getItem("username");
 
     return {
+      user: user,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
