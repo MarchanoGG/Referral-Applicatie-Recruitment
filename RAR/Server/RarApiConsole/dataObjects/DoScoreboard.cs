@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using RarApiConsole.providers;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace RarApiConsole.dataObjects
 {
@@ -96,7 +97,45 @@ namespace RarApiConsole.dataObjects
 
             return arr;
         }
+        public string ReadByUserId(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
 
+            if (myDB.scoreboards != null)
+            {
+                bool second = false;
+                bool found = false;
+                var refQuery = from referral in myDB.referrals
+                               where referral.fk_user == aObjectKey
+                               group referral by referral.fk_scoreboard into sbgroup
+                               select sbgroup;
+                foreach (var obj in refQuery)
+                    {
+                    if (second == true)
+                    {
+                        arr += ",";
+                    }
+                    found = true;
+                    arr += JsonConvert.SerializeObject(obj);
+                    second = true;
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
         public string ReadSpecific(DatabaseContext myDB, int aObjectKey)
         {
             string arr = "[";

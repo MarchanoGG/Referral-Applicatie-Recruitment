@@ -153,7 +153,8 @@ namespace RarApiConsole.dataObjects
             {
                 bool second = false;
                 bool found = false;
-                foreach (var obj in myDB.referrals.Where(a => a.fk_user == aObjectKey).ToList())
+                var refQuery = from referral in myDB.referrals where referral.fk_user == aObjectKey select referral;
+                foreach (var obj in refQuery)
                 {
                     if (obj.fk_user == aObjectKey)
                     {

@@ -40,6 +40,12 @@ const linksList = [
     link: '/dashboard'
   },
   {
+    title: 'Scoreboards',
+    // caption: '',
+    icon: 'leaderboard',
+    link: '/dashboard/scoreboards'
+  },
+  {
     title: 'Logout',
     // caption: '',
     icon: 'logout',

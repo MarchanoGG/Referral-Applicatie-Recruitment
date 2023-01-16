@@ -109,6 +109,10 @@ const routes = [
         path: "",
         component: () => import("src/pages/employees/employeeHome.vue"),
       },
+      {
+        path: "scoreboards",
+        component: () => import("src/pages/employees/employeeScoreboards.vue"),
+      },
     ],
   },
   // Always leave this as last one,

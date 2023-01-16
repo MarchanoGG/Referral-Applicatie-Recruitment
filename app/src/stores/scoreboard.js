@@ -30,7 +30,17 @@ export const useScoreboardStore = defineStore("scoreboard", {
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;
       } else {
-        errors = true;
+        this.has_errors = true;
+      }
+    },
+    async allByUser() {
+      this.last_res = await api.get("/Scoreboards", {
+        params: { fk_user: this.userStore.user.object_key },
+      });
+      if (this.last_res.status == 200) {
+        this.items = this.last_res?.data;
+      } else {
+        this.has_errors = true;
       }
     },
     async addItem() {
@@ -38,8 +48,11 @@ export const useScoreboardStore = defineStore("scoreboard", {
       if (this.last_res.status == 200) {
         this.selected_item = this.last_res?.data[0];
       } else {
-        errors = true;
+        this.has_errors = true;
       }
+    },
+    resetItem() {
+      this.selected_item = this.default_item;
     },
   },
 });
