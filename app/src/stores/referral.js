@@ -45,21 +45,23 @@ export const useReferralStore = defineStore("referral", {
   },
   actions: {
     async all() {
+      this.has_errors = false;
       this.last_res = await api.get("/Referrals");
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;
       } else {
-        errors = true;
+        this.has_errors = true;
       }
     },
     async allReferralByUser() {
+      this.has_errors = false;
       this.last_res = await api.get("/Referrals", {
         params: { fk_user: this.userStore.user.object_key },
       });
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;
       } else {
-        errors = true;
+        has_errors = true;
       }
     },
     async addReferral() {
@@ -77,10 +79,11 @@ export const useReferralStore = defineStore("referral", {
       });
     },
     async addItem() {
+      this.has_errors = false;
       this.last_res = await api.post("/Referrals", this.selected_item);
       if (this.last_res.status == 200) {
       } else {
-        errors = true;
+        this.has_errors = true;
       }
     },
   },
