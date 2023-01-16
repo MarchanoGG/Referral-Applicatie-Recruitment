@@ -2,11 +2,13 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { api } from "boot/axios";
 import { useUserStore } from "stores/user";
+import { useReferralStore } from "stores/referral";
 
 export const useScoreboardStore = defineStore("scoreboard", {
   state: () => ({
     router: useRouter(),
     userStore: useUserStore(),
+    referralStore: useReferralStore(),
     default_item: {
       name: null,
       object_key: null,

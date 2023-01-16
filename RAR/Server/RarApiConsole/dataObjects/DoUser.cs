@@ -29,12 +29,27 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
 
+        private DatabaseContext db = new();
         public DoProfile ?profile;
 
         [Column(TypeName = "varchar(100)"), Required]
         public string sessiontoken { get; set; } = "";
 
-
+        public int totalPoints
+        {
+            get
+            {
+                int total = 0;
+                foreach (var row in db.referrals.Where(a => a.fk_user == object_key))
+                {
+                    if (row != null && row.task != null)
+                    {
+                        total+= row.task.points;
+                    }
+                }
+                return total;
+            }
+        }
         public DoUser() 
         {
             username = "temp";

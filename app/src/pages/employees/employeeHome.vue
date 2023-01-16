@@ -33,7 +33,7 @@ import { useReferralStore } from "stores/referral";
 export default defineComponent({
   setup() {
     const referralStore = useReferralStore();
-    referralStore.allReferralByUser();
+    referralStore.allByUser();
     return { referralStore };
   },
   data() {
