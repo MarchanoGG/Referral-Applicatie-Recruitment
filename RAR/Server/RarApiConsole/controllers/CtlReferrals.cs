@@ -65,10 +65,14 @@ namespace RarApiConsole.controllers
 
             string arr = "";
             var ok = aRequest.QueryString.Get("object_key");
+            var okuser = aRequest.QueryString.Get("fk_user");
 
             if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
                 arr = temp.ReadSpecific(db, int.Parse(ok));
+            }
+            else if (aRequest.QueryString.HasKeys() && okuser != null) {
+                arr = temp.ReadByUserId(db, int.Parse(okuser));
             }
             else
             {

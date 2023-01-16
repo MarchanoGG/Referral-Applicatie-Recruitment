@@ -118,6 +118,7 @@ namespace RarApiConsole.dataObjects
                     if (obj.object_key == aObjectKey)
                     {
                         found = true;
+                        obj.profile = myDB.profiles.Find(obj.fk_profile);
                         arr += JsonConvert.SerializeObject(obj);
                     }
                 }

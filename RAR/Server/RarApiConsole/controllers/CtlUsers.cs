@@ -66,6 +66,7 @@ namespace RarApiConsole.controllers
 
             string arr = "";
             var ok = aRequest.QueryString.Get("object_key");
+            var token = aRequest.QueryString.Get("token");
 
             if (aRequest.QueryString.HasKeys() == true && ok != null)
             {

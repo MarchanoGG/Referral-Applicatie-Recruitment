@@ -3,6 +3,7 @@ using System.Text;
 using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
+using System.Security.Cryptography;
 
 namespace RarApiConsole.controllers
 {
@@ -56,8 +57,29 @@ namespace RarApiConsole.controllers
         private static List<DoUser> GetUsers()
         {
             return new List<DoUser>() {
-                new DoUser("admin", "admin", 1)
+                new DoUser("admin", GetHashString("admin"), 1)
             };
+        }
+        public static byte[] GetHash(string inputString)
+        {
+            byte[] arr;
+            using (HashAlgorithm algorithm = SHA256.Create())
+            {
+                arr = algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+            }
+
+            return arr;
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+            {
+                sb.Append(b.ToString("X2")); // X2 is for Hexadecimal 
+            }
+
+            return sb.ToString();
         }
     }
 }

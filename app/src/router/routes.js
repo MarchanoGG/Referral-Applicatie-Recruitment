@@ -1,16 +1,26 @@
-import MainLayoutVue from "src/layouts/MainLayout.vue";
+import MainLayoutVue from "src/layouts/RecruiterLayout.vue";
+import EmployeeLayoutVue from "src/layouts/EmployeeLayout.vue";
 import IndexPage from "src/pages/IndexPage.vue";
+import LoginLayoutVue from "src/layouts/LoginLayout.vue";
+
 const routes = [
   {
     path: "/",
     component: MainLayoutVue,
-    children: [{ path: "", component: IndexPage }],
+    b: [{ path: "", component: IndexPage }],
   },
   {
     path: "/login",
-    component: MainLayoutVue,
+    component: LoginLayoutVue,
     children: [
       { path: "", component: () => import("src/pages/LoginPage.vue") },
+    ],
+  },
+  {
+    path: "/logout",
+    component: LoginLayoutVue,
+    children: [
+      { path: "", component: () => import("src/pages/LogoutPage.vue") },
     ],
   },
   {
@@ -23,6 +33,9 @@ const routes = [
         component: () => import("src/pages/users/UserAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/candidates",
@@ -37,6 +50,9 @@ const routes = [
         component: () => import("src/pages/candidates/CandidateAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/rewards",
@@ -51,6 +67,9 @@ const routes = [
         component: () => import("src/pages/rewards/RewardAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/tasks",
@@ -62,6 +81,9 @@ const routes = [
         component: () => import("src/pages/tasks/TaskAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/campaignes",
@@ -76,6 +98,9 @@ const routes = [
         component: () => import("src/pages/campaignes/CampaignesAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/scoreboards",
@@ -87,19 +112,29 @@ const routes = [
       },
       {
         path: "add",
-        component: () => import("src/pages/scoreboards/ScoreboardAddForm.vue"),
+        component: () => import("src/pages/campaignes/CampaignesAddForm.vue"),
       },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   {
-    path: "/employees",
-    component: MainLayoutVue,
+    path: "/dashboard",
+    component: EmployeeLayoutVue,
     children: [
       {
         path: "",
         component: () => import("src/pages/employees/employeeHome.vue"),
       },
+      {
+        path: "scoreboards",
+        component: () => import("src/pages/employees/employeeScoreboards.vue"),
+      },
     ],
+    meta: {
+      requiresAuth: true
+    }
   },
   // Always leave this as last one,
   // but you can also remove it

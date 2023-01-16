@@ -5,10 +5,9 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Alten
+          Alten | {{ userStore.user.profile.name }}
         </q-toolbar-title>
 
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
@@ -31,6 +30,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useUserStore } from "stores/user";
 
 const linksList = [
   {
@@ -38,12 +38,6 @@ const linksList = [
     // caption: '',
     icon: 'home',
     link: '/'
-  },
-  {
-    title: 'Login',
-    // caption: '',
-    icon: 'login',
-    link: '/login'
   },
   {
     title: 'Users',
@@ -58,12 +52,6 @@ const linksList = [
     link: '/candidates'
   },
   {
-    title: 'Scoreboards',
-    // caption: '',
-    icon: 'leaderboard',
-    link: '/scoreboards'
-  },
-  {
     title: 'Rewards',
     // caption: '',
     icon: 'emoji_events',
@@ -76,21 +64,27 @@ const linksList = [
     link: '/tasks'
   },
   {
+    title: 'Scoreboards',
+    // caption: '',
+    icon: 'leaderboard',
+    link: '/scoreboards'
+  },
+  {
     title: 'Campaignes',
     // caption: '',
     icon: 'checklist',
     link: '/campaignes'
   },
   {
-    title: 'Employees',
+    title: 'Logout',
     // caption: '',
-    icon: 'person',
-    link: '/employees'
+    icon: 'logout',
+    link: '/logout'
   },
 ]
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: 'RecruiterLayout',
 
   components: {
     EssentialLink
@@ -98,10 +92,12 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false)
+    const userStore = useUserStore();
 
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
+      userStore,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
