@@ -4,6 +4,7 @@ using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace RarApiConsole.controllers
 {
@@ -110,10 +111,11 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                if (CreateAction(keyPair) > 0)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
-                    arr = temp.ReadSpecific(db, obj.object_key);
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -204,6 +206,7 @@ namespace RarApiConsole.controllers
                 if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else

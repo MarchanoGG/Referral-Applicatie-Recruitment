@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Alten | {{ userStore.user.profile.name }}
+          Alten <span v-if="userStore.user.profile !== null"> | {{ userStore.user.profile.name }} </span>
         </q-toolbar-title>
 
       </q-toolbar>

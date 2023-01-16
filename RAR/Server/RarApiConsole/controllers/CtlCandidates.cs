@@ -105,9 +105,11 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                if (CreateAction(keyPair) > 0)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -187,20 +189,12 @@ namespace RarApiConsole.controllers
                     {
                         objectKey = int.Parse(pair.Value);
                     }
-                    //if (pair.Key.Equals("profile"))
-                    //{
-                    //    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    //    if (profilePair != null && obj.fk_profile != null)
-                    //    {
-                    //        obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
-                    //    }
-                    //}
                 }
 
                 if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
