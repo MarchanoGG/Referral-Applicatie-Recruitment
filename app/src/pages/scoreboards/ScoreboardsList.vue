@@ -5,7 +5,8 @@
         <q-toolbar>
           <q-toolbar-title :shrink="true">Scoreboards</q-toolbar-title>
           <q-separator vertical inset />
-          <q-btn href="/scoreboards/add" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
+          <q-btn type="router-link" href="/admin/scoreboards/add" class="q-ml-md" color="secondary" dense
+            :icon="'person_add'" />
         </q-toolbar>
       </template>
 
