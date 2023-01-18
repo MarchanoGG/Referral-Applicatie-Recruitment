@@ -30,7 +30,13 @@ namespace RarApiConsole.dataObjects
         public DateTime modification_dt { get; set; }
 
         private DatabaseContext db = new();
-        public DoProfile ?profile;
+        public DoProfile ?profile
+        {
+            get
+            {
+                return db.profiles.Find(fk_profile);
+            }
+        }
 
         [Column(TypeName = "varchar(100)"), Required]
         public string sessiontoken { get; set; } = "";
@@ -95,8 +101,6 @@ namespace RarApiConsole.dataObjects
                         arr += ",";
                     }
 
-                    obj.profile = myDB.profiles.Find(obj.fk_profile);
-
                     string json = JsonConvert.SerializeObject(obj);
 
                     if (json.Length > 0)
@@ -136,7 +140,6 @@ namespace RarApiConsole.dataObjects
                     if (obj.object_key == aObjectKey)
                     {
                         found = true;
-                        obj.profile = myDB.profiles.Find(obj.fk_profile);
                         arr += JsonConvert.SerializeObject(obj);
                     }
                 }
@@ -170,7 +173,6 @@ namespace RarApiConsole.dataObjects
                     if (obj.sessiontoken == token)
                     {
                         found = true;
-                        obj.profile = myDB.profiles.Find(obj.fk_profile);
                         arr += JsonConvert.SerializeObject(obj);
                     }
                 }

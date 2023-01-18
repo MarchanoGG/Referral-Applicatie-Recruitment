@@ -172,8 +172,8 @@ const columns = [
     required: true,
     label: 'Candidate name',
     align: 'left',
-    field: 'profile',
-    format: val => `${val.name}`,
+    field: 'user',
+    format: val => `${val.profile.name}`,
     sortable: true
   },
 ]
