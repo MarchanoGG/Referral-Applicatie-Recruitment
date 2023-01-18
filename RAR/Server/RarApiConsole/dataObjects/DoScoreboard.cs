@@ -22,10 +22,23 @@ namespace RarApiConsole.dataObjects
         public DateTime start_dt { get; set; }
 
         [Column(TypeName = "timestamp")]
-        public DateTime ?end_dt { get; set; }
+        public DateTime end_dt { get; set; }
         private DatabaseContext db = new();
         public List<DoUser> ranklist = new List<DoUser>();
-
+        public string start_dt_str
+        {
+            get
+            {
+                return start_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
+        public string end_dt_str
+        {
+            get
+            {
+                return end_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
         public DoScoreboard()
         {
             fk_user = 0;
