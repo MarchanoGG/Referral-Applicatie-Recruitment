@@ -8,22 +8,16 @@
                     </q-toolbar>
 
                     <q-list bordered>
-                        <q-item v-for="subitem in item.ranklist" :key="subitem.object_key" class="q-my-sm" clickable
-                            v-ripple>
-                            <q-item-section avatar>
-                                <q-avatar color="primary" text-color="white">
-                                    {{ subitem.totalPoints }}
-                                </q-avatar>
-                            </q-item-section>
-
+                        <q-item v-for="subitem in item.ranklist" :key="subitem.object_key" class="q-my-sm">
                             <q-item-section>
                                 <q-item-label>{{ subitem.username }}</q-item-label>
-                                <!-- <q-item-label caption lines="1">{{ subitem.email }}</q-item-label> -->
                             </q-item-section>
-
-                            <!-- <q-item-section side>
-                                <q-icon name="chat_bubble" color="green" />
-                            </q-item-section> -->
+                            <q-item-section side>
+                                {{ subitem.totalPoints }}
+                            </q-item-section>
+                            <q-item-section side>
+                                <q-icon name="star" color="green" />
+                            </q-item-section>
                         </q-item>
 
                         <q-separator />

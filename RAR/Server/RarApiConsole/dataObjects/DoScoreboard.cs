@@ -107,6 +107,7 @@ namespace RarApiConsole.dataObjects
             {
                 bool second = false;
                 bool found = false;
+                // all scoreboards attached to aObjectKey 
                 var refQuery = from referral in myDB.referrals
                                where referral.fk_user == aObjectKey
                                group referral.scoreboard by referral.fk_scoreboard into sbgroup
@@ -117,6 +118,7 @@ namespace RarApiConsole.dataObjects
                     {
                         arr += ",";
                     }
+                    // all members attached to current obj scoreboard 
                     var userRefQuery = from referral in myDB.referrals
                                        where referral.fk_scoreboard == obj.object_key
                                        group referral.user by referral.fk_user into userRef
