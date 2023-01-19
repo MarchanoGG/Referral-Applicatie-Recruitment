@@ -12,7 +12,13 @@ namespace RarApiConsole.dataObjects
         public int object_key { get; set; }
 
         [Column(TypeName = "varchar(10)")]
-        public string ?initials { get; set; }
+        public string? initials
+        {
+            get
+            {
+                return $"{name?[0]}.{surname?[0]}.";
+            }
+        }
 
         [Column(TypeName = "varchar(40)")]
         public string? name { get; set; }

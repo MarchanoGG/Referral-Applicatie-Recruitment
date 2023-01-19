@@ -134,10 +134,6 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("initials"))
-                {
-                    obj.initials = pair.Value;
-                }
                 if (pair.Key.Equals("name"))
                 {
                     obj.name = pair.Value;
@@ -222,10 +218,6 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("initials"))
-                {
-                    obj.initials = pair.Value;
-                }
                 if (pair.Key.Equals("name"))
                 {
                     obj.name = pair.Value;
