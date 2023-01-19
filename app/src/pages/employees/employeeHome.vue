@@ -10,7 +10,7 @@
           <q-timeline-entry v-for="item in referralStore.items" :key="item.object_key" :subtitle="item.modification_dt">
             <!-- <q-timeline-entry v-for="item in referralStore.items" :key="item.object_key" subtitle="February 22, 2022"> -->
             <div>
-              {{ item.task.name }}
+              {{ item.task.name }} {{ item.scoreboard.name }} {{ item.candidate.profile.fullname }}
             </div>
           </q-timeline-entry>
         </q-timeline>
@@ -33,7 +33,7 @@ import { useReferralStore } from "stores/referral";
 export default defineComponent({
   setup() {
     const referralStore = useReferralStore();
-    referralStore.allReferralByUser();
+    referralStore.allByUser();
     return { referralStore };
   },
   data() {

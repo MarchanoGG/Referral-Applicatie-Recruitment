@@ -7,7 +7,7 @@ const routes = [
   {
     path: "/",
     component: MainLayoutVue,
-    b: [{ path: "", component: IndexPage }],
+    children: [{ path: "", component: IndexPage }],
   },
   {
     path: "/login",
@@ -23,8 +23,14 @@ const routes = [
       { path: "", component: () => import("src/pages/LogoutPage.vue") },
     ],
   },
+  // recruiter pages
   {
-    path: "/users",
+    path: "/admin",
+    component: MainLayoutVue,
+    children: [{ path: "", component: IndexPage }],
+  },
+  {
+    path: "/admin/users",
     component: MainLayoutVue,
     children: [
       { path: "", component: () => import("src/pages/users/UsersList.vue") },
@@ -38,7 +44,7 @@ const routes = [
     }
   },
   {
-    path: "/candidates",
+    path: "/admin/candidates",
     component: MainLayoutVue,
     children: [
       {
@@ -55,7 +61,7 @@ const routes = [
     }
   },
   {
-    path: "/rewards",
+    path: "/admin/rewards",
     component: MainLayoutVue,
     children: [
       {
@@ -72,7 +78,7 @@ const routes = [
     }
   },
   {
-    path: "/tasks",
+    path: "/admin/tasks",
     component: MainLayoutVue,
     children: [
       { path: "", component: () => import("src/pages/tasks/TasksList.vue") },
@@ -86,7 +92,7 @@ const routes = [
     }
   },
   {
-    path: "/campaignes",
+    path: "/admin/campaignes",
     component: MainLayoutVue,
     children: [
       {
@@ -103,7 +109,7 @@ const routes = [
     }
   },
   {
-    path: "/scoreboards",
+    path: "/admin/scoreboards",
     component: MainLayoutVue,
     children: [
       {
@@ -119,6 +125,7 @@ const routes = [
       requiresAuth: true
     }
   },
+  // employee pages
   {
     path: "/dashboard",
     component: EmployeeLayoutVue,

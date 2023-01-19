@@ -4,27 +4,21 @@
             <div class="col-3 q-mx-md" v-for="item in scoreboardStore.items" :key="item.object_key">
                 <div class="">
                     <q-toolbar class="bg-primary text-white shadow-2">
-                        <q-toolbar-title>Scoreboard: {{ item.scoreboard.name }}</q-toolbar-title>
+                        <q-toolbar-title>Scoreboard: {{ item.name }}</q-toolbar-title>
                     </q-toolbar>
 
                     <q-list bordered>
-                        <!-- <q-item v-for="item in referralStore.items" :key="item.object_key" class="q-my-sm" clickable
-                            v-ripple>
-                            <q-item-section avatar>
-                                <q-avatar color="primary" text-color="white">
-                                    {{ item.user.username }}
-                                </q-avatar>
-                            </q-item-section>
-
+                        <q-item v-for="subitem in item.ranklist" :key="subitem.object_key" class="q-my-sm">
                             <q-item-section>
-                                <q-item-label>{{ item.name }}</q-item-label>
-                                <q-item-label caption lines="1">{{ item.email }}</q-item-label>
+                                <q-item-label>{{ subitem.username }}</q-item-label>
                             </q-item-section>
-
                             <q-item-section side>
-                                <q-icon name="chat_bubble" color="green" />
+                                {{ subitem.totalPoints }}
                             </q-item-section>
-                        </q-item> -->
+                            <q-item-section side>
+                                <q-icon name="star" color="green" />
+                            </q-item-section>
+                        </q-item>
 
                         <q-separator />
 
@@ -46,10 +40,7 @@ export default defineComponent({
     setup() {
         const scoreboardStore = useScoreboardStore();
         const referralStore = useReferralStore();
-        // referralStore.allReferralByUser();
-        // referralStore.allByScoreboard();
         scoreboardStore.allByUser()
-        console.log(scoreboardStore.items)
         return { scoreboardStore, referralStore };
     },
     data() {

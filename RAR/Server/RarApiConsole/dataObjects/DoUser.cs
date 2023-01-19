@@ -29,9 +29,33 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
 
-        public DoProfile ?profile;
+        private DatabaseContext db = new();
+        public DoProfile ?profile
+        {
+            get
+            {
+                return db.profiles.Find(fk_profile);
+            }
+        }
 
+        [Column(TypeName = "varchar(100)"), Required]
+        public string sessiontoken { get; set; } = "";
 
+        public int totalPoints
+        {
+            get
+            {
+                int total = 0;
+                foreach (var row in db.referrals.Where(a => a.fk_user == object_key))
+                {
+                    if (row != null && row.task != null)
+                    {
+                        total+= row.task.points;
+                    }
+                }
+                return total;
+            }
+        }
         public DoUser() 
         {
             username = "temp";
@@ -77,8 +101,6 @@ namespace RarApiConsole.dataObjects
                         arr += ",";
                     }
 
-                    obj.profile = myDB.profiles.Find(obj.fk_profile);
-
                     string json = JsonConvert.SerializeObject(obj);
 
                     if (json.Length > 0)
@@ -118,11 +140,43 @@ namespace RarApiConsole.dataObjects
                     if (obj.object_key == aObjectKey)
                     {
                         found = true;
-                        obj.profile = myDB.profiles.Find(obj.fk_profile);
                         arr += JsonConvert.SerializeObject(obj);
                     }
                 }
 
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
+
+        public string ReadSpecific(DatabaseContext myDB, string token)
+        {
+            string arr = "[";
+
+            if (myDB.users != null)
+            {
+                bool found = false;
+                foreach (var obj in myDB.users.ToList())
+                {
+                    if (obj.sessiontoken == token)
+                    {
+                        found = true;
+                        arr += JsonConvert.SerializeObject(obj);
+                    }
+                }
+                 
                 if (found == false)
                 {
                     arr = "";

@@ -156,7 +156,46 @@ namespace RarApiConsole.dataObjects
                 var refQuery = from referral in myDB.referrals where referral.fk_user == aObjectKey select referral;
                 foreach (var obj in refQuery)
                 {
-                    if (obj.fk_user == aObjectKey)
+                    if (second == true)
+                    {
+                        arr += ",";
+                    }
+                    found = true;
+                    arr += JsonConvert.SerializeObject(obj);
+                    second = true;
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
+        public string ReadByScoreboardId(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
+
+            if (myDB.referrals != null)
+            {
+                bool second = false;
+                bool found = false;
+                var userRefQuery = from referral in myDB.referrals
+                                   where referral.fk_scoreboard == aObjectKey
+                                   group referral.user by referral.fk_user into userRef
+                                   select userRef.FirstOrDefault();
+                foreach (var obj in userRefQuery)
+                {
+                    if (obj != null && obj.recruiter == 0)
                     {
                         if (second == true)
                         {

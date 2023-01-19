@@ -53,10 +53,21 @@ export const useReferralStore = defineStore("referral", {
         this.has_errors = true;
       }
     },
-    async allReferralByUser() {
+    async allByUser() {
       this.has_errors = false;
       this.last_res = await api.get("/Referrals", {
         params: { fk_user: this.userStore.user.object_key },
+      });
+      if (this.last_res.status == 200) {
+        this.items = this.last_res?.data;
+      } else {
+        has_errors = true;
+      }
+    },
+    async allByScoreboardId(id) {
+      this.has_errors = false;
+      this.last_res = await api.get("/Referrals", {
+        params: { fk_scoreboard: id },
       });
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;

@@ -28,7 +28,7 @@ export const useUserStore = defineStore("user", {
       localStorage.setItem("user", JSON.stringify(user));
       this.user = user;
       if (user?.recruiter == 1) {
-        this.router.push("/");
+        this.router.push("admin");
       } else {
         this.router.push("dashboard");
       }
