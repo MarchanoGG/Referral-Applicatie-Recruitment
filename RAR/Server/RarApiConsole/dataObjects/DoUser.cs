@@ -34,12 +34,18 @@ namespace RarApiConsole.dataObjects
         {
             get
             {
-                return db.profiles.Find(fk_profile);
+                if (db.profiles.Find(fk_profile) != null)
+                {
+                    return db.profiles.Find(fk_profile);
+                }
+                else 
+                {
+                    return new DoProfile();
+                }
             }
         }
 
         [Column(TypeName = "varchar(100)"), Required]
-        public string sessiontoken { get; set; } = "";
 
         public int totalPoints
         {
@@ -144,39 +150,6 @@ namespace RarApiConsole.dataObjects
                     }
                 }
 
-                if (found == false)
-                {
-                    arr = "";
-                }
-                else
-                {
-                    arr += "]";
-                }
-            }
-            else
-            {
-                arr = "";
-            }
-
-            return arr;
-        }
-
-        public string ReadSpecific(DatabaseContext myDB, string token)
-        {
-            string arr = "[";
-
-            if (myDB.users != null)
-            {
-                bool found = false;
-                foreach (var obj in myDB.users.ToList())
-                {
-                    if (obj.sessiontoken == token)
-                    {
-                        found = true;
-                        arr += JsonConvert.SerializeObject(obj);
-                    }
-                }
-                 
                 if (found == false)
                 {
                     arr = "";

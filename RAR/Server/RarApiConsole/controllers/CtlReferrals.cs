@@ -151,67 +151,86 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("creation_dt"))
+                if (pair.Value != null)
                 {
-                    obj.creation_dt = DateTime.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("modification_dt"))
-                {
-                    obj.modification_dt = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("user"))
-                {
-                    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (userPair != null)
+                    if (pair.Key.Equals("creation_dt"))
                     {
-                        int userKey = ctlUsers.CreateAction(userPair);
-                        if (userKey > 0)
+                        obj.creation_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("modification_dt"))
+                    {
+                        obj.modification_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj.fk_user = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_task"))
+                    {
+                        obj.fk_task = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_candidate"))
+                    {
+                        obj.fk_candidate = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_scoreboard"))
+                    {
+                        obj.fk_scoreboard = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("user"))
+                    {
+                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (userPair != null)
                         {
-                            obj.fk_user = userKey;
+                            int userKey = ctlUsers.CreateAction(userPair);
+                            if (userKey > 0)
+                            {
+                                obj.fk_user = userKey;
+                            }
                         }
                     }
-                }
 
-                if (pair.Key.Equals("task"))
-                {
-                    var taskPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (taskPair != null)
+                    if (pair.Key.Equals("task"))
                     {
-                        int taskKey = ctlTasks.CreateAction(taskPair);
-                        if (taskKey > 0)
+                        var taskPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (taskPair != null)
                         {
-                            obj.fk_task = taskKey;
+                            int taskKey = ctlTasks.CreateAction(taskPair);
+                            if (taskKey > 0)
+                            {
+                                obj.fk_task = taskKey;
+                            }
                         }
                     }
-                }
 
-                if (pair.Key.Equals("candidate"))
-                {
-                    var candidatePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (candidatePair != null)
+                    if (pair.Key.Equals("candidate"))
                     {
-                        int candidateKey = ctlCandidates.CreateAction(candidatePair);
-                        if (candidateKey > 0)
+                        var candidatePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (candidatePair != null)
                         {
-                            obj.fk_candidate = candidateKey;
+                            int candidateKey = ctlCandidates.CreateAction(candidatePair);
+                            if (candidateKey > 0)
+                            {
+                                obj.fk_candidate = candidateKey;
+                            }
                         }
                     }
-                }
 
-                if (pair.Key.Equals("scoreboard"))
-                {
-                    var scoreboardPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (scoreboardPair != null)
+                    if (pair.Key.Equals("scoreboard"))
                     {
-                        int scoreboardKey = ctlScoreboards.CreateAction(scoreboardPair);
-                        if (scoreboardKey > 0)
+                        var scoreboardPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (scoreboardPair != null)
                         {
-                            obj.fk_scoreboard = scoreboardKey;
+                            int scoreboardKey = ctlScoreboards.CreateAction(scoreboardPair);
+                            if (scoreboardKey > 0)
+                            {
+                                obj.fk_scoreboard = scoreboardKey;
+                            }
                         }
                     }
                 }
@@ -285,52 +304,87 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("creation_dt"))
+                if (pair.Value != null)
                 {
-                    obj.creation_dt = DateTime.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("modification_dt"))
-                {
-                    obj.modification_dt = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("user"))
-                {
-                    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (userPair != null)
+                    if (pair.Key.Equals("creation_dt"))
                     {
-                        obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
+                        obj.creation_dt = DateTime.Parse(pair.Value);
                     }
-                }
-
-                if (pair.Key.Equals("task"))
-                {
-                    var taskPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (taskPair != null)
+                    if (pair.Key.Equals("modification_dt"))
                     {
-                        obj.fk_task = ctlTasks.UpdateAction(taskPair, obj.fk_task);
+                        obj.modification_dt = DateTime.Parse(pair.Value);
                     }
-                }
-
-                if (pair.Key.Equals("candidate"))
-                {
-                    var candidatePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (candidatePair != null)
+                    if (pair.Key.Equals("fk_user"))
                     {
-                        obj.fk_candidate = ctlCandidates.UpdateAction(candidatePair, obj.fk_candidate);
+                        obj.fk_user = int.Parse(pair.Value);
                     }
-                }
-
-                if (pair.Key.Equals("scoreboard"))
-                {
-                    var scoreboardPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (scoreboardPair != null)
+                    if (pair.Key.Equals("fk_task"))
                     {
-                        obj.fk_scoreboard = ctlScoreboards.UpdateAction(scoreboardPair, obj.fk_scoreboard);
+                        obj.fk_task = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_candidate"))
+                    {
+                        obj.fk_candidate = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_scoreboard"))
+                    {
+                        obj.fk_scoreboard = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("user"))
+                    {
+                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (userPair != null && obj.fk_user != null)
+                        {
+                            obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
+                        }
+                        else if (userPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(userPair);
+                        }
+                    }
+
+                    if (pair.Key.Equals("task"))
+                    {
+                        var taskPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (taskPair != null && obj.fk_task != null)
+                        {
+                            obj.fk_task = ctlTasks.UpdateAction(taskPair, obj.fk_task);
+                        }
+                        else if (taskPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(taskPair);
+                        }
+                    }
+
+                    if (pair.Key.Equals("candidate"))
+                    {
+                        var candidatePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (candidatePair != null && obj.fk_candidate != null)
+                        {
+                            obj.fk_candidate = ctlCandidates.UpdateAction(candidatePair, obj.fk_candidate);
+                        }
+                        else if (candidatePair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(candidatePair);
+                        }
+                    }
+
+                    if (pair.Key.Equals("scoreboard"))
+                    {
+                        var scoreboardPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (scoreboardPair != null && obj.fk_scoreboard != null)
+                        {
+                            obj.fk_scoreboard = ctlScoreboards.UpdateAction(scoreboardPair, obj.fk_scoreboard);
+                        }
+                        else if (scoreboardPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(scoreboardPair);
+                        }
                     }
                 }
             }

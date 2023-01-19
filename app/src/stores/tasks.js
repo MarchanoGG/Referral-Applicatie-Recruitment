@@ -58,7 +58,7 @@ export const useTaskStore = defineStore("tasks", {
       }
     },
     async deleteItem() {
-      this.last_res = await api.delete("/Tasks", this.selected_item);
+      this.last_res = await api.delete("/Tasks?object_key=" + this.selected_item.object_key, this.selected_item);
       if (this.last_res.status == 200) {
         this.selected_item = this.last_res?.data[0];
         this.all();

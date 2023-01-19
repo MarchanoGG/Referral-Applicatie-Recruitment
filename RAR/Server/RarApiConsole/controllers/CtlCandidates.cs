@@ -139,21 +139,28 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("referred_at"))
+                if (pair.Value != null)
                 {
-                    obj.referred_at = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("profile"))
-                {
-                    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (profilePair != null)
+                    if (pair.Key.Equals("referred_at"))
                     {
-                        int profileKey = ctlProfiles.CreateAction(profilePair);
-                        if (profileKey > 0)
+                        obj.referred_at = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
                         {
-                            obj.fk_profile = profileKey;
+                            int profileKey = ctlProfiles.CreateAction(profilePair);
+                            if (profileKey > 0)
+                            {
+                                obj.fk_profile = profileKey;
+                            }
                         }
                     }
                 }
@@ -226,18 +233,29 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("referred_at"))
+                if (pair.Value != null)
                 {
-                    obj.referred_at = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("profile"))
-                {
-                    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (profilePair != null)
+                    if (pair.Key.Equals("referred_at"))
                     {
-                        obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile);
+                        obj.referred_at = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
+                        {
+                            obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile);
+                        }
+                        else if (profilePair != null)
+                        {
+                            obj.fk_profile = ctlProfiles.CreateAction(profilePair);
+                        }
                     }
                 }
             }

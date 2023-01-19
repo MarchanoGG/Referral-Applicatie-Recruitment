@@ -115,7 +115,7 @@
         </q-card-section>
 
         <q-card-actions class="bg-white ">
-          <q-btn @click="deleteItem" label="Delete" type="submit" color="primary" />
+          <q-btn @click="deleteItem()" label="Delete" type="submit" color="primary" />
           <q-btn label="Cancel" v-close-popup color="primary" flat class="float-right" />
         </q-card-actions>
 
@@ -127,6 +127,7 @@
 <script>
 import { defineComponent, ref, reactive, computed } from 'vue'
 import { useScoreboardStore } from 'stores/scoreboard'
+import { api } from "boot/axios";
 
 const columns = [
   {
@@ -182,5 +183,13 @@ export default defineComponent({
       userrows: [],
     }
   },
+  methods: {
+    deleteItem() {
+      this.scoreboardStore.deleteItem()
+      this.delform = false;
+      this.getUsers();
+      this.resetForm();
+    }
+  }
 })
 </script>

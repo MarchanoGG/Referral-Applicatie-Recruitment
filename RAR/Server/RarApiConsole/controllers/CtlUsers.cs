@@ -139,30 +139,37 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("username"))
+                if (pair.Value != null)
                 {
-                    obj.username = pair.Value;
-                }
-                if (pair.Key.Equals("password"))
-                {
-                    obj.password = GetHashString(pair.Value);
-                }
-                if (pair.Key.Equals("recruiter"))
-                {
-                    obj.recruiter = int.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("profile"))
-                {
-                    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (profilePair != null)
+                    if (pair.Key.Equals("username"))
                     {
-                        int profileKey = ctlProfiles.CreateAction(profilePair);
-                        if (profileKey > 0)
+                        obj.username = pair.Value;
+                    }
+                    if (pair.Key.Equals("password"))
+                    {
+                        obj.password = GetHashString(pair.Value);
+                    }
+                    if (pair.Key.Equals("recruiter"))
+                    {
+                        obj.recruiter = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
                         {
-                            obj.fk_profile = profileKey;
+                            int profileKey = ctlProfiles.CreateAction(profilePair);
+                            if (profileKey > 0)
+                            {
+                                obj.fk_profile = profileKey;
+                            }
                         }
+                    }
+                    else if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
                     }
                 }
             }
@@ -231,22 +238,33 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("username"))
+                if (pair.Value != null)
                 {
-                    obj.username = pair.Value;
-                }
-                if (pair.Key.Equals("recruiter"))
-                {
-                    obj.recruiter = int.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("profile"))
-                {
-                    var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (profilePair != null && obj.fk_profile != null)
+                    if (pair.Key.Equals("username"))
                     {
-                        obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
+                        obj.username = pair.Value;
+                    }
+                    if (pair.Key.Equals("recruiter"))
+                    {
+                        obj.recruiter = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null && obj.fk_profile != null)
+                        {
+                            obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
+                        }
+                        else if (profilePair != null)
+                        {
+                            obj.fk_profile = ctlProfiles.CreateAction(profilePair);
+                        }
                     }
                 }
             }

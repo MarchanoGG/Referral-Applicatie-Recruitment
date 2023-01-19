@@ -145,29 +145,36 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("start_dt"))
-                {
-                    obj.start_dt = DateTime.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("end_dt"))
-                {
-                    obj.end_dt = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("user"))
-                {
-                    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (userPair != null)
+                    if (pair.Key.Equals("name"))
                     {
-                        int userKey = ctlUsers.CreateAction(userPair);
-                        if (userKey > 0)
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("start_dt"))
+                    {
+                        obj.start_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("end_dt"))
+                    {
+                        obj.end_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj.fk_user = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("user"))
+                    {
+                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (userPair != null)
                         {
-                            obj.fk_user = userKey;
+                            int userKey = ctlUsers.CreateAction(userPair);
+                            if (userKey > 0)
+                            {
+                                obj.fk_user = userKey;
+                            }
                         }
                     }
                 }
@@ -238,26 +245,37 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("start_dt"))
-                {
-                    obj.start_dt = DateTime.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("end_dt"))
-                {
-                    obj.end_dt = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("user"))
-                {
-                    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (userPair != null)
+                    if (pair.Key.Equals("name"))
                     {
-                        obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("start_dt"))
+                    {
+                        obj.start_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("end_dt"))
+                    {
+                        obj.end_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj.fk_user = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("user"))
+                    {
+                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (userPair != null && obj.fk_user != null)
+                        {
+                            obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
+                        }
+                        else if (userPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(userPair);
+                        }
                     }
                 }
             }

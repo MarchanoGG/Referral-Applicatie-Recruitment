@@ -137,17 +137,20 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("points"))
-                {
-                    obj.points = int.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("description"))
-                {
-                    obj.description = pair.Value;
+                    if (pair.Key.Equals("name"))
+                    {
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("points"))
+                    {
+                        obj.points = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("description"))
+                    {
+                        obj.description = pair.Value;
+                    }
                 }
             }
 
@@ -216,17 +219,20 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("points"))
-                {
-                    obj.points = int.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("description"))
-                {
-                    obj.description = pair.Value;
+                    if (pair.Key.Equals("name"))
+                    {
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("points"))
+                    {
+                        obj.points = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("description"))
+                    {
+                        obj.description = pair.Value;
+                    }
                 }
             }
 

@@ -61,11 +61,11 @@
                 <template v-slot:navigation>
                     <q-stepper-navigation>
                         <q-btn v-if="step == 1"
-                            @click="referralStore.scoreboardStore.addItem(); test(); $refs.stepper.next()"
+                            @click="addScoreboard(); $refs.stepper.next()"
                             color="primary" label="Continue" />
                         <q-btn v-if="step == 2" @click="$refs.stepper.next()" color="primary" label="Continue" />
                         <q-btn v-if="step == 3" @click="$refs.stepper.next()" color="primary" label="Continue" />
-                        <q-btn v-if="step == 4" @click="test(); referralStore.addReferral();" color="primary"
+                        <q-btn v-if="step == 4" @click="referralStore.addReferral();" color="primary"
                             label="Finish" />
 
                         <q-btn v-if="step == 1" flat color="primary" href="/scoreboards" label="Back" class="q-ml-sm" />
@@ -119,8 +119,12 @@ export default {
         }
     },
     methods: {
-        test() {
-            console.log(this.referralStore.scoreboardStore.selected_item)
+        addScoreboard() {
+          this.referralStore.scoreboardStore.addItemSync().then((response) => {
+            if(response.data[0] != null) {
+              this.referralStore.scoreboardStore.selected_item = response.data[0];
+            }
+          })
         },
         getScoreboards() {
             api.get('/Scoreboards')
