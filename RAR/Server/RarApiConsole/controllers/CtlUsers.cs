@@ -174,9 +174,22 @@ namespace RarApiConsole.controllers
                 }
             }
 
-            if (temp.Create(db, obj) == true)
+            bool usernameFound = false;
+
+            foreach (var user in db.users.ToList())
             {
-                retVal = obj.object_key;
+                if(user.username == obj.username) 
+                {
+                    usernameFound = true;
+                }
+            }
+
+            if(!usernameFound)
+            {
+                if (temp.Create(db, obj) == true)
+                {
+                    retVal = obj.object_key;
+                }
             }
 
             return retVal;

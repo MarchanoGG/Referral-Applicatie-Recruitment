@@ -73,6 +73,8 @@ namespace RarApiConsole.dataObjects
             username = Username;
             password = Password;
             recruiter = Recruiter;
+            creation_dt = DateTime.Now;
+            modification_dt = DateTime.Now;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)
