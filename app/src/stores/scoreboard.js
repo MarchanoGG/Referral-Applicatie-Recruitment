@@ -12,6 +12,7 @@ export const useScoreboardStore = defineStore("scoreboard", {
     default_item: {
       name: null,
       object_key: null,
+      fk_user: useUserStore().user.object_key,
       start_dt: new Date().toLocaleDateString(),
       end_dt: new Date().toLocaleDateString(),
     },
@@ -38,8 +39,8 @@ export const useScoreboardStore = defineStore("scoreboard", {
       this.start_to_end.to = this.selected_item.end_dt_str;
     },
     formItem() {
-      this.selected_item.start_dt = this.start_to_end.from;
-      this.selected_item.end_dt = this.start_to_end.to;
+      this.selected_item.start_dt_str = this.start_to_end.from;
+      this.selected_item.end_dt_str = this.start_to_end.to;
       return this.selected_item;
     },
     async all() {
@@ -64,6 +65,8 @@ export const useScoreboardStore = defineStore("scoreboard", {
       this.last_res = await api.post("/Scoreboards", this.formItem());
       if (this.last_res.status == 200) {
         this.selected_item = this.last_res?.data[0];
+        this.all();
+        this.resetItem();
       } else {
         this.has_errors = true;
       }
@@ -71,7 +74,8 @@ export const useScoreboardStore = defineStore("scoreboard", {
     async editItem() {
       this.last_res = await api.put("/Scoreboards", this.formItem());
       if (this.last_res.status == 200) {
-        this.selected_item = this.last_res?.data[0];
+        this.all();
+        this.resetItem();
       } else {
         this.has_errors = true;
       }
@@ -81,13 +85,15 @@ export const useScoreboardStore = defineStore("scoreboard", {
         params: { object_key: this.selected_item.object_key },
       });
       if (this.last_res.status == 200) {
-        this.selected_item = this.last_res?.data[0];
+        this.all();
+        this.resetItem();
       } else {
         this.has_errors = true;
       }
     },
     resetItem() {
       this.selected_item = this.default_item;
+      this.has_errors = false;
     },
     dateRange() {
       return this.selected_item.start_dt;

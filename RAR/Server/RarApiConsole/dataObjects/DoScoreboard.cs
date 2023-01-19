@@ -25,18 +25,28 @@ namespace RarApiConsole.dataObjects
         public DateTime end_dt { get; set; }
         private DatabaseContext db = new();
         public List<DoUser> ranklist = new List<DoUser>();
+        [NotMapped]
         public string start_dt_str
         {
             get
             {
                 return start_dt.ToString(@"yyyy\/MM\/dd");
             }
+            set
+            {
+                start_dt = DateTime.Parse(value);
+            }
         }
+        [NotMapped]
         public string end_dt_str
         {
             get
             {
                 return end_dt.ToString(@"yyyy\/MM\/dd");
+            }
+            set
+            {
+                end_dt = DateTime.Parse(value);
             }
         }
         public DoScoreboard()

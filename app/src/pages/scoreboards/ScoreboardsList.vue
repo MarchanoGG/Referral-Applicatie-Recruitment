@@ -5,8 +5,7 @@
         <q-toolbar>
           <q-toolbar-title :shrink="true">Scoreboards</q-toolbar-title>
           <q-separator vertical inset />
-          <q-btn type="router-link" href="/admin/scoreboards/add" class="q-ml-md" color="secondary" dense
-            :icon="'person_add'" />
+          <q-btn @click="addform = true" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
         </q-toolbar>
       </template>
 
@@ -45,7 +44,7 @@
 
     </q-table>
 
-    <q-dialog v-model="addform" @hide="scoreboardStore.resetItem">
+    <q-dialog v-model="addform" @hide="scoreboardStore.resetItem()">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -54,13 +53,12 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="scoreboardStore.addItem(); scoreboardStore.resetItem()" @reset="scoreboardStore.resetItem">
+          <q-form @submit="scoreboardStore.addItem(); addform = scoreboardStore.has_errors"
+            @reset="scoreboardStore.resetItem()">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *" hint="Userame"
                   lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
-                <q-select filled v-model="scoreboardStore.selected_item.fk_user" :options="userrows"
-                  option-value="object_key" option-label="username" label="Standard" emit-value />
                 <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range />
               </div>
             </div>
@@ -75,7 +73,7 @@
     </q-dialog>
 
     <!-- edit form -->
-    <q-dialog v-model="editform" @hide="scoreboardStore.resetItem">
+    <q-dialog v-model="editform" @hide="scoreboardStore.resetItem()">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -84,13 +82,12 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="scoreboardStore.editItem(); scoreboardStore.resetItem()" @reset="scoreboardStore.resetItem">
+          <q-form @submit="scoreboardStore.editItem(); editform = scoreboardStore.has_errors"
+            @reset="scoreboardStore.resetItem()">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *" hint="Userame"
                   lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
-                <q-select filled v-model="scoreboardStore.selected_item.fk_user" :options="userrows"
-                  option-value="object_key" option-label="username" label="Standard" emit-value />
                 <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range />
               </div>
             </div>
@@ -106,7 +103,7 @@
     </q-dialog>
 
     <!-- delete form -->
-    <q-dialog v-model="delform" @hide="scoreboardStore.resetItem">
+    <q-dialog v-model="delform" @hide="scoreboardStore.resetItem()">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -151,14 +148,14 @@ const columns = [
   {
     name: 'startDate',
     label: 'Start Date',
-    field: 'start_dt',
+    field: 'start_dt_str',
     align: 'left',
     sortable: true
   },
   {
     name: 'endDate',
     label: 'End Date',
-    field: 'end_dt',
+    field: 'end_dt_str',
     align: 'left',
     sortable: true
   },
@@ -176,11 +173,6 @@ export default defineComponent({
       delform: ref(false),
       editform: ref(false),
       scoreboardStore
-    }
-  },
-  data() {
-    return {
-      userrows: [],
     }
   },
 })

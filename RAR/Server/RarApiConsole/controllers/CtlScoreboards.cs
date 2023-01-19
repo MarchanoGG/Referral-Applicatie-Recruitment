@@ -180,13 +180,13 @@ namespace RarApiConsole.controllers
                     {
                         obj.name = pair.Value;
                     }
-                    if (pair.Key.Equals("start_dt"))
+                    if (pair.Key.Equals("start_dt_str"))
                     {
-                        obj.start_dt = DateTime.Parse(pair.Value);
+                        obj.start_dt_str = pair.Value;
                     }
-                    if (pair.Key.Equals("end_dt"))
+                    if (pair.Key.Equals("end_dt_str"))
                     {
-                        obj.end_dt = DateTime.Parse(pair.Value);
+                        obj.end_dt_str = pair.Value;
                     }
                     if (pair.Key.Equals("object_key"))
                     {
