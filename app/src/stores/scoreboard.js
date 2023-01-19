@@ -94,6 +94,10 @@ export const useScoreboardStore = defineStore("scoreboard", {
     resetItem() {
       this.selected_item = this.default_item;
       this.has_errors = false;
+      this.start_to_end = {
+        from: new Date().toLocaleDateString(),
+        to: new Date().toLocaleDateString(),
+      };
     },
     dateRange() {
       return this.selected_item.start_dt;

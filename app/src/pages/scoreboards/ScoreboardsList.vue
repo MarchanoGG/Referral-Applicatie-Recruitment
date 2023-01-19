@@ -59,7 +59,7 @@
               <div class="col-5">
                 <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *" hint="Userame"
                   lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
-                <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range />
+                <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range minimal />
               </div>
             </div>
 
@@ -82,19 +82,18 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="scoreboardStore.editItem(); editform = scoreboardStore.has_errors"
-            @reset="scoreboardStore.resetItem()">
+          <q-form @submit="scoreboardStore.editItem(); editform = scoreboardStore.has_errors">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *" hint="Userame"
                   lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
-                <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range />
+                <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range minimal />
               </div>
             </div>
 
             <div class="col-5">
               <q-btn label="Submit" type="submit" color="primary" />
-              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+              <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="editform = false" />
             </div>
           </q-form>
         </q-card-section>
