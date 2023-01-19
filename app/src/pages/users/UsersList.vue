@@ -25,10 +25,10 @@
           <q-td auto-width>
             <q-btn-group>
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
-              <q-btn class="" color="secondary" dense @click="editform = true; userStore.selected_item = props.row;"
-                :icon="'edit'" />
-              <q-btn class="" color="secondary" dense @click="delform = true; userStore.selected_item = props.row;"
-                :icon="'delete'" />
+              <q-btn class="" color="secondary" dense
+                @click="editform = true; userStore.selected_item = userStore.focusItem(props.row);" :icon="'edit'" />
+              <q-btn class="" color="secondary" dense
+                @click="delform = true; userStore.selected_item = userStore.focusItem(props.row);" :icon="'delete'" />
             </q-btn-group>
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
