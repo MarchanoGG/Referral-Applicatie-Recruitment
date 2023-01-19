@@ -54,14 +54,14 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="scoreboardStore.addItem" @reset="scoreboardStore.resetItem">
+          <q-form @submit="scoreboardStore.addItem(); scoreboardStore.resetItem()" @reset="scoreboardStore.resetItem">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *" hint="Userame"
                   lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
                 <q-select filled v-model="scoreboardStore.selected_item.fk_user" :options="userrows"
                   option-value="object_key" option-label="username" label="Standard" emit-value />
-                <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" mask="D-M-YYYY" />
+                <q-date v-model="scoreboardStore.start_to_end" subtitle="Start Date" range />
               </div>
             </div>
 
@@ -84,7 +84,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="scoreboardStore.editItem" @reset="scoreboardStore.resetItem">
+          <q-form @submit="scoreboardStore.editItem(); scoreboardStore.resetItem()" @reset="scoreboardStore.resetItem">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="scoreboardStore.selected_item.name" label="Your username *" hint="Userame"
@@ -115,7 +115,8 @@
         </q-card-section>
 
         <q-card-actions class="bg-white ">
-          <q-btn @click="deleteItem" label="Delete" type="submit" color="primary" />
+          <q-btn @click="scoreboardStore.deleteItem(); scoreboardStore.resetItem()" label="Delete" type="submit"
+            color="primary" />
           <q-btn label="Cancel" v-close-popup color="primary" flat class="float-right" />
         </q-card-actions>
 
