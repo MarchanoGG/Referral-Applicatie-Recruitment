@@ -39,8 +39,32 @@ namespace RarApiConsole.dataObjects
         }
 
         [Column(TypeName = "varchar(100)"), Required]
+        [NotMapped]
         public string sessiontoken { get; set; } = "";
-
+        [NotMapped]
+        public string creation_dt_str
+        {
+            get
+            {
+                return creation_dt.ToString(@"yyyy\/MM\/dd");
+            }
+            set
+            {
+                creation_dt = DateTime.Parse(value);
+            }
+        }
+        [NotMapped]
+        public string modification_dt_str
+        {
+            get
+            {
+                return modification_dt.ToString(@"yyyy\/MM\/dd");
+            }
+            set
+            {
+                modification_dt = DateTime.Parse(value);
+            }
+        }
         public int totalPoints
         {
             get

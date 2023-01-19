@@ -209,9 +209,43 @@ const columns = [
     sortable: true
   },
   {
+    name: 'address',
+    required: true,
+    label: 'Address',
+    align: 'left',
+    field: 'profile',
+    format: val => `${val.address}`,
+    sortable: true
+  },
+  {
+    name: 'email',
+    required: true,
+    label: 'Email',
+    align: 'left',
+    field: 'profile',
+    format: val => `${val.email}`,
+    sortable: true
+  },
+  {
+    name: 'phone',
+    required: true,
+    label: 'Phone',
+    align: 'left',
+    field: 'profile',
+    format: val => `${val.phone_number}`,
+    sortable: true
+  },
+  {
+    name: 'creationDate',
+    label: 'Created at',
+    field: 'creation_dt_str',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'modificationDate',
     label: 'Last modified',
-    field: 'modification_dt',
+    field: 'modification_dt_str',
     align: 'left',
     sortable: true
   }
