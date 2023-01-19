@@ -162,9 +162,9 @@ const columns = [
     sortable: true
   },
   {
-    name: 'name',
+    name: 'fullname',
     required: true,
-    label: 'Name',
+    label: 'Fullname',
     align: 'left',
     field: 'profile',
     format: val => `${val.fullname}`,

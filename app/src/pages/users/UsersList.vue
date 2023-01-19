@@ -195,7 +195,7 @@ const columns = [
   {
     name: 'name',
     required: true,
-    label: 'Name',
+    label: 'Userame',
     align: 'left',
     field: 'username',
     format: val => `${val}`,
@@ -206,6 +206,24 @@ const columns = [
     label: 'Is a recruiter',
     field: 'recruiter_str',
     align: 'left',
+    sortable: true
+  },
+  {
+    name: 'initials',
+    required: true,
+    label: 'Initials',
+    align: 'left',
+    field: 'profile',
+    format: val => `${val.initials}`,
+    sortable: true
+  },
+  {
+    name: 'fullname',
+    required: true,
+    label: 'Fullname',
+    align: 'left',
+    field: 'profile',
+    format: val => `${val.fullname}`,
     sortable: true
   },
   {
