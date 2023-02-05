@@ -61,9 +61,10 @@
 
                 <q-input filled v-model="taskStore.selected_item.points" label="Task points *" hint="" lazy-rules
                   :rules="[val => val && String(val).length > 0 || 'Please type something']" />
-
+              </div>
+              <div class="col-5">
                 <q-input filled v-model="taskStore.selected_item.description" label="Task Description *" hint=""
-                  lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
+                  type="textarea" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
               </div>
             </div>
 
@@ -94,9 +95,10 @@
 
                 <q-input filled v-model="taskStore.selected_item.points" label="Task points *" hint="" lazy-rules
                   :rules="[val => val && String(val).length > 0 || 'Please type something']" />
-
+              </div>
+              <div class="col-5">
                 <q-input filled v-model="taskStore.selected_item.description" label="Task Description *" hint=""
-                  lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
+                  type="textarea" lazy-rules :rules="[val => val && val.length > 0 || 'Please type something']" />
               </div>
             </div>
 
