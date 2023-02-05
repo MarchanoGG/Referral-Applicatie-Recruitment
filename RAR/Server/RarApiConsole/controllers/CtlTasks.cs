@@ -3,6 +3,7 @@ using System.Text;
 using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
+using Newtonsoft.Json;
 
 namespace RarApiConsole.controllers
 {
@@ -104,27 +105,11 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoTask();
-
-                foreach (var pair in keyPair)
-                {
-                    if (pair.Key.Equals("name"))
-                    {
-                        obj.name = pair.Value;
-                    }
-                    if (pair.Key.Equals("points"))
-                    {
-                        obj.points = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("description"))
-                    {
-                        obj.description = pair.Value;
-                    }
-                }
-
-                if (temp.Create(db, obj) == true)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -144,23 +129,15 @@ namespace RarApiConsole.controllers
             return retVal;
         }
 
-        bool Put(HttpListenerContext aContext)
+        public int CreateAction(Dictionary<string, string> aPair)
         {
-            bool retVal = false;
+            int retVal = 0;
 
-            var aRequest = aContext.Request;
-            var aResponse = aContext.Response;
+            var obj = new DoTask();
 
-            string arr = "";
-
-            var keyPair = formData.FormData.GetFormData(aRequest);
-
-            if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
+            foreach (var pair in aPair)
             {
-                var obj = new DoTask();
-                bool keyIsSet = false;
-
-                foreach (var pair in keyPair)
+                if (pair.Value != null)
                 {
                     if (pair.Key.Equals("name"))
                     {
@@ -174,16 +151,43 @@ namespace RarApiConsole.controllers
                     {
                         obj.description = pair.Value;
                     }
+                }
+            }
+
+            if (temp.Create(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
+
+            return retVal;
+        }
+
+        bool Put(HttpListenerContext aContext)
+        {
+            bool retVal = false;
+
+            var aRequest = aContext.Request;
+            var aResponse = aContext.Response;
+
+            string arr = "";
+
+            var keyPair = formData.FormData.GetFormData(aRequest);
+
+            if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
+            {
+                int objectKey = 0;
+                foreach (var pair in keyPair)
+                {
                     if (pair.Key.Equals("object_key"))
                     {
-                        obj.object_key = int.Parse(pair.Value);
-                        keyIsSet = true;
+                        objectKey = int.Parse(pair.Value);
                     }
                 }
 
-                if ((keyIsSet == true) && (temp.Update(db, obj) == true))
+                if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -199,6 +203,43 @@ namespace RarApiConsole.controllers
             byte[] bytes = Encoding.UTF8.GetBytes(arr);
             aResponse.OutputStream.Write(bytes, 0, bytes.Length);
             aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public int UpdateAction(Dictionary<string, string> aPair, int aObjectKey)
+        {
+            int retVal = 0;
+
+            var obj = new DoTask();
+
+            obj.object_key = aObjectKey;
+
+            var ctlProfiles = CtlProfiles.Instance();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Value != null)
+                {
+                    if (pair.Key.Equals("name"))
+                    {
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("points"))
+                    {
+                        obj.points = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("description"))
+                    {
+                        obj.description = pair.Value;
+                    }
+                }
+            }
+
+            if (temp.Update(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
 
             return retVal;
         }

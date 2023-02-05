@@ -105,17 +105,45 @@ namespace RarApiConsole.controllers
             var aResponse = aContext.Response;
             var aRequest = aContext.Request;
 
-            var ctlProfiles = CtlProfiles.Instance();
-
             string arr = "";
 
             var keyPair = formData.FormData.GetFormData(aRequest);
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoUser();
+                if (CreateAction(keyPair) > 0)
+                {
+                    aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    retVal = true;
+                }
+                else
+                {
+                    aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+            }
+            else
+            {
+                aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
 
-                foreach (var pair in keyPair)
+            byte[] bytes = Encoding.UTF8.GetBytes(arr);
+            aResponse.OutputStream.Write(bytes, 0, bytes.Length);
+            aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public int CreateAction(Dictionary<string, string> aPair)
+        {
+            int retVal = 0;
+
+            var obj = new DoUser();
+
+            var ctlProfiles = CtlProfiles.Instance();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Value != null)
                 {
                     if (pair.Key.Equals("username"))
                     {
@@ -143,10 +171,58 @@ namespace RarApiConsole.controllers
                             }
                         }
                     }
+                    else if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
+                    }
+                }
+            }
+
+            bool usernameFound = false;
+
+            foreach (var user in db.users.ToList())
+            {
+                if(user.username == obj.username) 
+                {
+                    usernameFound = true;
+                }
+            }
+
+            if(!usernameFound)
+            {
+                if (temp.Create(db, obj) == true)
+                {
+                    retVal = obj.object_key;
+                }
+            }
+
+            return retVal;
+        }
+
+        bool Put(HttpListenerContext aContext)
+        {
+            bool retVal = false;
+
+            var aRequest = aContext.Request;
+            var aResponse = aContext.Response;
+
+            string arr = "";
+
+            var keyPair = formData.FormData.GetFormData(aRequest);
+
+            if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
+            {
+                int objectKey = 0;
+                foreach (var pair in keyPair)
+                {
+                    if (pair.Key.Equals("object_key"))
+                    {
+                        objectKey = int.Parse(pair.Value);
+                    }
                 }
 
-                if (temp.Create(db, obj) == true)
-                {   
+                if (UpdateAction(keyPair, objectKey) > 0)
+                {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     retVal = true;
                 }
@@ -167,72 +243,53 @@ namespace RarApiConsole.controllers
             return retVal;
         }
 
-        bool Put(HttpListenerContext aContext)
+        public int UpdateAction(Dictionary<string, string> aPair, int aObjectKey)
         {
-            bool retVal = false;
+            int retVal = 0;
 
-            var aRequest = aContext.Request;
-            var aResponse = aContext.Response;
+            var obj = new DoUser();
+
+            obj.object_key = aObjectKey;
 
             var ctlProfiles = CtlProfiles.Instance();
 
-            string arr = "";
-
-            var keyPair = formData.FormData.GetFormData(aRequest);
-
-            if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
+            foreach (var pair in aPair)
             {
-                var obj = db.users.Find(int.Parse(keyPair["object_key"]));
-
-                if(obj != null)
+                if (pair.Value != null)
                 {
-                    foreach (var pair in keyPair)
+                    if (pair.Key.Equals("username"))
                     {
-                        if (pair.Key.Equals("username"))
-                        {
-                            obj.username = pair.Value;
-                        }
-                        // Create new end point to update password
-                        //if (pair.Key.Equals("password"))
-                        //{
-                        //    obj.password = GetHashString(pair.Value);
-                        //}
-                        if (pair.Key.Equals("recruiter"))
-                        {
-                            obj.recruiter = int.Parse(pair.Value);
-                        }
-
-                        if (pair.Key.Equals("profile"))
-                        {
-                            var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                            if(profilePair != null && obj.fk_profile != null)
-                            {
-                                obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
-                            }
-                        }
+                        obj.username = pair.Value;
+                    }
+                    if (pair.Key.Equals("recruiter"))
+                    {
+                        obj.recruiter = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
                     }
 
-                    if (temp.Update(db, obj) == true)
+                    if (pair.Key.Equals("profile"))
                     {
-                        aResponse.StatusCode = (int)HttpStatusCode.OK;
-                        retVal = true;
-                    }
-                    else
-                    {
-                        aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null && obj.fk_profile != null)
+                        {
+                            obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile.Value);
+                        }
+                        else if (profilePair != null)
+                        {
+                            obj.fk_profile = ctlProfiles.CreateAction(profilePair);
+                        }
                     }
                 }
-                
-            }
-            else
-            {
-                aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
             }
 
-            byte[] bytes = Encoding.UTF8.GetBytes(arr);
-            aResponse.OutputStream.Write(bytes, 0, bytes.Length);
-            aResponse.OutputStream.Close();
+            if (temp.Update(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
 
             return retVal;
         }

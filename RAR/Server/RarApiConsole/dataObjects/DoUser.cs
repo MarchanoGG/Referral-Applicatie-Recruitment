@@ -34,7 +34,14 @@ namespace RarApiConsole.dataObjects
         {
             get
             {
-                return db.profiles.Find(fk_profile);
+                if (db.profiles.Find(fk_profile) != null)
+                {
+                    return db.profiles.Find(fk_profile);
+                }
+                else 
+                {
+                    return new DoProfile();
+                }
             }
         }
 
@@ -91,6 +98,8 @@ namespace RarApiConsole.dataObjects
             username = Username;
             password = Password;
             recruiter = Recruiter;
+            creation_dt = DateTime.Now;
+            modification_dt = DateTime.Now;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)

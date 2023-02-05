@@ -99,44 +99,17 @@ namespace RarApiConsole.controllers
             var aResponse = aContext.Response;
             var aRequest = aContext.Request;
 
-            var ctlProfiles = CtlProfiles.Instance();
-
             string arr = "";
 
             var keyPair = formData.FormData.GetFormData(aRequest);
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoCandidate();
-
-                foreach (var pair in keyPair)
-                {
-                    if (pair.Key.Equals("fk_profile"))
-                    {
-                        obj.fk_profile = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("referred_at"))
-                    {
-                        obj.referred_at = DateTime.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("profile"))
-                    {
-                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                        if (profilePair != null)
-                        {
-                            int profileKey = ctlProfiles.CreateAction(profilePair);
-                            if (profileKey > 0)
-                            {
-                                obj.fk_profile = profileKey;
-                            }
-                        }
-                    }
-                }
-
-                if (temp.Create(db, obj) == true)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -156,6 +129,51 @@ namespace RarApiConsole.controllers
             return retVal;
         }
 
+        public int CreateAction(Dictionary<string, string> aPair)
+        {
+            int retVal = 0;
+
+            var obj = new DoCandidate();
+
+            var ctlProfiles = CtlProfiles.Instance();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Value != null)
+                {
+                    if (pair.Key.Equals("referred_at"))
+                    {
+                        obj.referred_at = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
+                        {
+                            int profileKey = ctlProfiles.CreateAction(profilePair);
+                            if (profileKey > 0)
+                            {
+                                obj.fk_profile = profileKey;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (temp.Create(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
+
+            return retVal;
+        }
+
         bool Put(HttpListenerContext aContext)
         {
             bool retVal = false;
@@ -171,44 +189,24 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = db.candidates.Find(int.Parse(keyPair["object_key"]));
-
-                if (obj != null)
+                int objectKey = 0;
+                foreach (var pair in keyPair)
                 {
-                    foreach (var pair in keyPair)
+                    if (pair.Key.Equals("object_key"))
                     {
-                        if (pair.Key.Equals("fk_profile"))
-                        {
-                            obj.fk_profile = int.Parse(pair.Value);
-                        }
-                        if (pair.Key.Equals("referred_at"))
-                        {
-                            obj.referred_at = DateTime.Parse(pair.Value);
-                        }
-                        if (pair.Key.Equals("object_key"))
-                        {
-                            obj.object_key = int.Parse(pair.Value);
-                        }
-                        if (pair.Key.Equals("profile"))
-                        {
-                            var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+                        objectKey = int.Parse(pair.Value);
+                    }
+                }
 
-                            if (profilePair != null && obj.fk_profile != 0)
-                            {
-                                obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile);
-                            }
-                        }
-                    }
-
-                    if ((temp.Update(db, obj) == true))
-                    {
-                        aResponse.StatusCode = (int)HttpStatusCode.OK;
-                        retVal = true;
-                    }
-                    else
-                    {
-                        aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
-                    }
+                if (UpdateAction(keyPair, objectKey) > 0)
+                {
+                    aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
+                    retVal = true;
+                }
+                else
+                {
+                    aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 }
             }
             else
@@ -219,6 +217,53 @@ namespace RarApiConsole.controllers
             byte[] bytes = Encoding.UTF8.GetBytes(arr);
             aResponse.OutputStream.Write(bytes, 0, bytes.Length);
             aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public int UpdateAction(Dictionary<string, string> aPair, int aObjectKey)
+        {
+            int retVal = 0;
+
+            var obj = new DoCandidate();
+
+            obj.object_key = aObjectKey;
+
+            var ctlProfiles = CtlProfiles.Instance();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Value != null)
+                {
+                    if (pair.Key.Equals("referred_at"))
+                    {
+                        obj.referred_at = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_profile"))
+                    {
+                        obj.fk_profile = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("profile"))
+                    {
+                        var profilePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (profilePair != null)
+                        {
+                            obj.fk_profile = ctlProfiles.UpdateAction(profilePair, obj.fk_profile);
+                        }
+                        else if (profilePair != null)
+                        {
+                            obj.fk_profile = ctlProfiles.CreateAction(profilePair);
+                        }
+                    }
+                }
+            }
+
+            if (temp.Update(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
 
             return retVal;
         }

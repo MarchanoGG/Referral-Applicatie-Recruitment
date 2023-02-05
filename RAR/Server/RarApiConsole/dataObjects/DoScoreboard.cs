@@ -68,7 +68,6 @@ namespace RarApiConsole.dataObjects
             bool retVal = false;
 
             if (aPair.ContainsKey("fk_user") &&
-                aPair["fk_user"].Length > 0 && 
                 aPair.ContainsKey("name") &&
                 aPair["name"].Length > 0 &&
                 aPair.ContainsKey("start_dt") &&

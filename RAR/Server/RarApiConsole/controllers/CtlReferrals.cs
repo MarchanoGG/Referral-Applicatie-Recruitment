@@ -3,6 +3,7 @@ using System.Text;
 using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
+using Newtonsoft.Json;
 
 namespace RarApiConsole.controllers
 {
@@ -113,39 +114,11 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                var obj = new DoReferral();
-
-                foreach (var pair in keyPair)
-                {
-                    if (pair.Key.Equals("fk_user"))
-                    {
-                        obj.fk_user = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("fk_task"))
-                    {
-                        obj.fk_task = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("fk_candidate"))
-                    {
-                        obj.fk_candidate = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("fk_scoreboard"))
-                    {
-                        obj.fk_scoreboard = int.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("creation_dt"))
-                    {
-                        obj.creation_dt = DateTime.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("modification_dt"))
-                    {
-                        obj.modification_dt = DateTime.Parse(pair.Value);
-                    }
-                }
-
-                if (temp.Create(db, obj) == true)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -165,24 +138,29 @@ namespace RarApiConsole.controllers
             return retVal;
         }
 
-        bool Put(HttpListenerContext aContext)
+        public int CreateAction(Dictionary<string, string> aPair)
         {
-            bool retVal = false;
+            int retVal = 0;
 
-            var aRequest = aContext.Request;
-            var aResponse = aContext.Response;
+            var obj = new DoReferral();
 
-            string arr = "";
+            var ctlUsers = CtlUsers.Instance();
+            var ctlTasks = CtlTasks.Instance();
+            var ctlCandidates = CtlCandidates.Instance();
+            var ctlScoreboards = CtlScoreboards.Instance();
 
-            var keyPair = formData.FormData.GetFormData(aRequest);
-
-            if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
+            foreach (var pair in aPair)
             {
-                var obj = new DoReferral();
-                bool keyIsSet = false;
-
-                foreach (var pair in keyPair)
+                if (pair.Value != null)
                 {
+                    if (pair.Key.Equals("creation_dt"))
+                    {
+                        obj.creation_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("modification_dt"))
+                    {
+                        obj.modification_dt = DateTime.Parse(pair.Value);
+                    }
                     if (pair.Key.Equals("fk_user"))
                     {
                         obj.fk_user = int.Parse(pair.Value);
@@ -199,24 +177,99 @@ namespace RarApiConsole.controllers
                     {
                         obj.fk_scoreboard = int.Parse(pair.Value);
                     }
-                    if (pair.Key.Equals("creation_dt"))
+
+                    if (pair.Key.Equals("user"))
                     {
-                        obj.creation_dt = DateTime.Parse(pair.Value);
+                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (userPair != null)
+                        {
+                            int userKey = ctlUsers.CreateAction(userPair);
+                            if (userKey > 0)
+                            {
+                                obj.fk_user = userKey;
+                            }
+                        }
                     }
-                    if (pair.Key.Equals("modification_dt"))
+
+                    if (pair.Key.Equals("task"))
                     {
-                        obj.modification_dt = DateTime.Parse(pair.Value);
+                        var taskPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (taskPair != null)
+                        {
+                            int taskKey = ctlTasks.CreateAction(taskPair);
+                            if (taskKey > 0)
+                            {
+                                obj.fk_task = taskKey;
+                            }
+                        }
                     }
+
+                    if (pair.Key.Equals("candidate"))
+                    {
+                        var candidatePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (candidatePair != null)
+                        {
+                            int candidateKey = ctlCandidates.CreateAction(candidatePair);
+                            if (candidateKey > 0)
+                            {
+                                obj.fk_candidate = candidateKey;
+                            }
+                        }
+                    }
+
+                    if (pair.Key.Equals("scoreboard"))
+                    {
+                        var scoreboardPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (scoreboardPair != null)
+                        {
+                            int scoreboardKey = ctlScoreboards.CreateAction(scoreboardPair);
+                            if (scoreboardKey > 0)
+                            {
+                                obj.fk_scoreboard = scoreboardKey;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (temp.Create(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
+
+            return retVal;
+        }
+
+        bool Put(HttpListenerContext aContext)
+        {
+            bool retVal = false;
+
+            var aRequest = aContext.Request;
+            var aResponse = aContext.Response;
+
+            string arr = "";
+
+            var keyPair = formData.FormData.GetFormData(aRequest);
+
+            if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
+            {
+                int objectKey = 0;
+                foreach (var pair in keyPair)
+                {
                     if (pair.Key.Equals("object_key"))
                     {
-                        obj.object_key = int.Parse(pair.Value);
-                        keyIsSet = true;
+                        objectKey = int.Parse(pair.Value);
                     }
                 }
 
-                if ((keyIsSet == true) && (temp.Update(db, obj) == true))
+                if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -232,6 +285,114 @@ namespace RarApiConsole.controllers
             byte[] bytes = Encoding.UTF8.GetBytes(arr);
             aResponse.OutputStream.Write(bytes, 0, bytes.Length);
             aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+        public int UpdateAction(Dictionary<string, string> aPair, int aObjectKey)
+        {
+            int retVal = 0;
+
+            var obj = new DoReferral();
+
+            obj.object_key = aObjectKey; 
+
+            var ctlUsers = CtlUsers.Instance();
+            var ctlTasks = CtlTasks.Instance();
+            var ctlCandidates = CtlCandidates.Instance();
+            var ctlScoreboards = CtlScoreboards.Instance();
+
+            foreach (var pair in aPair)
+            {
+                if (pair.Value != null)
+                {
+                    if (pair.Key.Equals("creation_dt"))
+                    {
+                        obj.creation_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("modification_dt"))
+                    {
+                        obj.modification_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj.fk_user = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_task"))
+                    {
+                        obj.fk_task = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_candidate"))
+                    {
+                        obj.fk_candidate = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_scoreboard"))
+                    {
+                        obj.fk_scoreboard = int.Parse(pair.Value);
+                    }
+
+                    if (pair.Key.Equals("user"))
+                    {
+                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (userPair != null && obj.fk_user != null)
+                        {
+                            obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
+                        }
+                        else if (userPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(userPair);
+                        }
+                    }
+
+                    if (pair.Key.Equals("task"))
+                    {
+                        var taskPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (taskPair != null && obj.fk_task != null)
+                        {
+                            obj.fk_task = ctlTasks.UpdateAction(taskPair, obj.fk_task);
+                        }
+                        else if (taskPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(taskPair);
+                        }
+                    }
+
+                    if (pair.Key.Equals("candidate"))
+                    {
+                        var candidatePair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (candidatePair != null && obj.fk_candidate != null)
+                        {
+                            obj.fk_candidate = ctlCandidates.UpdateAction(candidatePair, obj.fk_candidate);
+                        }
+                        else if (candidatePair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(candidatePair);
+                        }
+                    }
+
+                    if (pair.Key.Equals("scoreboard"))
+                    {
+                        var scoreboardPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+
+                        if (scoreboardPair != null && obj.fk_scoreboard != null)
+                        {
+                            obj.fk_scoreboard = ctlScoreboards.UpdateAction(scoreboardPair, obj.fk_scoreboard);
+                        }
+                        else if (scoreboardPair != null)
+                        {
+                            obj.fk_user = ctlUsers.CreateAction(scoreboardPair);
+                        }
+                    }
+                }
+            }
+
+            if (temp.Update(db, obj) == true)
+            {
+                retVal = obj.object_key;
+            }
 
             return retVal;
         }
