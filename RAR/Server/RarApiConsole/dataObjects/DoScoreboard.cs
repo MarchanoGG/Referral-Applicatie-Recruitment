@@ -32,10 +32,6 @@ namespace RarApiConsole.dataObjects
             {
                 return start_dt.ToString(@"yyyy\/MM\/dd");
             }
-            set
-            {
-                start_dt = DateTime.Parse(value);
-            }
         }
         [NotMapped]
         public string end_dt_str
@@ -43,10 +39,6 @@ namespace RarApiConsole.dataObjects
             get
             {
                 return end_dt.ToString(@"yyyy\/MM\/dd");
-            }
-            set
-            {
-                end_dt = DateTime.Parse(value);
             }
         }
         public DoScoreboard()

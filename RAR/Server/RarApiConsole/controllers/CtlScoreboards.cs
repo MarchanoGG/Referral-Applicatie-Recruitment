@@ -151,59 +151,6 @@ namespace RarApiConsole.controllers
                     {
                         obj.name = pair.Value;
                     }
-                    if (pair.Key.Equals("start_dt_str"))
-                    {
-                        obj.start_dt_str = pair.Value;
-                    }
-                    if (pair.Key.Equals("end_dt_str"))
-                    {
-                        obj.end_dt_str = pair.Value;
-                    }
-                    if (pair.Key.Equals("fk_user"))
-                    {
-                        obj.fk_user = int.Parse(pair.Value);
-                    }
-
-                    if (pair.Key.Equals("user"))
-                    {
-                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                        if (userPair != null)
-                        {
-                            int userKey = ctlUsers.CreateAction(userPair);
-                            if (userKey > 0)
-                            {
-                                obj.fk_user = userKey;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (temp.Create(db, obj) == true)
-            {
-                retVal = obj.object_key;
-            }
-
-            return retVal;
-        }
-
-        public int CreateAction(Dictionary<string, string> aPair)
-        {
-            int retVal = 0;
-
-            var obj = new DoScoreboard();
-
-            var ctlUsers = CtlUsers.Instance();
-
-            foreach (var pair in aPair)
-            {
-                if (pair.Value != null)
-                {
-                    if (pair.Key.Equals("name"))
-                    {
-                        obj.name = pair.Value;
-                    }
                     if (pair.Key.Equals("start_dt"))
                     {
                         obj.start_dt = DateTime.Parse(pair.Value);
@@ -321,7 +268,7 @@ namespace RarApiConsole.controllers
                     {
                         var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
 
-                        if (userPair != null && obj.fk_user != null)
+                        if (userPair != null && obj.fk_user != 0)
                         {
                             obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
                         }

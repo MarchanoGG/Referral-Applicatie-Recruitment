@@ -18,10 +18,6 @@ namespace RarApiConsole.dataObjects
             {
                 return $"{name?[0]}.{surname?[0]}.";
             }
-            set
-            {
-                initials = $"{name?[0]}.{surname?[0]}.";
-            }
         }
 
         [Column(TypeName = "varchar(40)")]

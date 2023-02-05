@@ -55,10 +55,6 @@ namespace RarApiConsole.dataObjects
             {
                 return creation_dt.ToString(@"yyyy\/MM\/dd");
             }
-            set
-            {
-                creation_dt = DateTime.Parse(value);
-            }
         }
         [NotMapped]
         public string modification_dt_str
@@ -66,10 +62,6 @@ namespace RarApiConsole.dataObjects
             get
             {
                 return modification_dt.ToString(@"yyyy\/MM\/dd");
-            }
-            set
-            {
-                modification_dt = DateTime.Parse(value);
             }
         }
         public int totalPoints

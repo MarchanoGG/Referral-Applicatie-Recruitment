@@ -39,8 +39,8 @@ export const useScoreboardStore = defineStore("scoreboard", {
       this.start_to_end.to = this.selected_item.end_dt_str;
     },
     formItem() {
-      this.selected_item.start_dt_str = this.start_to_end.from;
-      this.selected_item.end_dt_str = this.start_to_end.to;
+      this.selected_item.start_dt = this.start_to_end.from;
+      this.selected_item.end_dt = this.start_to_end.to;
       return this.selected_item;
     },
     async all() {
