@@ -16,3 +16,5 @@
 /app/node_modules
 /RAR/Server/RarApiConsole/obj
 /app/.vs
+/app/.quasar
+/app/.vscode
