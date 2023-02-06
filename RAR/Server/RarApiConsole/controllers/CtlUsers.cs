@@ -99,6 +99,18 @@ namespace RarApiConsole.controllers
             return resVal;
         }
 
+        public bool GetAction()
+        {
+            bool resVal = false;
+
+            if(temp.ReadAll(db).Length > 0) 
+            {
+                resVal = true;
+            }
+
+            return resVal;
+        }
+
         bool Post(HttpListenerContext aContext)
         {
             bool retVal = false;
@@ -247,9 +259,9 @@ namespace RarApiConsole.controllers
         {
             int retVal = 0;
 
-            var obj = new DoUser();
+            var temp = new DoUser();
 
-            obj.object_key = aObjectKey;
+            var obj = temp.ReadSpecificObject(db, aObjectKey);
 
             var ctlProfiles = CtlProfiles.Instance();
 
@@ -314,7 +326,7 @@ namespace RarApiConsole.controllers
                     ctlProfiles.DeleteAction(tempObj.fk_profile.Value);
                 }
 
-                if (temp.Delete(db, int.Parse(ok)))
+                if (DeleteAction(int.Parse(ok)))
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
                     aResponse.ContentType = "application/json";
@@ -335,6 +347,15 @@ namespace RarApiConsole.controllers
             aResponse.OutputStream.Close();
 
             return retVal;
+        }
+
+        public bool DeleteAction(int ObjectKey)
+        {
+            bool res = false;
+
+            res = temp.Delete(db, ObjectKey);
+
+            return res;
         }
 
         static bool NotSupported(HttpListenerContext aContext)

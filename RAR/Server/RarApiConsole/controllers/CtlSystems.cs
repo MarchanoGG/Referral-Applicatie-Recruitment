@@ -4,6 +4,9 @@ using RarApiConsole.providers;
 using RarApiConsole.dataObjects;
 using RAR;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 
 namespace RarApiConsole.controllers
 {
@@ -15,6 +18,7 @@ namespace RarApiConsole.controllers
         {
             TServer server = TServer.Instance();
             server.RegisterCallback("/Systems/SeedDatabase", HandleSeeding);
+            server.RegisterCallback("/Systems/UnitTest", UnitTesting);
         }
 
         public static CtlSystems Instance()
@@ -54,6 +58,40 @@ namespace RarApiConsole.controllers
             return true;
         }
 
+        public bool UnitTesting(HttpListenerContext aContext)
+        {
+            string arr = "[";
+
+            var response = aContext.Response;
+
+
+            // Unit test user module
+            arr += UserTest(aContext);
+
+            if (arr.Length > 1)
+            {
+                arr += ",";
+            }
+
+            if (arr.Length > 0)
+            {
+                arr += "]";
+
+                response.StatusCode = (int)HttpStatusCode.OK;
+                response.ContentType = "application/json";
+
+                byte[] bytes = Encoding.UTF8.GetBytes(arr);
+                response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
+            }
+            else
+            {
+                response.StatusCode = (int)HttpStatusCode.NoContent;
+            }
+
+            response.OutputStream.Close();
+            return true;
+        }
+
         private static List<DoUser> GetUsers()
         {
             return new List<DoUser>() {
@@ -80,6 +118,56 @@ namespace RarApiConsole.controllers
             }
 
             return sb.ToString();
+        }
+
+        private string UserTest(HttpListenerContext aContext)
+        {
+            Dictionary<string, string> retVal = new Dictionary<string, string>();
+
+            CtlUsers controller = CtlUsers.Instance();
+
+            Dictionary<string, string> createPair = new Dictionary<string, string>();
+            Dictionary<string, string> updatePair = new Dictionary<string, string>();
+            Dictionary<string, string> deletePair = new Dictionary<string, string>();
+
+            createPair.Add("Email", "test@test.nl");
+            createPair.Add("Password", "test");
+            createPair.Add("Recruiter", "0");
+
+            updatePair.Add("Email", "test2@test.nl");
+
+            // Create user
+            int createRes = controller.CreateAction(createPair);
+            retVal.Add("Created", createRes.ToString());
+
+            // Get user
+            bool getRes = controller.GetAction();
+
+            if (getRes == true)
+            {
+                retVal.Add("Get", "Successfull");
+            }
+            else
+            {
+                retVal.Add("Get", "Failed");
+            }
+
+            // Update user
+            int updateRes = controller.UpdateAction(updatePair, createRes);
+            retVal.Add("Updated", updateRes.ToString());
+
+            // Delete user
+            bool deleteRes = controller.DeleteAction(updateRes);
+            if (deleteRes == true)
+            {
+                retVal.Add("Delete", "Successfull");
+            }
+            else
+            {
+                retVal.Add("Delete", "Failed");
+            }
+
+            return JsonConvert.SerializeObject(retVal);
         }
     }
 }
