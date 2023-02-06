@@ -20,7 +20,22 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime award_dt { get; set; }
 
-        public DoUser? user;
+        private DatabaseContext db = new();
+
+        public DoUser? user
+        {
+            get
+            {
+                if (db.users.Find(fk_user) != null)
+                {
+                    return db.users.Find(fk_user);
+                }
+                else
+                {
+                    return new DoUser();
+                }
+            }
+        }
 
         public DoReward()
         {

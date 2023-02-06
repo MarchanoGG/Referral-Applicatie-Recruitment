@@ -150,20 +150,20 @@ namespace RarApiConsole.controllers
                         obj.award_dt = DateTime.Parse(pair.Value);
                     }
 
-                    if (pair.Key.Equals("user"))
-                    {
-                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
+                    //if (pair.Key.Equals("user"))
+                    //{
+                    //    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
 
-                        if (userPair != null)
-                        {
-                            int userKey = ctlUsers.CreateAction(userPair);
-                            if (userKey > 0)
-                            {
-                                obj.fk_user = userKey;
-                            }
-                        }
-                    }
-                    else if (pair.Key.Equals("fk_user"))
+                    //    if (userPair != null)
+                    //    {
+                    //        int userKey = ctlUsers.CreateAction(userPair);
+                    //        if (userKey > 0)
+                    //        {
+                    //            obj.fk_user = userKey;
+                    //        }
+                    //    }
+                    //} else
+                    if (pair.Key.Equals("fk_user"))
                     {
                         obj.fk_user = int.Parse(pair.Value);
                     }
@@ -249,20 +249,19 @@ namespace RarApiConsole.controllers
                     {
                         obj.fk_user = int.Parse(pair.Value);
                     }
+                    //if (pair.Key.Equals("user"))
+                    //{
+                    //    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
 
-                    if (pair.Key.Equals("user"))
-                    {
-                        var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                        if (userPair != null)
-                        {
-                            obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
-                        }
-                        else if (userPair != null)
-                        {
-                            obj.fk_user = ctlUsers.CreateAction(userPair);
-                        }
-                    }
+                    //    if (userPair != null)
+                    //    {
+                    //        obj.fk_user = ctlUsers.UpdateAction(userPair, obj.fk_user);
+                    //    }
+                    //    else if (userPair != null)
+                    //    {
+                    //        obj.fk_user = ctlUsers.CreateAction(userPair);
+                    //    }
+                    //}
                 }
             }
 

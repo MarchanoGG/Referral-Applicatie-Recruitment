@@ -59,10 +59,9 @@
                 <q-input filled v-model="selected_item.name" label="Reward name *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-select filled v-model="selected_item.fk_user" :options="userrows" option-value="object_key"
-                  option-label="username" label="Standard" emit-value />
-
-                <q-date v-model="selected_item.award_dt" />
+                <q-select v-model="selected_item.user" :options="userrows" option-value="object_key"
+                  option-label="username" label="" />
+                <q-date v-model="selected_item.award_dt" subtitle="Award at" minimal />
               </div>
             </div>
 
@@ -91,10 +90,9 @@
                 <q-input filled v-model="selected_item.name" label="Reward name *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-select filled v-model="selected_item.fk_user" :options="userrows" option-value="object_key"
-                  option-label="username" label="Standard" emit-value />
-
-                <q-date v-model="selected_item.award_dt" />
+                <q-select v-model="selected_item.user" :options="userrows" option-value="object_key"
+                  option-label="username" label="" />
+                <q-date v-model="selected_item.award_dt" subtitle="Award at" minimal />
               </div>
             </div>
 
@@ -173,6 +171,7 @@ export default defineComponent({
     const default_item = {
       name: null,
       fk_user: null,
+      user: null,
       object_key: null,
       award_dt: new Date().toLocaleDateString(),
     }
@@ -208,6 +207,7 @@ export default defineComponent({
       return item
     },
     addItem() {
+      this.selected_item.fk_user = this.selected_item.user.object_key
       api.post('/Rewards', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
@@ -220,6 +220,7 @@ export default defineComponent({
         })
     },
     editItem() {
+      this.selected_item.fk_user = this.selected_item.user.object_key
       api.put('/Rewards', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
