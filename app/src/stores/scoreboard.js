@@ -43,6 +43,16 @@ export const useScoreboardStore = defineStore("scoreboard", {
       this.selected_item.end_dt = this.start_to_end.to;
       return this.selected_item;
     },
+    async getById(id) {
+      this.last_res = await api.get("/Scoreboards", {
+        params: { object_key: id },
+      });
+      if (this.last_res.status == 200) {
+        this.focusItem(this.last_res?.data[0]);
+      } else {
+        this.has_errors = true;
+      }
+    },
     async all() {
       this.last_res = await api.get("/Scoreboards");
       if (this.last_res.status == 200) {

@@ -25,7 +25,7 @@
           <q-td auto-width>
             <q-btn-group>
               <!-- <q-btn class="" color="secondary" dense @click="props.expand = !props.expand" :icon="'info'" /> -->
-              <q-btn class="" color="secondary" dense @click="editform = true; scoreboardStore.focusItem(props.row);"
+              <q-btn class="" color="secondary" dense type="router-link" :href="'/admin/scoreboards/edit/'+ props.row.object_key"
                 :icon="'edit'" />
               <q-btn class="" color="secondary" dense @click="delform = true; scoreboardStore.focusItem(props.row);"
                 :icon="'delete'" />

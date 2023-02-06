@@ -120,6 +120,11 @@ const routes = [
         path: "add",
         component: () => import("src/pages/scoreboards/ScoreboardsAddForm.vue"),
       },
+      {
+        path: "edit/:ScorboardId",
+        component: () => import("src/pages/scoreboards/ScoreboardsEditForm.vue"),
+        props: true,
+      },
     ],
     meta: {
       requiresAuth: true
