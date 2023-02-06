@@ -118,7 +118,7 @@ const routes = [
       },
       {
         path: "add",
-        component: () => import("src/pages/campaignes/CampaignesAddForm.vue"),
+        component: () => import("src/pages/scoreboards/ScoreboardsAddForm.vue"),
       },
     ],
     meta: {
