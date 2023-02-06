@@ -152,6 +152,43 @@ namespace RarApiConsole.dataObjects
 
             return arr;
         }
+        public string ReadByScoreboard(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
+
+            if (myDB.users != null)
+            {
+                bool found = false;
+                // all members attached to current obj scoreboard 
+                var userRefQuery = from referral in db.referrals
+                                   where referral.fk_scoreboard == aObjectKey
+                                   group referral.user by referral.fk_user into userRef
+                                   select userRef.FirstOrDefault();
+                foreach (var obj in userRefQuery)
+                {
+                    if (obj.object_key == aObjectKey)
+                    {
+                        found = true;
+                        arr += JsonConvert.SerializeObject(obj);
+                    }
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
 
         public string ReadSpecific(DatabaseContext myDB, int aObjectKey)
         {

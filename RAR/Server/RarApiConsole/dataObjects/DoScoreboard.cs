@@ -24,7 +24,6 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime end_dt { get; set; }
         private DatabaseContext db = new();
-        public List<DoUser> ranklist = new List<DoUser>();
         [NotMapped]
         public string start_dt_str
         {
@@ -131,19 +130,6 @@ namespace RarApiConsole.dataObjects
                     if (second == true)
                     {
                         arr += ",";
-                    }
-                    // all members attached to current obj scoreboard 
-                    var userRefQuery = from referral in myDB.referrals
-                                       where referral.fk_scoreboard == obj.object_key
-                                       group referral.user by referral.fk_user into userRef
-                                       select userRef.FirstOrDefault();
-                    obj.ranklist = new List<DoUser>();
-                    foreach (var userRef in userRefQuery.ToList())
-                    {
-                        if (userRef != null && userRef.recruiter == 0)
-                        {
-                            obj.ranklist.Add(userRef);
-                        }
                     }
                     found = true;
                     arr += JsonConvert.SerializeObject(obj);

@@ -8,7 +8,7 @@
                     </q-toolbar>
 
                     <q-list bordered>
-                        <q-item v-for="subitem in item.ranklist" :key="subitem.object_key" class="q-my-sm">
+                        <q-item v-for="subitem in getRanklist(item)" :key="subitem.object_key" class="q-my-sm">
                             <q-item-section>
                                 <q-item-label>{{ subitem.username }}</q-item-label>
                             </q-item-section>
@@ -34,17 +34,32 @@
 
 import { defineComponent } from 'vue'
 import { useReferralStore } from "stores/referral";
+import { useUserStore } from "stores/user";
 import { useScoreboardStore } from "stores/scoreboard";
+import { api } from "boot/axios";
 
 export default defineComponent({
     setup() {
         const scoreboardStore = useScoreboardStore();
         const referralStore = useReferralStore();
+        const userStore = useUserStore();
         scoreboardStore.allByUser()
-        return { scoreboardStore, referralStore };
+        return { scoreboardStore, referralStore, userStore };
     },
     data() {
         return {
+        }
+    },
+    methods: {
+        getRanklist(item) {
+            api.get("/Users", {
+                    params: { fk_scoreboard: item.object_key },
+                })
+                .then((response) => {
+                    item.ranklist = response?.data
+                })
+                .catch(() => { });
+            return item.ranklist
         }
     }
 })
