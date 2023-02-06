@@ -14,7 +14,7 @@
       <div class="col-6 q-mt-xl">
         <div class="row flex justify-center">
           <div class="col-6">
-            <q-form @submit="login" @reset="resetForm" class="">
+            <q-form @submit="login" class="">
               <h1 class="text-h3 text-center">Login</h1>
               <q-input filled label="Username *" v-model="userForm.username" hint="Username" lazy-rules
                 :rules="[val => val && val.length > 0 || 'Please type something']" />
