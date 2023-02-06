@@ -153,14 +153,8 @@ namespace RarApiConsole.controllers
             {
                 if (pair.Value != null)
                 {
-                    if (pair.Key.Equals("creation_dt"))
-                    {
-                        obj.creation_dt = DateTime.Parse(pair.Value);
-                    }
-                    if (pair.Key.Equals("modification_dt"))
-                    {
-                        obj.modification_dt = DateTime.Parse(pair.Value);
-                    }
+                    obj.creation_dt = DateTime.Now;
+                    obj.modification_dt = DateTime.Now;
                     if (pair.Key.Equals("fk_user"))
                     {
                         obj.fk_user = int.Parse(pair.Value);

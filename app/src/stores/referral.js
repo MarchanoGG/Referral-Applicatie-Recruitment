@@ -79,8 +79,7 @@ export const useReferralStore = defineStore("referral", {
       this.current_item.fk_user.forEach((user) => {
         this.current_item.fk_candidate.forEach((candidate) => {
           this.current_item.fk_task.forEach((task) => {
-            this.selected_item.fk_scoreboard =
-              this.scoreboardStore.selected_item.object_key;
+            this.selected_item.scoreboard = this.scoreboardStore.selected_item;
             this.selected_item.fk_user = user.object_key;
             this.selected_item.fk_candidate = candidate.object_key;
             this.selected_item.fk_task = task.object_key;

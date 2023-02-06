@@ -66,7 +66,6 @@ export const useScoreboardStore = defineStore("scoreboard", {
       if (this.last_res.status == 200) {
         this.selected_item = this.last_res?.data[0];
         this.all();
-        this.resetItem();
       } else {
         this.has_errors = true;
       }
@@ -78,7 +77,6 @@ export const useScoreboardStore = defineStore("scoreboard", {
       this.last_res = await api.put("/Scoreboards", this.formItem());
       if (this.last_res.status == 200) {
         this.all();
-        this.resetItem();
       } else {
         this.has_errors = true;
       }
@@ -89,7 +87,6 @@ export const useScoreboardStore = defineStore("scoreboard", {
       });
       if (this.last_res.status == 200) {
         this.all();
-        this.resetItem();
       } else {
         this.has_errors = true;
       }

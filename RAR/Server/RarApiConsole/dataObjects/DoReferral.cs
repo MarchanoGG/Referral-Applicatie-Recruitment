@@ -89,13 +89,8 @@ namespace RarApiConsole.dataObjects
                 aPair.ContainsKey("fk_task") &&
                 aPair["fk_task"].Length > 0 &&
                 aPair.ContainsKey("fk_candidate") &&
-                aPair["fk_candidate"].Length > 0 &&
-                aPair.ContainsKey("fk_scoreboard") &&
-                aPair["fk_scoreboard"].Length > 0 &&
-                aPair.ContainsKey("creation_dt") &&
-                aPair["creation_dt"].Length > 0 &&
-                aPair.ContainsKey("modification_dt") &&
-                aPair["modification_dt"].Length > 0)
+                aPair["fk_candidate"].Length > 0
+                )
             {
                 retVal = true;
             }
