@@ -60,8 +60,10 @@
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
                 <q-select v-model="selected_item.user" :options="userrows" option-value="object_key"
-                  option-label="username" label="" />
-                <q-date v-model="selected_item.award_dt" subtitle="Award at" minimal />
+                  option-label="username" label="Reward to user" lazy-rules
+                  :rules="[val => val || 'Required to choose a user']" />
+                <q-date v-model="selected_item.award_dt" subtitle="Award at" minimal lazy-rules
+                  :rules="[val => val || 'Please type something']" />
               </div>
             </div>
 
@@ -147,13 +149,22 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-  // {
-  //   name: 'awardAt',
-  //   label: 'Awarded at',
-  //   field: 'award_dt',
-  //   align: 'left',
-  //   sortable: true
-  // }
+    {
+    name: 'fullname',
+    required: true,
+    label: 'Awarded to',
+    align: 'left',
+    field: 'user',
+    format: val => `${val.username}`,
+    sortable: true
+  },
+  {
+    name: 'awardAt',
+    label: 'Awarded at',
+    field: 'award_dt_str',
+    align: 'left',
+    sortable: true
+  }
 ]
 export default defineComponent({
   name: 'RewardsList',

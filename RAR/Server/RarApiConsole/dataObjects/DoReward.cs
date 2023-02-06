@@ -21,7 +21,14 @@ namespace RarApiConsole.dataObjects
         public DateTime award_dt { get; set; }
 
         private DatabaseContext db = new();
-
+        [NotMapped]
+        public string award_dt_str
+        {
+            get
+            {
+                return award_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
         public DoUser? user
         {
             get
