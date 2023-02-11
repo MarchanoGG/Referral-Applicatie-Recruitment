@@ -81,7 +81,12 @@ export const useScoreboardStore = defineStore("scoreboard", {
       }
     },
     addItemSync() {
-      return api.post("/Scoreboards", this.formItem());
+      var res = api.post("/Scoreboards", this.formItem()).then(
+        (response) => {
+          this.selected_item = response.data[0];
+        }
+      )
+      return this.selected_item;
     },
     async editItem() {
       this.last_res = await api.put("/Scoreboards", this.formItem());

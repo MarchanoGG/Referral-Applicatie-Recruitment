@@ -13,24 +13,24 @@
             </div>
             <div class="row">
                 <div class="col-4 q-mx-md">
-                    <q-select v-model="referralStore.current_item.fk_user" :options="recruiterrows"
+                    <q-select v-model="referralStore.users" :options="recruiterrows"
                         option-value="object_key" option-label="username" :multiple="true" :use-chips="true" label="Select Recruiter"/>
                 </div>
                 <div class="col-4 q-mx-md">
-                    <q-select v-model="referralStore.current_item.fk_candidate" :options="candidaterows"
+                    <q-select v-model="referralStore.candidates" :options="candidaterows"
                         option-value="object_key" :option-label="profilefullname" :multiple="true" :use-chips="true" label="Select Candidate"/>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-4 q-mx-md">
-                    <q-select v-model="referralStore.current_item.fk_task" :options="taskrows" option-value="object_key"
+                    <q-select v-model="referralStore.tasks" :options="taskrows" option-value="object_key"
                         option-label="name" :multiple="true" :use-chips="true" label="Select Tasks" />
                 </div>
             </div>
             <div class="row">
-                <q-btn @click="referralStore.addReferral();" color="primary" label="Save" />
-                <q-btn flat color="primary" href="/scoreboards" label="Back" class="q-ml-sm" />
+                <q-btn @click="referralStore.updateReferral();" color="primary" label="Save" />
+                <q-btn flat color="primary" href="/admin/scoreboards" label="Back" class="q-ml-sm" />
             </div>
         </q-form>
     </div>
@@ -45,7 +45,7 @@ import { useScoreboardStore } from "stores/scoreboard";
 import { useReferralStore } from "stores/referral";
 
 export default {
-    name: 'CampaignesAddForm',
+    name: 'ScoreboardsEditForm',
     props: ['ScorboardId'],
     setup() {
         const userStore = useUserStore();
@@ -127,6 +127,7 @@ export default {
     },
     mounted() {
         this.referralStore.scoreboardStore.getById(this.ScorboardId)
+        this.referralStore.getAllById(this.ScorboardId)
         this.getScoreboards()
         this.getRecruiter()
         this.getCandidate()

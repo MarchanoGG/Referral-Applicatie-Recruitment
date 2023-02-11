@@ -22,12 +22,12 @@
                     <div class="row">
                         <div class="col-4 q-mx-md">
                             <div class="text-h6 q-mx-md">Select Recruiter</div>
-                            <q-select v-model="referralStore.current_item.fk_user" :options="recruiterrows"
+                            <q-select v-model="referralStore.user" :options="recruiterrows"
                                 option-value="object_key" option-label="username" :multiple="true" :use-chips="true" />
                         </div>
                         <div class="col-4 q-mx-md">
                             <div class="text-h6 q-mx-md">Select Candidate</div>
-                            <q-select v-model="referralStore.current_item.fk_candidate" :options="candidaterows"
+                            <q-select v-model="referralStore.candidate" :options="candidaterows"
                                 option-value="object_key" :option-label="profilefullname" :multiple="true"
                                 :use-chips="true" />
                         </div>
@@ -38,7 +38,7 @@
                     <div class="row">
                         <div class="col-4 q-mx-md">
                             <div class="text-h6 q-mx-md">Select Tasks</div>
-                            <q-select v-model="referralStore.current_item.fk_task" :options="taskrows"
+                            <q-select v-model="referralStore.task" :options="taskrows"
                                 option-value="object_key" option-label="name" :multiple="true" :use-chips="true" />
                         </div>
                     </div>

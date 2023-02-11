@@ -3,12 +3,18 @@ import { useRouter } from "vue-router";
 import { api } from "boot/axios";
 import { useUserStore } from "stores/user";
 import { useScoreboardStore } from "stores/scoreboard";
+import { useTaskStore } from "stores/tasks";
 
 export const useReferralStore = defineStore("referral", {
   state: () => ({
     scoreboardStore: useScoreboardStore(),
     userStore: useUserStore(),
+    taskStore: useTaskStore(),
     router: useRouter(),
+    scoreboards: null,
+    users: null,
+    candidates: null,
+    tasks: null,
     default_item: {
       object_key: null,
       fk_scoreboard: null,
@@ -19,15 +25,6 @@ export const useReferralStore = defineStore("referral", {
       modification_dt: new Date().toLocaleDateString(),
     },
     selected_item: {
-      object_key: null,
-      fk_scoreboard: null,
-      fk_user: null,
-      fk_candidate: null,
-      fk_task: null,
-      creation_dt: new Date().toLocaleDateString(),
-      modification_dt: new Date().toLocaleDateString(),
-    },
-    current_item: {
       object_key: null,
       fk_scoreboard: null,
       fk_user: null,
@@ -49,6 +46,16 @@ export const useReferralStore = defineStore("referral", {
       this.last_res = await api.get("/Referrals");
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;
+      } else {
+        this.has_errors = true;
+      }
+    },
+    async getAllById(id) {
+      this.last_res = await api.get("/Referrals", {
+        params: { fk_scoreboard: id },
+      });
+      if (this.last_res.status == 200) {
+        this.items = this.last_res?.data
       } else {
         this.has_errors = true;
       }
@@ -76,10 +83,11 @@ export const useReferralStore = defineStore("referral", {
       }
     },
     async addReferral() {
-      this.current_item.fk_user.forEach((user) => {
-        this.current_item.fk_candidate.forEach((candidate) => {
-          this.current_item.fk_task.forEach((task) => {
-            this.selected_item.scoreboard = this.scoreboardStore.selected_item;
+      this.scoreboardStore.addItemSync()
+      this.users.forEach((user) => {
+        this.candidates.forEach((candidate) => {
+          this.tasks.forEach((task) => {
+            this.selected_item.fk_scoreboard = this.scoreboardStore.selected_item.object_key;
             this.selected_item.fk_user = user.object_key;
             this.selected_item.fk_candidate = candidate.object_key;
             this.selected_item.fk_task = task.object_key;
@@ -87,6 +95,32 @@ export const useReferralStore = defineStore("referral", {
           });
         });
       });
+      this.router.push("/admin/scoreboards");
+    },
+    async updateReferral() {
+      this.deleteByScoreboard(this.scoreboardStore.selected_item.object_key)
+      this.users.forEach((user) => {
+        this.candidates.forEach((candidate) => {
+          this.tasks.forEach((task) => {
+            this.selected_item.fk_scoreboard = this.scoreboardStore.selected_item.object_key;
+            this.selected_item.fk_user = user.object_key;
+            this.selected_item.fk_candidate = candidate.object_key;
+            this.selected_item.fk_task = task.object_key;
+            this.addItem();
+          });
+        });
+      });
+      this.router.push("/admin/scoreboards");
+    },
+    async deleteByScoreboard(id) {
+      this.has_errors = false;
+      this.last_res = await api.delete("/Referrals", {
+        params: { fk_scoreboard: id}
+      });
+      if (this.last_res.status == 200) {
+      } else {
+        this.has_errors = true;
+      }
     },
     async addItem() {
       this.has_errors = false;
