@@ -256,6 +256,24 @@ namespace RarApiConsole.dataObjects
             return arr;
         }
 
+        public DoUser ReadSpecificObject(DatabaseContext myDB, int aObjectKey)
+        {
+            DoUser retVal = new DoUser();
+
+            if (myDB.users != null)
+            {
+                foreach (var obj in myDB.users.ToList())
+                {
+                    if (obj.object_key == aObjectKey)
+                    {
+                        retVal = obj;
+                    }
+                }
+            }
+
+            return retVal;
+        }
+
         public bool Create(DatabaseContext myDB, DoUser aObject)
         {
             bool retVal = false;
