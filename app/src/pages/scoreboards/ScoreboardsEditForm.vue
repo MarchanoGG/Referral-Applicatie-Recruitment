@@ -128,8 +128,8 @@ export default {
         }
     },
     mounted() {
-        this.referralStore.scoreboardStore.getById(this.ScorboardId)
         this.referralStore.getAllById(this.ScorboardId)
+        this.referralStore.scoreboardStore.getById(this.ScorboardId)
         this.referralStore.taskStore.getByScoreboardId(this.ScorboardId)
         this.referralStore.userStore.getUserByScoreboardId(this.ScorboardId)
         this.referralStore.candidatesStore.getCandidateByScoreboardId(this.ScorboardId)

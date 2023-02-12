@@ -125,7 +125,6 @@ export default {
         }
     },
     mounted() {
-        this.getScoreboards()
         this.getRecruiter()
         this.getCandidate()
         this.getTask()
