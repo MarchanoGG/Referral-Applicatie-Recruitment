@@ -121,6 +121,53 @@ namespace RarApiConsole.dataObjects
             return arr;
         }
 
+        public string ReadByScoreboard(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
+
+            if (myDB.tasks != null)
+            {
+                var items = from task in myDB.tasks
+                            join referral in myDB.referrals on task.object_key equals referral.fk_task
+                            where referral.fk_scoreboard == aObjectKey
+                            group task by task.object_key into reftask
+                            select reftask.FirstOrDefault();
+                bool second = false;
+                bool found = false;
+                foreach (var obj in items)
+                {
+                    found = true;
+                    if (second == true)
+                    {
+                        arr += ",";
+                    }
+                    string json = JsonConvert.SerializeObject(obj);
+
+                    if (json.Length > 0)
+                    {
+                        arr += json;
+                    }
+
+                    second = true;
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
+
         public bool Create(DatabaseContext myDB, DoTask aObject)
         {
             bool retVal = false;

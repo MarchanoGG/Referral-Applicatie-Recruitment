@@ -107,6 +107,16 @@ export const useUserStore = defineStore("user", {
         this.has_errors = true;
       }
     },
+    async getUserByScoreboardId(id) {
+      this.last_res = await api.get("/Users", {
+        params: { fk_scoreboard: id },
+      });
+      if (this.last_res.status == 200) {
+        this.items = this.last_res?.data
+      } else {
+        this.has_errors = true;
+      }
+    },
     async allByUser() {
       this.last_res = await api.get("/Users", {
         params: { fk_user: this.userStore.user.object_key },

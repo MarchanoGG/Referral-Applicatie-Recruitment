@@ -158,19 +158,29 @@ namespace RarApiConsole.dataObjects
 
             if (myDB.users != null)
             {
+                bool second = false;
                 bool found = false;
                 // all members attached to current obj scoreboard 
-                var userRefQuery = from referral in db.referrals
+                var userRefQuery = from referral in myDB.referrals
+                                   join user in myDB.users on referral.fk_user equals user.object_key
                                    where referral.fk_scoreboard == aObjectKey
-                                   group referral.user by referral.fk_user into userRef
+                                   group user by user.object_key into userRef
                                    select userRef.FirstOrDefault();
                 foreach (var obj in userRefQuery)
                 {
-                    if (obj.object_key == aObjectKey)
+                    found = true;
+                    if (second == true)
                     {
-                        found = true;
-                        arr += JsonConvert.SerializeObject(obj);
+                        arr += ",";
                     }
+                    string json = JsonConvert.SerializeObject(obj);
+
+                    if (json.Length > 0)
+                    {
+                        arr += json;
+                    }
+
+                    second = true;
                 }
 
                 if (found == false)
