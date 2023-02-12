@@ -4,12 +4,14 @@ import { api } from "boot/axios";
 import { useUserStore } from "stores/user";
 import { useScoreboardStore } from "stores/scoreboard";
 import { useTaskStore } from "stores/tasks";
+import { useCandidateStore } from "stores/candidates";
 
 export const useReferralStore = defineStore("referral", {
   state: () => ({
     scoreboardStore: useScoreboardStore(),
     userStore: useUserStore(),
     taskStore: useTaskStore(),
+    candidatesStore: useCandidateStore(),
     router: useRouter(),
     scoreboards: null,
     users: null,

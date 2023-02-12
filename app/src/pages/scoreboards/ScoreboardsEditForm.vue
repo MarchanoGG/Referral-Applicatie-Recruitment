@@ -17,7 +17,7 @@
                         option-value="object_key" option-label="username" :multiple="true" :use-chips="true" label="Select Recruiter"/>
                 </div>
                 <div class="col-4 q-mx-md">
-                    <q-select v-model="referralStore.candidates" :options="candidaterows"
+                    <q-select v-model="referralStore.candidatesStore.items" :options="candidaterows"
                         option-value="object_key" :option-label="profilefullname" :multiple="true" :use-chips="true" label="Select Candidate"/>
                 </div>
             </div>
@@ -43,6 +43,7 @@ import { defineComponent, ref, computed } from 'vue'
 import { useUserStore } from "stores/user";
 import { useScoreboardStore } from "stores/scoreboard";
 import { useReferralStore } from "stores/referral";
+import { useCandidateStore } from "stores/candidates";
 
 export default {
     name: 'ScoreboardsEditForm',
@@ -51,7 +52,8 @@ export default {
         const userStore = useUserStore();
         const scoreboardStore = useScoreboardStore();
         const referralStore = useReferralStore();
-        return { userStore, scoreboardStore, referralStore };
+        const candidatesStore = useCandidateStore();
+        return { userStore, scoreboardStore, referralStore, candidatesStore };
     },
     data() {
         const default_item = {
@@ -130,6 +132,7 @@ export default {
         this.referralStore.getAllById(this.ScorboardId)
         this.referralStore.taskStore.getByScoreboardId(this.ScorboardId)
         this.referralStore.userStore.getUserByScoreboardId(this.ScorboardId)
+        this.referralStore.candidatesStore.getCandidateByScoreboardId(this.ScorboardId)
         this.getScoreboards()
         this.getRecruiter()
         this.getCandidate()
