@@ -65,8 +65,13 @@ namespace RarApiConsole.controllers
 
             string arr = "";
             var ok = aRequest.QueryString.Get("object_key");
+            var fk_scoreboard = aRequest.QueryString.Get("fk_scoreboard");
 
-            if (aRequest.QueryString.HasKeys() == true && ok != null)
+            if (aRequest.QueryString.HasKeys() == true && fk_scoreboard != null)
+            {
+                arr = temp.ReadByScoreboard(db, int.Parse(fk_scoreboard));
+            }
+            else if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
                 arr = temp.ReadSpecific(db, int.Parse(ok));
             }
