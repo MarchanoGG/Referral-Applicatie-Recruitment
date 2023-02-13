@@ -339,7 +339,7 @@ namespace RarApiConsole.dataObjects
         {
             bool found = false;
 
-            if (myDB.tasks != null)
+            if (myDB.referrals != null)
             {
                 foreach (var obj in myDB.referrals.ToList())
                 {
