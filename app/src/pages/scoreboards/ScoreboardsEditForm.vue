@@ -128,7 +128,6 @@ export default {
         }
     },
     mounted() {
-        this.referralStore.getAllById(this.ScorboardId)
         this.referralStore.scoreboardStore.getById(this.ScorboardId)
         this.referralStore.taskStore.getByScoreboardId(this.ScorboardId)
         this.referralStore.userStore.getUserByScoreboardId(this.ScorboardId)

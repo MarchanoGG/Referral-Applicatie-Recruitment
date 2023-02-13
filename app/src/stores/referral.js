@@ -52,16 +52,6 @@ export const useReferralStore = defineStore("referral", {
         this.has_errors = true;
       }
     },
-    async getAllById(id) {
-      this.last_res = await api.get("/Referrals", {
-        params: { fk_scoreboard: id },
-      });
-      if (this.last_res.status == 200) {
-        this.items = this.last_res?.data
-      } else {
-        this.has_errors = true;
-      }
-    },
     async allByUser() {
       this.has_errors = false;
       this.last_res = await api.get("/Referrals", {
@@ -73,15 +63,18 @@ export const useReferralStore = defineStore("referral", {
         has_errors = true;
       }
     },
-    async allByScoreboardId(id) {
+    DeleteByScoreboardId(id) {
       this.has_errors = false;
-      this.last_res = await api.get("/Referrals", {
+      this.last_res = api.get("/Referrals", {
         params: { fk_scoreboard: id },
       });
       if (this.last_res.status == 200) {
         this.items = this.last_res?.data;
+        this.items.forEach((refobj) => {
+          this.deleteById(refobj.object_key)
+        })
       } else {
-        has_errors = true;
+        this.has_errors = true;
       }
     },
     async addReferral() {
@@ -100,10 +93,10 @@ export const useReferralStore = defineStore("referral", {
       this.router.push("/admin/scoreboards");
     },
     async updateReferral() {
-      this.deleteByScoreboard(this.scoreboardStore.selected_item.object_key)
-      this.users.forEach((user) => {
-        this.candidates.forEach((candidate) => {
-          this.tasks.forEach((task) => {
+      this.DeleteByScoreboardId(this.scoreboardStore.selected_item.object_key)
+      this.userStore.items.forEach((user) => {
+        this.candidatesStore.items.forEach((candidate) => {
+          this.taskStore.items.forEach((task) => {
             this.selected_item.fk_scoreboard = this.scoreboardStore.selected_item.object_key;
             this.selected_item.fk_user = user.object_key;
             this.selected_item.fk_candidate = candidate.object_key;
@@ -112,12 +105,20 @@ export const useReferralStore = defineStore("referral", {
           });
         });
       });
-      this.router.push("/admin/scoreboards");
+      // this.router.push("/admin/scoreboards");
     },
-    async deleteByScoreboard(id) {
-      this.has_errors = false;
+    deleteById(id) {
+      this.last_res = api.delete("/Referrals", {
+        params: { object_key: id },
+      });
+      if (this.last_res.status == 200) {
+      } else {
+        this.has_errors = true;
+      }
+    },
+    async deleteItem() {
       this.last_res = await api.delete("/Referrals", {
-        params: { fk_scoreboard: id}
+        params: { object_key: this.selected_item.object_key },
       });
       if (this.last_res.status == 200) {
       } else {
