@@ -186,20 +186,16 @@ namespace RarApiConsole.dataObjects
                 bool found = false;
                 var userRefQuery = from referral in myDB.referrals
                                    where referral.fk_scoreboard == aObjectKey
-                                   group referral.user by referral.fk_user into userRef
-                                   select userRef.FirstOrDefault();
+                                   select referral;
                 foreach (var obj in userRefQuery)
                 {
-                    if (obj != null && obj.recruiter == 0)
+                    if (second == true)
                     {
-                        if (second == true)
-                        {
-                            arr += ",";
-                        }
-                        found = true;
-                        arr += JsonConvert.SerializeObject(obj);
-                        second = true;
+                        arr += ",";
                     }
+                    found = true;
+                    arr += JsonConvert.SerializeObject(obj);
+                    second = true;
                 }
 
                 if (found == false)
@@ -339,7 +335,7 @@ namespace RarApiConsole.dataObjects
         {
             bool found = false;
 
-            if (myDB.tasks != null)
+            if (myDB.referrals != null)
             {
                 foreach (var obj in myDB.referrals.ToList())
                 {

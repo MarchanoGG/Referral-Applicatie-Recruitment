@@ -400,28 +400,7 @@ namespace RarApiConsole.controllers
 
             string arr = "";
             var ok = aRequest.QueryString.Get("object_key");
-            var fk_scoreboard = int.Parse(aRequest.QueryString.Get("fk_scoreboard"));
-
-            if (aRequest.QueryString.HasKeys() == true && fk_scoreboard != 0)
-            {
-                var items = from referral in db.referrals
-                            where referral.fk_scoreboard == fk_scoreboard
-                            select referral;
-                foreach (var item in items)
-                {
-                    if (temp.Delete(db, item.object_key))
-                    {
-                        aResponse.StatusCode = (int)HttpStatusCode.OK;
-                        aResponse.ContentType = "application/json";
-                        retVal = true;
-                    }
-                    else
-                    {
-                        aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
-                    }
-                }
-            }
-            else if (aRequest.QueryString.HasKeys() == true && ok != null)
+            if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
                 if (temp.Delete(db, int.Parse(ok)))
                 {

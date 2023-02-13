@@ -35,6 +35,16 @@ export const useTaskStore = defineStore("tasks", {
         errors = true;
       }
     },
+    async getByScoreboardId(id) {
+      this.last_res = await api.get("/Tasks", {
+        params: { fk_scoreboard: id },
+      });
+      if (this.last_res.status == 200) {
+        this.items = this.last_res?.data
+      } else {
+        this.has_errors = true;
+      }
+    },
     async addItem() {
       this.last_res = await api.post("/Tasks", this.selected_item);
       if (this.last_res.status == 200) {
