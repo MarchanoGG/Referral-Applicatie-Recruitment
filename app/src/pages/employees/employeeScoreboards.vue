@@ -1,12 +1,16 @@
 <template>
     <q-page class="q-pa-md">
         <div class="row">
+            <div class="col-3 q-mx-md" v-if="referralStore.items.length == 0">
+                <q-banner class="bg-orange text-white">
+                No Campaignes joined. Contact admin for more info or to apply to Campaign
+                </q-banner>
+            </div>
             <div class="col-3 q-mx-md" v-for="item in scoreboardStore.items" :key="item.object_key">
                 <div class="">
                     <q-toolbar class="bg-primary text-white shadow-2">
                         <q-toolbar-title>Scoreboard: {{ item.name }}</q-toolbar-title>
                     </q-toolbar>
-
                     <q-list bordered>
                         <q-item v-for="subitem in getRanklist(item)" :key="subitem.object_key" class="q-my-sm">
                             <q-item-section>
