@@ -5,7 +5,8 @@
         <q-toolbar>
           <q-toolbar-title :shrink="true">Campaigns</q-toolbar-title>
           <q-separator vertical inset />
-          <q-btn type="a" href="/campaignes/add" class="q-ml-md" color="secondary" dense :icon="'person_add'" />
+          <q-btn type="router-link" href="/admin/campaignes/add" class="q-ml-md" color="secondary" dense
+            :icon="'person_add'" />
         </q-toolbar>
       </template>
 
@@ -44,7 +45,7 @@
 
     </q-table>
 
-    <q-dialog v-model="addform" @hide="resetForm">
+    <q-dialog v-model="addform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -53,7 +54,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="addItem" @reset="resetForm">
+          <q-form @submit="addItem">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
@@ -80,7 +81,7 @@
     </q-dialog>
 
     <!-- edit form -->
-    <q-dialog v-model="editform" @hide="resetForm">
+    <q-dialog v-model="editform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -89,7 +90,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="editItem" @reset="resetForm">
+          <q-form @submit="editItem">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="selected_item.username" label="Your username *" hint="Userame" lazy-rules
@@ -108,7 +109,6 @@
 
             <div class="col-5">
               <q-btn label="Submit" type="submit" color="primary" />
-              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
             </div>
           </q-form>
         </q-card-section>
@@ -117,7 +117,7 @@
     </q-dialog>
 
     <!-- delete form -->
-    <q-dialog v-model="delform" @hide="resetForm">
+    <q-dialog v-model="delform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -172,8 +172,8 @@ const columns = [
     required: true,
     label: 'Candidate name',
     align: 'left',
-    field: 'profile',
-    format: val => `${val.name}`,
+    field: 'user',
+    format: val => `${val.profile.name}`,
     sortable: true
   },
 ]

@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Alten | {{ userStore.user.profile.name }}
+          Alten <span v-if="userStore.user.profile !== null"> | {{ userStore.user.profile.name }} </span>
         </q-toolbar-title>
 
       </q-toolbar>
@@ -37,43 +37,43 @@ const linksList = [
     title: 'Home',
     // caption: '',
     icon: 'home',
-    link: '/'
+    link: '/admin'
   },
   {
     title: 'Users',
     // caption: '',
     icon: 'manage_accounts',
-    link: '/users'
+    link: '/admin/users'
   },
   {
     title: 'Candidates',
     // caption: '',
     icon: 'people',
-    link: '/candidates'
+    link: '/admin/candidates'
   },
   {
     title: 'Rewards',
     // caption: '',
     icon: 'emoji_events',
-    link: '/rewards'
+    link: '/admin/rewards'
   },
   {
     title: 'Tasks',
     // caption: '',
     icon: 'list',
-    link: '/tasks'
+    link: '/admin/tasks'
   },
   {
     title: 'Scoreboards',
     // caption: '',
-    icon: 'leaderboard',
-    link: '/scoreboards'
+    icon: 'scoreboard',
+    link: '/admin/scoreboards'
   },
   {
     title: 'Campaignes',
     // caption: '',
     icon: 'checklist',
-    link: '/campaignes'
+    link: '/admin/campaignes'
   },
   {
     title: 'Logout',

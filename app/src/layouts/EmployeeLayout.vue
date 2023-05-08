@@ -42,7 +42,7 @@ const linksList = [
   {
     title: 'Scoreboards',
     // caption: '',
-    icon: 'leaderboard',
+    icon: 'scoreboard',
     link: '/dashboard/scoreboards'
   },
   {

@@ -20,7 +20,29 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp")]
         public DateTime award_dt { get; set; }
 
-        public DoUser? user;
+        private DatabaseContext db = new();
+        [NotMapped]
+        public string award_dt_str
+        {
+            get
+            {
+                return award_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
+        public DoUser? user
+        {
+            get
+            {
+                if (db.users.Find(fk_user) != null)
+                {
+                    return db.users.Find(fk_user);
+                }
+                else
+                {
+                    return new DoUser();
+                }
+            }
+        }
 
         public DoReward()
         {
@@ -41,7 +63,6 @@ namespace RarApiConsole.dataObjects
             bool retVal = false;
 
             if (aPair.ContainsKey("fk_user") &&
-                aPair["fk_user"].Length > 0 &&
                 aPair.ContainsKey("name") &&
                 aPair["name"].Length > 0 &&
                 aPair.ContainsKey("award_dt") &&

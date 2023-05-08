@@ -105,9 +105,11 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                if (CreateAction(keyPair) > 0)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -137,26 +139,19 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("award_dt"))
-                {
-                    obj.award_dt = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("user"))
-                {
-                    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (userPair != null)
+                    if (pair.Key.Equals("name"))
                     {
-                        int userKey = ctlUsers.CreateAction(userPair);
-                        if (userKey > 0)
-                        {
-                            obj.fk_user = userKey;
-                        }
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("award_dt"))
+                    {
+                        obj.award_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj.fk_user = int.Parse(pair.Value);
                     }
                 }
             }
@@ -194,6 +189,7 @@ namespace RarApiConsole.controllers
                 if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -221,26 +217,23 @@ namespace RarApiConsole.controllers
 
             obj.object_key = aObjectKey;
 
-            var ctlProfiles = CtlProfiles.Instance();
+            var ctlUsers = CtlUsers.Instance();
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("award_dt"))
-                {
-                    obj.award_dt = DateTime.Parse(pair.Value);
-                }
-
-                if (pair.Key.Equals("user"))
-                {
-                    var userPair = JsonConvert.DeserializeObject<Dictionary<string, string>>(pair.Value);
-
-                    if (userPair != null)
+                    if (pair.Key.Equals("name"))
                     {
-                        obj.fk_user = ctlProfiles.UpdateAction(userPair, obj.fk_user);
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("award_dt"))
+                    {
+                        obj.award_dt = DateTime.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj.fk_user = int.Parse(pair.Value);
                     }
                 }
             }

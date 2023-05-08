@@ -22,10 +22,24 @@ namespace RarApiConsole.dataObjects
         public DateTime start_dt { get; set; }
 
         [Column(TypeName = "timestamp")]
-        public DateTime ?end_dt { get; set; }
-
-        public DoUser? user;
-
+        public DateTime end_dt { get; set; }
+        private DatabaseContext db = new();
+        [NotMapped]
+        public string start_dt_str
+        {
+            get
+            {
+                return start_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
+        [NotMapped]
+        public string end_dt_str
+        {
+            get
+            {
+                return end_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
         public DoScoreboard()
         {
             fk_user = 0;
@@ -45,7 +59,6 @@ namespace RarApiConsole.dataObjects
             bool retVal = false;
 
             if (aPair.ContainsKey("fk_user") &&
-                aPair["fk_user"].Length > 0 && 
                 aPair.ContainsKey("name") &&
                 aPair["name"].Length > 0 &&
                 aPair.ContainsKey("start_dt") &&
@@ -107,12 +120,13 @@ namespace RarApiConsole.dataObjects
             {
                 bool second = false;
                 bool found = false;
+                // all scoreboards attached to aObjectKey 
                 var refQuery = from referral in myDB.referrals
                                where referral.fk_user == aObjectKey
-                               group referral by referral.fk_scoreboard into sbgroup
-                               select sbgroup;
-                foreach (var obj in refQuery)
-                    {
+                               group referral.scoreboard by referral.fk_scoreboard into sbgroup
+                               select sbgroup.FirstOrDefault();
+                foreach (var obj in refQuery.ToList())
+                {
                     if (second == true)
                     {
                         arr += ",";

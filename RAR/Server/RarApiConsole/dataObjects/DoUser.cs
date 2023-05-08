@@ -29,9 +29,56 @@ namespace RarApiConsole.dataObjects
         [Column(TypeName = "timestamp"), Required]
         public DateTime modification_dt { get; set; }
 
-        public DoProfile ?profile;
+        private DatabaseContext db = new();
+        public DoProfile ?profile
+        {
+            get
+            {
+                if (db.profiles.Find(fk_profile) != null)
+                {
+                    return db.profiles.Find(fk_profile);
+                }
+                else 
+                {
+                    return new DoProfile();
+                }
+            }
+        }
 
-
+        [Column(TypeName = "varchar(100)"), Required]
+        [NotMapped]
+        public string sessiontoken { get; set; } = "";
+        [NotMapped]
+        public string creation_dt_str
+        {
+            get
+            {
+                return creation_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
+        [NotMapped]
+        public string modification_dt_str
+        {
+            get
+            {
+                return modification_dt.ToString(@"yyyy\/MM\/dd");
+            }
+        }
+        public int totalPoints
+        {
+            get
+            {
+                int total = 0;
+                foreach (var row in db.referrals.Where(a => a.fk_user == object_key))
+                {
+                    if (row != null && row.task != null)
+                    {
+                        total+= row.task.points;
+                    }
+                }
+                return total;
+            }
+        }
         public DoUser() 
         {
             username = "temp";
@@ -43,6 +90,8 @@ namespace RarApiConsole.dataObjects
             username = Username;
             password = Password;
             recruiter = Recruiter;
+            creation_dt = DateTime.Now;
+            modification_dt = DateTime.Now;
         }
 
         public bool ValidateInput(Dictionary<string, string> aPair)
@@ -77,8 +126,6 @@ namespace RarApiConsole.dataObjects
                         arr += ",";
                     }
 
-                    obj.profile = myDB.profiles.Find(obj.fk_profile);
-
                     string json = JsonConvert.SerializeObject(obj);
 
                     if (json.Length > 0)
@@ -105,6 +152,53 @@ namespace RarApiConsole.dataObjects
 
             return arr;
         }
+        public string ReadByScoreboard(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
+
+            if (myDB.users != null)
+            {
+                bool second = false;
+                bool found = false;
+                // all members attached to current obj scoreboard 
+                var userRefQuery = from referral in myDB.referrals
+                                   join user in myDB.users on referral.fk_user equals user.object_key
+                                   where referral.fk_scoreboard == aObjectKey
+                                   group user by user.object_key into userRef
+                                   select userRef.FirstOrDefault();
+                foreach (var obj in userRefQuery)
+                {
+                    found = true;
+                    if (second == true)
+                    {
+                        arr += ",";
+                    }
+                    string json = JsonConvert.SerializeObject(obj);
+
+                    if (json.Length > 0)
+                    {
+                        arr += json;
+                    }
+
+                    second = true;
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
 
         public string ReadSpecific(DatabaseContext myDB, int aObjectKey)
         {
@@ -118,7 +212,6 @@ namespace RarApiConsole.dataObjects
                     if (obj.object_key == aObjectKey)
                     {
                         found = true;
-                        obj.profile = myDB.profiles.Find(obj.fk_profile);
                         arr += JsonConvert.SerializeObject(obj);
                     }
                 }
@@ -138,6 +231,57 @@ namespace RarApiConsole.dataObjects
             }
 
             return arr;
+        }
+
+        public string ReadSpecific(DatabaseContext myDB, string token)
+        {
+            string arr = "[";
+
+            if (myDB.users != null)
+            {
+                bool found = false;
+                foreach (var obj in myDB.users.ToList())
+                {
+                    if (obj.sessiontoken == token)
+                    {
+                        found = true;
+                        arr += JsonConvert.SerializeObject(obj);
+                    }
+                }
+                 
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
+
+        public DoUser ReadSpecificObject(DatabaseContext myDB, int aObjectKey)
+        {
+            DoUser retVal = new DoUser();
+
+            if (myDB.users != null)
+            {
+                foreach (var obj in myDB.users.ToList())
+                {
+                    if (obj.object_key == aObjectKey)
+                    {
+                        retVal = obj;
+                    }
+                }
+            }
+
+            return retVal;
         }
 
         public bool Create(DatabaseContext myDB, DoUser aObject)

@@ -16,6 +16,5 @@
 /app/node_modules
 /RAR/Server/RarApiConsole/obj
 /app/.vs
-/app/node_modules/.q-cache/vite/spa/deps/axios.js
-/app/node_modules/.q-cache/vite/spa/deps/axios.js.map
-/app/node_modules/.q-cache/vite/spa/deps/chunk-NWR2PRER.js
+/app/.quasar
+/app/.vscode

@@ -39,6 +39,9 @@ namespace RarApiConsole.controllers
                 case "POST":
                     retVal = Login(aContext);
                     break;
+                case "PUT":
+                    retVal = UpdatePassword(aContext);
+                    break;
                 default:
                     retVal = NotSupported(aContext);
                     break;
@@ -122,7 +125,63 @@ namespace RarApiConsole.controllers
             return retVal;
         }
 
-        static bool NotSupported(HttpListenerContext aContext)
+        bool UpdatePassword(HttpListenerContext aContext)
+        {
+            bool retVal = false;
+
+            var aRequest = aContext.Request;
+            var aResponse = aContext.Response;
+
+            string arr = "";
+
+            var keyPair = formData.FormData.GetFormData(aRequest);
+
+            if (aRequest.HasEntityBody == true)
+            {
+                var obj = new DoUser();
+
+                var newPassword = "";
+                var newPasswordCheck = "";
+
+                foreach (var pair in keyPair)
+                {
+                    if (pair.Key.Equals("fk_user"))
+                    {
+                        obj = db.users.Find(int.Parse(pair.Value));
+                    }
+                    if (pair.Key.Equals("password"))
+                    {
+                        newPassword = pair.Value;
+                    }
+                    if (pair.Key.Equals("password_check"))
+                    {
+                        newPasswordCheck = pair.Value;
+                    }
+                }
+
+                if (newPassword == newPasswordCheck && obj != null)
+                {
+                    obj.password = GetHashString(newPassword);
+                    this.db.users.Update(obj);
+                }
+                else
+                {
+                    aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+            }
+            else
+            {
+                aResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+
+            byte[] bytes = Encoding.UTF8.GetBytes(arr);
+            aResponse.OutputStream.Write(bytes, 0, bytes.Length);
+            aResponse.OutputStream.Close();
+
+            return retVal;
+        }
+
+            static bool NotSupported(HttpListenerContext aContext)
         {
             var response = aContext.Response;
             response.StatusCode = (int)HttpStatusCode.NotFound;

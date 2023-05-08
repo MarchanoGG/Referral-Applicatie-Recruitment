@@ -44,7 +44,7 @@
 
     </q-table>
 
-    <q-dialog v-model="addform" @hide="resetForm">
+    <q-dialog v-model="addform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -53,16 +53,17 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="addItem" @reset="resetForm">
+          <q-form @submit="addItem">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="selected_item.name" label="Reward name *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-select filled v-model="selected_item.fk_user" :options="userrows" option-value="object_key"
-                  option-label="username" label="Standard" emit-value />
-
-                <q-date v-model="selected_item.award_dt" />
+                <q-select v-model="selected_item.user" :options="userrows" option-value="object_key"
+                  option-label="username" label="Reward to user" lazy-rules
+                  :rules="[val => val || 'Required to choose a user']" />
+                <q-date v-model="selected_item.award_dt" subtitle="Award at" minimal lazy-rules
+                  :rules="[val => val || 'Please type something']" />
               </div>
             </div>
 
@@ -76,7 +77,7 @@
     </q-dialog>
 
     <!-- edit form -->
-    <q-dialog v-model="editform" @hide="resetForm">
+    <q-dialog v-model="editform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -85,22 +86,20 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-form @submit="editItem" @reset="resetForm">
+          <q-form @submit="editItem">
             <div class="row">
               <div class="col-5">
                 <q-input filled v-model="selected_item.name" label="Reward name *" hint="" lazy-rules
                   :rules="[val => val && val.length > 0 || 'Please type something']" />
 
-                <q-select filled v-model="selected_item.fk_user" :options="userrows" option-value="object_key"
-                  option-label="username" label="Standard" emit-value />
-
-                <q-date v-model="selected_item.award_dt" />
+                <q-select v-model="selected_item.user" :options="userrows" option-value="object_key"
+                  option-label="username" label="" />
+                <q-date v-model="selected_item.award_dt" subtitle="Award at" minimal />
               </div>
             </div>
 
             <div class="col-5">
               <q-btn label="Submit" type="submit" color="primary" />
-              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
             </div>
           </q-form>
         </q-card-section>
@@ -109,7 +108,7 @@
     </q-dialog>
 
     <!-- delete form -->
-    <q-dialog v-model="delform" @hide="resetForm">
+    <q-dialog v-model="delform">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="flex">
@@ -150,13 +149,22 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-  // {
-  //   name: 'awardAt',
-  //   label: 'Awarded at',
-  //   field: 'award_dt',
-  //   align: 'left',
-  //   sortable: true
-  // }
+    {
+    name: 'fullname',
+    required: true,
+    label: 'Awarded to',
+    align: 'left',
+    field: 'user',
+    format: val => `${val.username}`,
+    sortable: true
+  },
+  {
+    name: 'awardAt',
+    label: 'Awarded at',
+    field: 'award_dt_str',
+    align: 'left',
+    sortable: true
+  }
 ]
 export default defineComponent({
   name: 'RewardsList',
@@ -173,6 +181,7 @@ export default defineComponent({
     const default_item = {
       name: null,
       fk_user: null,
+      user: null,
       object_key: null,
       award_dt: new Date().toLocaleDateString(),
     }
@@ -208,6 +217,7 @@ export default defineComponent({
       return item
     },
     addItem() {
+      this.selected_item.fk_user = this.selected_item.user.object_key
       api.post('/Rewards', this.selected_item)
         .then((response) => {
           if (response.status == 200) {
@@ -220,6 +230,7 @@ export default defineComponent({
         })
     },
     editItem() {
+      this.selected_item.fk_user = this.selected_item.user.object_key
       api.put('/Rewards', this.selected_item)
         .then((response) => {
           if (response.status == 200) {

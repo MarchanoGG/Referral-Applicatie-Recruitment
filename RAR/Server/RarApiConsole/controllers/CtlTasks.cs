@@ -65,10 +65,15 @@ namespace RarApiConsole.controllers
 
             string arr = "";
             var ok = aRequest.QueryString.Get("object_key");
+            var fk_scoreboard = aRequest.QueryString.Get("fk_scoreboard");
 
             if (aRequest.QueryString.HasKeys() == true && ok != null)
             {
                 arr = temp.ReadSpecific(db, int.Parse(ok));
+            }
+            else if (aRequest.QueryString.HasKeys() == true && fk_scoreboard != null)
+            {
+                arr = temp.ReadByScoreboard(db, int.Parse(fk_scoreboard));
             }
             else
             {
@@ -105,9 +110,11 @@ namespace RarApiConsole.controllers
 
             if ((aRequest.HasEntityBody == true) && (temp.ValidateInput(keyPair)))
             {
-                if (CreateAction(keyPair) > 0)
+                int objectKey = CreateAction(keyPair);
+                if (objectKey > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -135,17 +142,20 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("points"))
-                {
-                    obj.points = int.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("description"))
-                {
-                    obj.description = pair.Value;
+                    if (pair.Key.Equals("name"))
+                    {
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("points"))
+                    {
+                        obj.points = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("description"))
+                    {
+                        obj.description = pair.Value;
+                    }
                 }
             }
 
@@ -182,6 +192,7 @@ namespace RarApiConsole.controllers
                 if (UpdateAction(keyPair, objectKey) > 0)
                 {
                     aResponse.StatusCode = (int)HttpStatusCode.OK;
+                    arr = temp.ReadSpecific(db, objectKey);
                     retVal = true;
                 }
                 else
@@ -213,17 +224,20 @@ namespace RarApiConsole.controllers
 
             foreach (var pair in aPair)
             {
-                if (pair.Key.Equals("name"))
+                if (pair.Value != null)
                 {
-                    obj.name = pair.Value;
-                }
-                if (pair.Key.Equals("points"))
-                {
-                    obj.points = int.Parse(pair.Value);
-                }
-                if (pair.Key.Equals("description"))
-                {
-                    obj.description = pair.Value;
+                    if (pair.Key.Equals("name"))
+                    {
+                        obj.name = pair.Value;
+                    }
+                    if (pair.Key.Equals("points"))
+                    {
+                        obj.points = int.Parse(pair.Value);
+                    }
+                    if (pair.Key.Equals("description"))
+                    {
+                        obj.description = pair.Value;
+                    }
                 }
             }
 

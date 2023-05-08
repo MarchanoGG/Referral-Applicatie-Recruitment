@@ -89,13 +89,8 @@ namespace RarApiConsole.dataObjects
                 aPair.ContainsKey("fk_task") &&
                 aPair["fk_task"].Length > 0 &&
                 aPair.ContainsKey("fk_candidate") &&
-                aPair["fk_candidate"].Length > 0 &&
-                aPair.ContainsKey("fk_scoreboard") &&
-                aPair["fk_scoreboard"].Length > 0 &&
-                aPair.ContainsKey("creation_dt") &&
-                aPair["creation_dt"].Length > 0 &&
-                aPair.ContainsKey("modification_dt") &&
-                aPair["modification_dt"].Length > 0)
+                aPair["fk_candidate"].Length > 0
+                )
             {
                 retVal = true;
             }
@@ -156,16 +151,51 @@ namespace RarApiConsole.dataObjects
                 var refQuery = from referral in myDB.referrals where referral.fk_user == aObjectKey select referral;
                 foreach (var obj in refQuery)
                 {
-                    if (obj.fk_user == aObjectKey)
+                    if (second == true)
                     {
-                        if (second == true)
-                        {
-                            arr += ",";
-                        }
-                        found = true;
-                        arr += JsonConvert.SerializeObject(obj);
-                        second = true;
+                        arr += ",";
                     }
+                    found = true;
+                    arr += JsonConvert.SerializeObject(obj);
+                    second = true;
+                }
+
+                if (found == false)
+                {
+                    arr = "";
+                }
+                else
+                {
+                    arr += "]";
+                }
+            }
+            else
+            {
+                arr = "";
+            }
+
+            return arr;
+        }
+        public string ReadByScoreboardId(DatabaseContext myDB, int aObjectKey)
+        {
+            string arr = "[";
+
+            if (myDB.referrals != null)
+            {
+                bool second = false;
+                bool found = false;
+                var userRefQuery = from referral in myDB.referrals
+                                   where referral.fk_scoreboard == aObjectKey
+                                   select referral;
+                foreach (var obj in userRefQuery)
+                {
+                    if (second == true)
+                    {
+                        arr += ",";
+                    }
+                    found = true;
+                    arr += JsonConvert.SerializeObject(obj);
+                    second = true;
                 }
 
                 if (found == false)
@@ -305,7 +335,7 @@ namespace RarApiConsole.dataObjects
         {
             bool found = false;
 
-            if (myDB.tasks != null)
+            if (myDB.referrals != null)
             {
                 foreach (var obj in myDB.referrals.ToList())
                 {
